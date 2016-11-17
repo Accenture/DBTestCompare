@@ -14,7 +14,7 @@ java -jar DBTestCompare-1.0-SNAPSHOT-jar-with-dependencies.jar
 
 Application provides following features:
 - **Platform independence** - possibility to run on Windows and Linux as well (Java Runtime Environment 8 needed)
-- Supports **all databases with JDBC drivers provided** (tested with Microsoft SQL Server, Teradara, PostgreSQL and MySQL\MariaDB)
+- Supports **all databases with JDBC drivers provided** (tested with Microsoft SQL Server, Teradata, PostgreSQL and MySQL\MariaDB)
 - Supports **all Continuous Integration tools** thanks to TestNG Java unit test framework
 - Possibility to compare data between **two different database engines** even for huge data sets 
 without "Out of memory problem" thanks to incremental solution
