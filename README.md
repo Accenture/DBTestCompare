@@ -6,10 +6,16 @@ It reads tests definitions in XML format form specified directory and than runs 
 If two SQL returns different results -> test fails. 
 Application supports TeamCity Service Messages (##teamcity messages) so if teamcityLogsEnabled is set to "true" (config file or command line parameter), you will see nice test tree in TeamCity logs.
 
-To execute tests run program:
+To execute tests run program (Java 8 must be installed first (JDK or JRE)):
 
+If you set JAVA_HOME variable:
 ```
 java -jar DBTestCompare-1.0-SNAPSHOT-jar-with-dependencies.jar
+```
+
+or e.g.
+```
+"C:\Program Files\Java\jdk1.8.0_92\bin\java" -jar DBTestCompare-1.0-SNAPSHOT-jar-with-dependencies.jar
 ```
 
 Application provides following features:
