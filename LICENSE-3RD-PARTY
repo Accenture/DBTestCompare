@@ -1,0 +1,6 @@
+Third-Party Software Used by DB.Quality:
+|Software|Version|Licensed|
+|SIROCCO :: Text Table Formatter|1.0|The Apache Software License, Version 2.0|
+|Apache Log4j|1.2.17|Apache 2.0|
+|com.sun.xml.bind :: JAXB Runtime|2.1.8|CDDL 1.1,GPL 1.1|
+|com.mchange :: c3p0 - a JDBC Connection pooling / Statement caching library|0.9.5.2|GNU Lesser General Public License, Version 2.1,Eclipse Public License, Version 1.0|

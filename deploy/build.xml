@@ -1,0 +1,84 @@
+<?xml version="1.0"?>
+<project name="deploy.DBTestCompare" basedir=".">
+	<property name="dist" value="..\target" />
+	<property name="sourceFile" value="..\" />
+	<property name="config" value="DEV01" />
+	<property name="datefrom" value="2003-02-21 00:00:00.000" />
+	<property name="dateto" value="2004-02-21 00:00:00.000" />
+	<property file="Config\${config}" />
+	<property name="file" value="build.properties" />
+	<echo message="dist : ${dist}" />
+	<echo message="config : ${config}" />
+	<echo message="user.dir : ${user.dir}" />
+	<echo message="datefrom : ${datefrom}" />
+	<echo message="dateto : ${dateto}" />
+	<description>
+		Compile solution and replace tokens
+	</description>
+	<macrodef name="copyfiles">
+		<attribute name="todir" />
+		<attribute name="fromdir" />
+		<attribute name="includefiles" />
+		<attribute name="flattenfolder" />
+		<sequential>
+			<copy todir="@{todir}" failonerror="false" verbose="true" flatten="@{flattenfolder}">
+				<fileset dir="@{fromdir}" includes="@{includefiles}" />
+				<filterchain>
+					<filterreader classname="org.apache.tools.ant.filters.ReplaceTokens">
+						<param type="propertiesfile" value=".\Config\${config}" />
+						<param type="tokenchar" name="begintoken" value="${" />
+						<param type="tokenchar" name="endtoken" value="}" />
+					</filterreader>
+				</filterchain>
+			</copy>
+		</sequential>
+	</macrodef>
+	<target name="tokens.copy.files">
+		<echo>Coping target files and replacing tokens</echo>
+		<echo>${line.separator}</echo>
+		<delete failonerror="false" verbose="true" includeemptydirs="true">
+		<fileset dir="${dist}\" includes="**" excludes="*.jar" defaultexcludes="true" />
+		</delete>
+		<mkdir dir="${dist}" />
+		<echo>${line.separator}Coping files to target folder</echo>
+		<echo>${line.separator}</echo>
+		<echo>${line.separator}Coping test examples</echo>
+		<echo>${line.separator}</echo>
+		<copyfiles fromdir="${sourceFile}\test-definitions" todir="${dist}\test-definitions" includefiles="**/**" flattenfolder="false" />
+     	<replace dir="${dist}\test-definitions\" includes="**\*.sql,**\*.xml" excludes="cmpSqlResults-config.xml" summary="true" failOnNoReplacements="true" >
+		  <replacefilter 
+			token="@datefrom@" 
+			value="${datefrom}"/>
+			<replacefilter 
+			token="@dateto@" 
+			value="${dateto}"/>
+		</replace>
+		<copy todir="${dist}\jdbc_drivers">
+			<fileset dir="${sourceFile}\jdbc_drivers">
+				<include name="**/**" />
+			</fileset>
+		</copy>
+	</target>
+	<target name="compile" description="Compile DBTestCompare project">
+		<echo>${line.separator}Compile DBTestCompare project</echo>
+		<echo>${line.separator}</echo>
+		<exec dir="..\" executable="cmd" failonerror="yes">
+			<arg value="/C" />
+			<arg value="mvn" />
+			<arg line="clean compile assembly:single" />
+		</exec>
+	</target>
+	<target name="testdbq.run">
+		<echo>${line.separator}Execute tests</echo>
+		<echo>${line.separator}</echo>
+		<path id="jar.file.version">
+			<fileset dir="${dist}">
+				<include name="DBTestCompare-*-SNAPSHOT-jar-with-dependencies.jar"/>
+			</fileset>
+		</path> 
+		<property name="dbtestcompare.file" refid="jar.file.version"/>
+		<echo message="DBTestCompare file: ${dbtestcompare.file}"/> 
+		<java jar="${dbtestcompare.file}" fork="true" failonerror="yes" dir="${dist}\">
+		</java>
+	</target>
+</project>

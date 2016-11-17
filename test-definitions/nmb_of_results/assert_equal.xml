@@ -1,0 +1,26 @@
+<cmpSqlResultsTest>
+    <compare mode="NMB_OF_RESULTS">
+        <sql datasourceName="PostgreSQL">
+            <![CDATA[
+SELECT addressid, addressline1, addressline2, city, stateprovinceid, postalcode, modifieddate
+	FROM public.personaddress
+    LIMIT 1
+        ]]>
+        </sql>
+        <!--
+        Supported assertions:
+            - EQ (equal),
+            - NE (not equal),
+            - LT (less than),
+            - LE (less or equal),
+            - GE (greater or equal),
+            - GT (greater than)
+        You can combine multiple assertions at the same time. If you do not specify any assertion, the test will pass --> 
+        <assert type="EQ">1</assert>
+        <assert type="NE">0</assert>
+        <assert type="LT">2</assert>
+        <assert type="LE">1</assert>
+        <assert type="GE">1</assert>
+        <assert type="GT">0</assert>
+    </compare>
+</cmpSqlResultsTest>

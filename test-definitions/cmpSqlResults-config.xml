@@ -1,0 +1,69 @@
+<cmpSqlResultsConfig>
+    <!-- teamcityLogsEnabled can be overridden from command line -->
+    <logger teamcityLogsEnabled="false" logLevel="TRACE" />
+
+    <filter>
+        <!-- categories/directories or test files which you want to run. All tests will be run if
+        you leave it empty. You can use many (or none) include elements. -->
+		<!--<include>fetch_compare_test.inline_sql_MySQL_PostgreSQL</include>
+		<include>compare_with_file</include>
+        <include>delta</include>-->
+
+        <!-- categories/directories or test files which you want to exclude (from those included). You can use many
+        (or none) exclude elements. -->
+        <exclude>cube</exclude>
+    </filter>
+
+    <!-- min:1 max:unchecked (be careful!) -->
+    <threads>5</threads>
+
+    <!-- if any test will fail you can decide what exit code you wish to use. Default is 0 -->
+    <testFailureExitCode>0</testFailureExitCode>
+
+    <datasources>
+        <!-- If number of threads will be greater than maxPollSize, thread will wait for connection. Don't forget it is
+        somehow related! -->
+        <datasource maxPollSize="6">
+            <name>TERADATA_SERVER</name>
+            <driver>com.teradata.jdbc.TeraDriver</driver>
+            <url>jdbc:teradata://${TERADATADBSERVER}/DATABASE=${TERADATADBNAME},charset=UTF8</url>
+            <user>${USERNAME}</user>
+            <password>${PASSWORD}</password>
+        </datasource>
+        <datasource maxPollSize="6">
+            <name>SQL_SERVER</name>
+            <driver>com.microsoft.sqlserver.jdbc.SQLServerDriver</driver>
+            <url>jdbc:sqlserver://${SQL_SERVER}\${SQL_SERVERINSTANCE};databaseName=${SQL_SERVERDBNAME}</url>
+            <user>${USERNAME}</user>
+            <password>${PASSWORD}</password>
+        </datasource>
+        <datasource maxPollSize="6">
+            <name>SQL_SERVER_WIN_AUTH</name>
+            <driver>com.microsoft.sqlserver.jdbc.SQLServerDriver</driver>
+            <!-- to use WIN-AUTH (integratedSecurity=true) you must put sqljdbc_auth.dll file in windows/system32
+            folder. Download it from here: https://www.microsoft.com/en-us/download/details.aspx?displaylang=en&id=11774 -->
+            <url>jdbc:sqlserver://${SQL_SERVER};databaseName=master;integratedSecurity=true</url>
+        </datasource>
+		<datasource maxPollSize="6">
+            <name>MySQL</name>
+            <driver>com.mysql.jdbc.Driver</driver>
+            <url>jdbc:mysql://${MYSQLDBSERVER}:3306/${MYSQLDBNAME}</url>
+            <user>${USERNAME}</user>
+            <password>${PASSWORD}</password>
+		</datasource>
+		<datasource maxPollSize="6">
+            <name>MariaDB</name>
+            <driver>org.mariadb.jdbc.Driver</driver>
+            <url>jdbc:mariadb://${MYSQLDBSERVER}:3306/${MYSQLDBNAME}</url>
+            <user>${USERNAME}</user>
+            <password>${PASSWORD}</password>
+		</datasource>
+		<datasource maxPollSize="6">
+            <name>PostgreSQL</name>
+            <driver>org.postgresql.Driver</driver>
+            <url>jdbc:postgresql://${POSTGRESSSQLDBSERVER}:5432/${POSTGRESSSQLDBNAME}</url>
+            <user>${USERNAME}</user>
+            <password>${PASSWORD}</password>
+		</datasource>
+    </datasources>
+</cmpSqlResultsConfig>

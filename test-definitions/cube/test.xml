@@ -1,0 +1,20 @@
+<cmpSqlResultsTest>
+    <compare mode="FETCH">
+        <sql datasourceName="SQL_SERVER_WIN_AUTH">
+            <![CDATA[
+            SELECT *
+            FROM OPENQUERY(CUBE, 'select {[Date].[CY 2005], [Date].[CY 2006] , [Date].[CY 2007]} on rows,
+[Measures].[Internet Sales Amount] on columns from
+[Adventure Works]');
+            ]]>
+        </sql>
+        <sql datasourceName="SQL_SERVER_WIN_AUTH">
+            <![CDATA[
+            SELECT *
+            FROM OPENQUERY(CUBE, 'select {[Date].[CY 2005], [Date].[CY 2006] , [Date].[CY 2007]} on rows,
+[Measures].[Internet Sales Amount] on columns from
+[Adventure Works]');
+        ]]>
+        </sql>
+    </compare>
+</cmpSqlResultsTest>

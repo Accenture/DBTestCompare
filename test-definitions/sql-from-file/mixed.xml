@@ -1,0 +1,11 @@
+<cmpSqlResultsTest>
+    <compare mode="MINUS" defaultDatasourceName="PostgreSQL" diffTableSize="100">
+        <sql filename="sql1.sql" />
+        <sql>
+            <![CDATA[
+select addressid, addressline1, addressline2, city, stateprovinceid, postalcode, modifieddate
+from public.personaddress
+        ]]>
+        </sql>
+    </compare>
+</cmpSqlResultsTest>
