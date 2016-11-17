@@ -39,7 +39,8 @@ after each tests, but when all tests are finished
 Program searches for tests definitions by default in folder "test-definitions".
 JDBC drivers must be present in "jdbc_drivers" folder.
 Licensed database drivers are NOT included, only open source like MySQL, MariaDB and PostgreSQL. Download licensed database drivers 
-from the producer of database e.g. Microsoft and put them in "jdbc_drivers" folder (on the same level as *.jar file).
+from the producer of database e.g. Microsoft and put them in "jdbc_drivers" folder (on the same level as *.jar file). 
+More details [here](https://github.com/ObjectivityBSS/DBTestCompare/wiki/Deploying-licensed-jdbc-drivers-(not-open-source))
 
 You can override some of the application configuration properties, run app with:
 
@@ -56,6 +57,7 @@ for example:
 ```
 java -DtestsDir=my_tests -jar DBTestCompare-1.0-SNAPSHOT-jar-with-dependencies.jar
 ```
+More details [here](https://github.com/ObjectivityBSS/DBTestCompare/wiki/Filtering-tests-for-execution-by-including-or-excluding)
 
 3'rd party libraries:
 Software:
@@ -63,12 +65,13 @@ Software:
 - Apache Log4j
 - com.sun.xml.bind :: JAXB Runtime
 - com.mchange :: c3p0 - a JDBC Connection pooling / Statement caching library
+More details [here](https://github.com/ObjectivityBSS/DBTestCompare/blob/master/LICENSE-3RD-PARTY)
 
 #### Where to start?
 -------------
-- See [Getting started](https://github.com/ObjectivityBSS/Link).
+- See [Getting started](https://github.com/ObjectivityBSS/DBTestCompare/wiki/Getting-started).
 
-Checkout the code or get compiled jar file from [releases page](https://github.com/ObjectivityBSS/Link)
+Checkout the code or get compiled jar file from [releases page](https://github.com/ObjectivityBSS/DBTestCompare/releases)
 
 To compile app to runnable fat jar file, run (Maven must be installed first):
 ```
@@ -84,4 +87,4 @@ You can manage application by attached ANT (ANT must be installed first) build.x
 
 -replace tokens in SQL queries
 
-more details [here](https://github.com/ObjectivityBSS/Link)
+more details [here](https://github.com/ObjectivityBSS/DBTestCompare/wiki/Compiling,-replacing-tokens-in-connection-definition-,-replacing-tokens-in-SQL-queries)
