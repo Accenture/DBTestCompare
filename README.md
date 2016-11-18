@@ -2,8 +2,8 @@
 
 **Application to compare results of two SQL queries** 
 
-It reads tests definitions in XML format form specified directory and than runs them (as TestNG test). 
-If two SQL returns different results -> test fails. 
+It reads tests definitions in XML format from specified directory and than runs them (as TestNG test). 
+If two SQL return different results -> test fails. 
 Application supports TeamCity Service Messages (##teamcity messages) so if teamcityLogsEnabled is set to "true" (config file or command line parameter), you will see nice test tree in TeamCity logs.
 
 To execute tests run program (Java 8 must be installed first (JDK or JRE)):
@@ -37,7 +37,7 @@ after each tests, but when all tests are finished
 - Possibility to compare query to **expected number of rows** defined in XML test definition
 - Possibility to **choose exit code** in case  of test failure
 - Possibility to **connect to OLAP - compare mdx queries**
-- Possibility to defined **"delta"** precision of comparing floating point numbers
+- Possibility to define **"delta"** precision of comparing floating point numbers
 - Possibility to **filter tests** for execution by including or excluding
 - Standard **TestNG html test report** in "test-output" folder
 
