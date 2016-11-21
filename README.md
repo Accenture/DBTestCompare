@@ -74,6 +74,7 @@ Software:
 - Apache Log4j
 - com.sun.xml.bind :: JAXB Runtime
 - com.mchange :: c3p0 - a JDBC Connection pooling / Statement caching library
+
 More details [here](https://github.com/ObjectivityBSS/DBTestCompare/blob/master/LICENSE-3RD-PARTY)
 
 #### Where to start?
