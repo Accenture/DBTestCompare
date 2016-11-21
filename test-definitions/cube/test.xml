@@ -1,5 +1,5 @@
 <cmpSqlResultsTest>
-    <compare mode="FETCH">
+    <compare mode="FETCH" fileOutputOn="true">
         <sql datasourceName="SQL_SERVER_WIN_AUTH">
             <![CDATA[
             SELECT *
