@@ -2,9 +2,11 @@
 
 **Application to compare results of two SQL queries** 
 
-It reads tests definitions in XML format from specified directory and than runs them (as TestNG test). 
-If two SQL return different results -> test fails. 
-Application supports TeamCity Service Messages (##teamcity messages) so if teamcityLogsEnabled is set to "true" (config file or command line parameter), you will see nice test tree in TeamCity logs.
+It reads tests definitions in XML format form [specified directory](https://github.com/ObjectivityBSS/DBTestCompare/tree/master/test-definitions) and than runs them (as TestNG test). 
+
+If two SQL returns different results -> test fails. 
+
+Application [supports TeamCity](https://github.com/ObjectivityBSS/DBTestCompare/wiki/Real-time-test-execution-progress-in-TeamCity) Service Messages ([##teamcity messages](https://confluence.jetbrains.com/display/TCD8/Build+Script+Interaction+with+TeamCity)) so if teamcityLogsEnabled is set to "true" (config file or command line parameter), you will see nice test tree in TeamCity logs.
 
 To execute tests run program (Java 8 must be installed first (JDK or JRE)):
 
@@ -23,23 +25,23 @@ Application provides following features:
 - Supports **all databases with JDBC drivers provided** (tested with Microsoft SQL Server, Teradata, PostgreSQL and MySQL\MariaDB)
 - Supports **all Continuous Integration tools** thanks to TestNG Java unit test framework
 - Possibility to compare data between **two different database engines** even for huge data sets 
-without "Out of memory problem" thanks to incremental solution
-- Possibility to compare data in **one database engine in the fastest way** using MINUS/EXCEPT Sql operator
+without "Out of memory problem" thanks to incremental solution, more details [here](https://github.com/ObjectivityBSS/DBTestCompare/wiki/Fetch)
+- Possibility to compare data in **one database engine in the fastest way** using MINUS/EXCEPT Sql operator, more details [here](https://github.com/ObjectivityBSS/DBTestCompare/wiki/Minus)
 - **No need to compile program** in order to add new tests - thanks to Test Adapter DataDriven mechanism from TestNG 
 - Possibility to **execute test in parallel** by setting Threads parameter in connection file.
 - Possibility to build **multilevel tests structure**
 - Possibility to **save query results to flat files**
-- Real time test execution progress in **TeamCity**
-- Possibility to store Queries in **separated files or inline** in xml test definitions
+- Real time test execution progress in **TeamCity**, more details [here](https://github.com/ObjectivityBSS/DBTestCompare/wiki/Real-time-test-execution-progress-in-TeamCity)
+- Possibility to store Queries in **separated files or inline** in xml test definitions, more details [here](https://github.com/ObjectivityBSS/DBTestCompare/wiki/Storing-queries-in-separated-files-or-inline-in-xml-test-definitions)
 - **Connection pool** used for executing tests - connections to databases are not closed 
 after each tests, but when all tests are finished
-- Possibility to compare query to **expected data defined in csv file**
-- Possibility to compare query to **expected number of rows** defined in XML test definition
+- Possibility to compare query to **expected data defined in csv file**, more details [here](https://github.com/ObjectivityBSS/DBTestCompare/wiki/FILE)
+- Possibility to compare query to **expected number of rows** defined in XML test definition, more details [here](https://github.com/ObjectivityBSS/DBTestCompare/wiki/NMB_OF_RESULTS)
 - Possibility to **choose exit code** in case  of test failure
-- Possibility to **connect to OLAP - compare mdx queries**
+- Possibility to **connect to OLAP - compare mdx queries**, more details [here](https://github.com/ObjectivityBSS/DBTestCompare/wiki/OLAP)
 - Possibility to define **"delta"** precision of comparing floating point numbers
-- Possibility to **filter tests** for execution by including or excluding
-- Standard **TestNG html test report** in "test-output" folder
+- Possibility to **filter tests** for execution by including or excluding, more details [here](https://github.com/ObjectivityBSS/DBTestCompare/wiki/Filtering-tests-for-execution-by-including-or-excluding)
+- Standard **TestNG html test report** in "test-output" folder, more details [here](https://github.com/ObjectivityBSS/DBTestCompare/wiki/Test-results---TestNG-html-report-in-%22test-output%22-folder)
 
 Program searches for tests definitions by default in folder "test-definitions".
 
@@ -64,7 +66,7 @@ for example:
 ```
 java -DtestsDir=my_tests -jar DBTestCompare-1.0-SNAPSHOT-jar-with-dependencies.jar
 ```
-More details [here](https://github.com/ObjectivityBSS/DBTestCompare/wiki/Filtering-tests-for-execution-by-including-or-excluding)
+More details [here](https://github.com/ObjectivityBSS/DBTestCompare/wiki/Command-line-parameters)
 
 3'rd party libraries:
 Software:
