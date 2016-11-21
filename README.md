@@ -80,11 +80,15 @@ More details [here](https://github.com/ObjectivityBSS/DBTestCompare/blob/master/
 
 Checkout the code or get compiled jar file from [releases page](https://github.com/ObjectivityBSS/DBTestCompare/releases)
 
+-------------
+
 To compile app to runnable fat jar file, run (Maven must be installed first):
 ```
 mvn clean compile assembly:single
 ```
 jar will be created in target directory.
+
+-------------
 
 You can manage application by attached ANT (ANT must be installed first) build.xml file (in folder \deploy), script allows to :
 
