@@ -1,5 +1,7 @@
 ## DBTestCompare
 
+<img src="images/DBTestCompare.png" width="200">
+
 **Application to compare results of two SQL queries** 
 
 It reads tests definitions in XML format form [specified directory](https://github.com/ObjectivityBSS/DBTestCompare/tree/master/test-definitions) and than runs them (as TestNG test). 
