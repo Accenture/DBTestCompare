@@ -1,6 +1,4 @@
-## DBTestCompare
-
-<img src="images/DBTestCompare.png" width="200">
+<img src="images/DBTestCompare.png" alt="DBTestCompare" width="200">
 
 **Application to compare results of two SQL queries** 
 
