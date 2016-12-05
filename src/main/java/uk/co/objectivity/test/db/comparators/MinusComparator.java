@@ -22,6 +22,7 @@
 
 package uk.co.objectivity.test.db.comparators;
 
+import java.io.File;
 import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -78,6 +79,8 @@ public class MinusComparator extends Comparator {
         Compare compare = testParams.getCmpSqlResultsTest().getCompare();
         PreparedStatement stmt = null;
         PrintWriter minusPWriter = null;
+        int rowCount = 0;
+        File diffFileName = getNewFileBasedOnTestConfigFile(testParams.getTestConfigFile(), "_minus.csv");
         try {
             boolean countOnly = compare.getDiffTableSize() <= 0;
 
@@ -86,14 +89,13 @@ public class MinusComparator extends Comparator {
             stmt = conn.prepareStatement(executedQuery, ResultSet.TYPE_SCROLL_INSENSITIVE,
                     ResultSet.CONCUR_READ_ONLY);
             ResultSet rs = stmt.executeQuery();
-            executedQuery  = "Datasource: " + dataSrcName + "\r\n" + executedQuery +
+            executedQuery = "Datasource: " + dataSrcName + "\r\n" + executedQuery +
                     "\r\nDifftable size: " + compare.getDiffTableSize();
             if (countOnly) {
                 rs.next();
                 return new TestResults(executedQuery, rs.getInt(1));
             }
 
-            int rowCount = 0;
             if (rs.last()) {
                 rowCount = rs.getRow();
                 rs.beforeFirst(); // not rs.first() because the rs.next() below will move on, missing the first element
@@ -105,8 +107,7 @@ public class MinusComparator extends Comparator {
             }
 
             if (compare.isFileOutputOn()) {
-                minusPWriter = new PrintWriter(
-                        getNewFileBasedOnTestConfigFile(testParams.getTestConfigFile(), "_minus.csv"));
+                minusPWriter = new PrintWriter(diffFileName);
             }
 
             // building columns
@@ -152,6 +153,8 @@ public class MinusComparator extends Comparator {
                 }
             if (minusPWriter != null)
                 minusPWriter.close();
+            if (rowCount == 0 && compare.isFileOutputOn())
+                diffFileName.delete();
         }
     }
 

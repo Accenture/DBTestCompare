@@ -22,6 +22,7 @@
 
 package uk.co.objectivity.test.db.comparators;
 
+import java.io.File;
 import java.io.PrintWriter;
 import java.math.BigDecimal;
 import java.sql.Connection;
@@ -88,6 +89,8 @@ public class FetchComparator extends Comparator {
         PrintWriter diffPWriter = null;
         PrintWriter src1PWriter = null;
         PrintWriter src2PWriter = null;
+        int diffCounter = 0;
+        File diffFileName = getNewFileBasedOnTestConfigFile(testParams.getTestConfigFile(), "_diff.csv");
         try {
             Sql sql1 = compare.getSqls().get(0);
             Sql sql2 = compare.getSqls().get(1);
@@ -111,11 +114,11 @@ public class FetchComparator extends Comparator {
 
             String executedQuery = "QUERY 1 [" + sql1.getDatasourceName() + "]:\r\n" + sql1.getSql() + "\r\n\r\nQUERY" +
                     " 2 [" + sql2.getDatasourceName() + "]:\r\n" + sql2.getSql();
-            executedQuery+="\r\n\r\nFetch size: " +compare.getFetchSize()+
-            ", Chunk size: " +compare.getChunk()+
-                    ", Difftable size: " +compare.getDiffTableSize()+
-                    ", Delta : " +compare.getDelta()+
-                    ", File output: " +compare.isFileOutputOn()+"\r\n";
+            executedQuery += "\r\n\r\nFetch size: " + compare.getFetchSize() +
+                    ", Chunk size: " + compare.getChunk() +
+                    ", Difftable size: " + compare.getDiffTableSize() +
+                    ", Delta : " + compare.getDelta() +
+                    ", File output: " + compare.isFileOutputOn() + "\r\n";
             TestResults testResults = new TestResults(executedQuery, -1);
 
             // building columns
@@ -129,8 +132,7 @@ public class FetchComparator extends Comparator {
             // names of columns might be different in second table (maybe log them too?)
 
             if (compare.isFileOutputOn()) {
-                diffPWriter = new PrintWriter(
-                        getNewFileBasedOnTestConfigFile(testParams.getTestConfigFile(), "_diff.csv"));
+                diffPWriter = new PrintWriter(diffFileName);
                 src1PWriter = new PrintWriter(
                         getNewFileBasedOnTestConfigFile(testParams.getTestConfigFile(), "_sql1.csv"));
                 src2PWriter = new PrintWriter(
@@ -138,7 +140,6 @@ public class FetchComparator extends Comparator {
             }
             List<List<String>> rows = new ArrayList<>();
             int chunk = compare.getChunk();
-            int diffCounter = 0;
             int rowNmb = 0;
             boolean rs1NotEmpty = result1.next(), rs2NotEmpty = result2.next();
             while (rs1NotEmpty || rs2NotEmpty) {
@@ -197,6 +198,8 @@ public class FetchComparator extends Comparator {
                 }
             if (diffPWriter != null)
                 diffPWriter.close();
+            if (diffCounter == 0 && compare.isFileOutputOn())
+                diffFileName.delete();
             if (src1PWriter != null)
                 src1PWriter.close();
             if (src2PWriter != null)

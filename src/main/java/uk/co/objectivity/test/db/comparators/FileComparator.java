@@ -90,6 +90,8 @@ public class FileComparator extends Comparator {
         PrintWriter diffPWriter = null;
         PrintWriter src1PWriter = null;
         BufferedReader bufferedReader = null;
+        int diffCounter = 0;
+        File diffFileName = getNewFileBasedOnTestConfigFile(testParams.getTestConfigFile(), "_diff.csv");
         try {
             Sql sql = compare.getSqls().get(0);
             stmt = conn.prepareStatement(sql.getSql(), ResultSet.TYPE_SCROLL_INSENSITIVE,
@@ -108,17 +110,16 @@ public class FileComparator extends Comparator {
             }
 
             if (compare.isFileOutputOn()) {
-                diffPWriter = new PrintWriter(
-                        getNewFileBasedOnTestConfigFile(testParams.getTestConfigFile(), "_diff.csv"));
+                diffPWriter = new PrintWriter(diffFileName);
                 src1PWriter = new PrintWriter(
                         getNewFileBasedOnTestConfigFile(testParams.getTestConfigFile(), "_sql1.csv"));
             }
 
             String executedQuery = "QUERY 1 [" + sql.getDatasourceName() + "]:\r\n" + sql.getSql() + "\r\n\r\nFile" +
                     " [" + file.getAbsolutePath() + "]\r\n";
-            executedQuery+="\r\n\r\nChunk size: " +compare.getChunk()+
-                    ", Difftable size: " +compare.getDiffTableSize()+
-                    ", File output: " +compare.isFileOutputOn()+"\r\n";
+            executedQuery += "\r\n\r\nChunk size: " + compare.getChunk() +
+                    ", Difftable size: " + compare.getDiffTableSize() +
+                    ", File output: " + compare.isFileOutputOn() + "\r\n";
             TestResults testResults = new TestResults(executedQuery, -1);
 
             // building columns
@@ -133,7 +134,6 @@ public class FileComparator extends Comparator {
             // building rows
             List<List<String>> rows = new ArrayList<>();
             int chunk = compare.getChunk();
-            int diffCounter = 0;
             int rowNmb = 0;
             boolean rsNotEmpty = rs.next();
             boolean fileNotEmpty = csvRow != null;
@@ -188,6 +188,8 @@ public class FileComparator extends Comparator {
                 }
             if (diffPWriter != null)
                 diffPWriter.close();
+            if (diffCounter == 0 && compare.isFileOutputOn())
+                diffFileName.delete();
             if (src1PWriter != null)
                 src1PWriter.close();
             if (bufferedReader != null)
