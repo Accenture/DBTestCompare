@@ -86,7 +86,9 @@ public class DBTestCompare implements ITest {
             if (compare.getCompareMode() == CompareMode.NMB_OF_RESULTS) {
                 List<uk.co.objectivity.test.db.beans.xml.Assert> assertList = compare.getAssertions();
                 if (assertList != null) {
+                    logInfo2All("Rows count:" + testResults.getNmbOfRows(),tcMsgs);
                     TestResults effFinalTR = testResults;
+                    assertList.forEach(a -> logInfo2All(a.getAssertType().name() + " " + a.getValue(), tcMsgs));
                     assertList.forEach(a -> a.getAssertType().assertByType(effFinalTR.getNmbOfRows(), a.getValue()));
                 }
             } else {
