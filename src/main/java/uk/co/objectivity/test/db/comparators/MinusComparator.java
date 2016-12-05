@@ -90,7 +90,8 @@ public class MinusComparator extends Comparator {
                     ResultSet.CONCUR_READ_ONLY);
             ResultSet rs = stmt.executeQuery();
             executedQuery = "Datasource: " + dataSrcName + "\r\n" + executedQuery +
-                    "\r\nDifftable size: " + compare.getDiffTableSize();
+                    "\r\nDifftable size: " + compare.getDiffTableSize() +
+                    ", File output: " + compare.isFileOutputOn() + "\r\n";
             if (countOnly) {
                 rs.next();
                 return new TestResults(executedQuery, rs.getInt(1));
