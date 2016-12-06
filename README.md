@@ -101,4 +101,4 @@ You can manage application by attached ANT (ANT must be installed first) build.x
 
 -replace tokens in SQL queries
 
-more details [here](https://github.com/ObjectivityBSS/DBTestCompare/wiki/Compiling,-replacing-tokens-in-connection-definition-,-replacing-tokens-in-SQL-queries)
+more details [here](https://github.com/ObjectivityBSS/DBTestCompare/wiki/Compiling,-replacing-tokens-in-connection-definition) and  [here](https://github.com/ObjectivityBSS/DBTestCompare/wiki/Replacing-tokens-in-SQL-queries)
