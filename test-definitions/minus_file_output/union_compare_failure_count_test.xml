@@ -1,0 +1,37 @@
+<cmpSqlResultsTest>
+    <!-- diffTableSize="0"  nie generuje tabeli z wynikami (jest szybsze) -->
+    <compare mode="MINUS" defaultDatasourceName="SQL_SERVER" diffTableSize="0" >
+        <sql>
+            <![CDATA[
+SELECT SalesOrderID
+      ,SalesOrderDetailID
+      ,CarrierTrackingNumber
+      ,OrderQty
+      ,ProductID
+      ,SpecialOfferID
+      ,UnitPrice
+      ,UnitPriceDiscount
+      ,LineTotal
+      ,rowguid
+      ,ModifiedDate
+  FROM AdventureWorks2008R2.Sales.SalesOrderDetail
+        ]]>
+        </sql>
+        <sql>
+            <![CDATA[
+SELECT SalesOrderID
+      ,SalesOrderDetailID
+      ,CarrierTrackingNumber
+      ,OrderQty
+      ,ProductID
+      ,SpecialOfferID
+      ,UnitPrice
+      ,UnitPriceDiscount
+      ,LineTotal
+      ,rowguid
+      ,ModifiedDate
+  FROM AdventureWorks2008R2.Sales.SalesOrderDetail
+        ]]>
+        </sql>
+    </compare>
+</cmpSqlResultsTest>

@@ -1,0 +1,12 @@
+<cmpSqlResultsTest>
+    <compare mode="MINUS" defaultDatasourceName="PostgreSQL" diffTableSize="10">
+        <!-- test will fail - you can pass sql in file or body - NOT both -->
+        <sql filename="sql1.sql">
+        <![CDATA[
+select addressid, addressline1, addressline2, city, stateprovinceid, postalcode, modifieddate
+from public.personaddress
+        ]]>
+        </sql>
+        <sql filename="sql2.sql" />
+    </compare>
+</cmpSqlResultsTest>

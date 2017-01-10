@@ -1,0 +1,28 @@
+<cmpSqlResultsTest>
+    <compare mode="MINUS" defaultDatasourceName="SQL_SERVER" diffTableSize="5">
+        <sql>
+         <![CDATA[
+SELECT [AddressID]
+      ,[AddressLine1]
+      ,[AddressLine2]
+      ,[City]
+      ,[StateProvinceID]
+      ,[PostalCode]
+      ,[ModifiedDate]
+  FROM [AdventureWorks2008R2].[Person].[Address]
+        ]]>
+        </sql>
+        <sql>
+        <![CDATA[
+SELECT [AddressID]
+      ,[AddressLine1]
+      ,[AddressLine2]
+      ,[City]
+      ,[StateProvinceID]
+      ,[PostalCode]
+      ,[ModifiedDate]
+  FROM [AdventureWorks2008R2].[Person].[Address]
+        ]]>
+        </sql>
+    </compare>
+</cmpSqlResultsTest>

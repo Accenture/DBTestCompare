@@ -1,0 +1,6 @@
+<cmpSqlResultsTest>
+    <compare mode="MINUS" defaultDatasourceName="PostgreSQL" diffTableSize="10">
+        <sql filename="sql1.sql" />
+        <sql filename="sql2.sql" />
+    </compare>
+</cmpSqlResultsTest>

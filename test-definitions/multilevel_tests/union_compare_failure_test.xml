@@ -1,0 +1,17 @@
+<cmpSqlResultsTest>
+    <!-- diffTableSize="0"  nie generuje tabeli z wynikami (jest szybsze) -->
+    <compare mode="MINUS" defaultDatasourceName="PostgreSQL" diffTableSize="50" fileOutputOn="true" chunk="0">
+        <sql>
+            <![CDATA[
+SELECT addressid, addressline1, addressline2, city, stateprovinceid, postalcode, modifieddate
+	FROM public.personaddress
+        ]]>
+        </sql>
+        <sql>
+            <![CDATA[
+SELECT addressid, addressline1, addressline2, city, stateprovinceid, postalcode, modifieddate
+	FROM public.personaddress
+        ]]>
+        </sql>
+    </compare>
+</cmpSqlResultsTest>
