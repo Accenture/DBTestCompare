@@ -1,6 +1,6 @@
 <cmpSqlResultsConfig>
     <!-- teamcityLogsEnabled can be overridden from command line -->
-    <logger teamcityLogsEnabled="false" logLevel="TRACE" />
+    <logger teamcityLogsEnabled="false" logLevel="INFO" />
 
     <filter>
         <!-- categories/directories or test files which you want to run. All tests will be run if
