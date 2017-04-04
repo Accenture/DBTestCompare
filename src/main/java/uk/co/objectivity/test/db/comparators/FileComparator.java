@@ -77,7 +77,7 @@ public class FileComparator extends Comparator {
             connection = DataSource.getConnection(datasource.getName());
             return getTestResults(testParams, connection, file);
         } catch (Exception e) {
-            throw e;
+            throw new Exception(e+"\nQuery 1: " + sql.getSql());
         } finally {
             DataSource.closeConnection(connection);
         }

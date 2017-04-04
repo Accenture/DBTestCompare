@@ -69,7 +69,7 @@ public class MinusComparator extends Comparator {
             connection = DataSource.getConnection(datasource.getName());
             return getTestResults(connection, query, testParams, dataSrcName);
         } catch (Exception e) {
-            throw e;
+            throw new Exception(e+"\nMinus Query : " + query);
         } finally {
             DataSource.closeConnection(connection);
         }

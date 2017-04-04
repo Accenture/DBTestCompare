@@ -75,7 +75,7 @@ public class FetchComparator extends Comparator {
             connection2 = DataSource.getConnection(datasource2.getName());
             return getTestResults(connection1, connection2, testParams);
         } catch (Exception e) {
-            throw e;
+            throw new Exception(e+"\nQuery 1: " + sql1.getSql()+"\nQuery 2: " + sql2.getSql());
         } finally {
             DataSource.closeConnection(connection1);
             DataSource.closeConnection(connection2);

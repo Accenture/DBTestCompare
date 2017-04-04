@@ -61,7 +61,7 @@ public class NmbOfResultsComparator extends Comparator {
             connection = DataSource.getConnection(datasource.getName());
             return getTestResults(connection, query, sql1.getDatasourceName());
         } catch (Exception e) {
-            throw e;
+            throw  new Exception(e+"\nAssert Query : " + query);
         } finally {
             DataSource.closeConnection(connection);
         }
