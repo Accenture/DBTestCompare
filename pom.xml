@@ -34,7 +34,7 @@
                         </manifest>
                         <manifestEntries>
                             <!-- TODO all drivers from directory -->
-                            <Class-Path>jdbc_drivers/sqljdbc4.jar jdbc_drivers/tdgssconfig-4.jar
+                            <Class-Path>jdbc_drivers/sqljdbc42.jar jdbc_drivers/sqljdbc41.jar jdbc_drivers/sqljdbc4.jar jdbc_drivers/tdgssconfig-4.jar
                                 jdbc_drivers/terajdbc-4.jar jdbc_drivers/mysql-connector-java-5.1.40-bin.jar
                                 jdbc_drivers/postgresql-9.4.1211.jar jdbc_drivers/mariadb-java-client-1.5.4.jar</Class-Path>
                         </manifestEntries>
