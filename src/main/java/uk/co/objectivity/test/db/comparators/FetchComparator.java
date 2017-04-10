@@ -35,6 +35,7 @@ import java.util.List;
 import org.apache.log4j.Logger;
 import org.testng.TestException;
 
+import uk.co.objectivity.test.db.DBTestCompare;
 import uk.co.objectivity.test.db.beans.TestParams;
 import uk.co.objectivity.test.db.beans.TestResults;
 import uk.co.objectivity.test.db.beans.xml.CmpSqlResultsConfig;
@@ -43,6 +44,9 @@ import uk.co.objectivity.test.db.beans.xml.Compare;
 import uk.co.objectivity.test.db.beans.xml.Datasource;
 import uk.co.objectivity.test.db.beans.xml.Sql;
 import uk.co.objectivity.test.db.utils.DataSource;
+import uk.co.objectivity.test.db.utils.TCMessages;
+
+import static uk.co.objectivity.test.db.DBTestCompare.logInfo2All;
 
 public class FetchComparator extends Comparator {
 
@@ -132,11 +136,18 @@ public class FetchComparator extends Comparator {
             // names of columns might be different in second table (maybe log them too?)
 
             if (compare.isFileOutputOn()) {
+
                 diffPWriter = new PrintWriter(diffFileName);
-                src1PWriter = new PrintWriter(
-                        getNewFileBasedOnTestConfigFile(testParams.getTestConfigFile(), "_sql1.csv"));
-                src2PWriter = new PrintWriter(
-                        getNewFileBasedOnTestConfigFile(testParams.getTestConfigFile(), "_sql2.csv"));
+                File src1File=
+                        getNewFileBasedOnTestConfigFile(testParams.getTestConfigFile(), "_sql1.csv");
+                File src2File=
+                        getNewFileBasedOnTestConfigFile(testParams.getTestConfigFile(), "_sql2.csv");
+                TCMessages tcMsgs = new TCMessages("Saving csv file:" +src1File , true);
+                logInfo2All("Saving csv file:" +src1File, tcMsgs);
+                src1PWriter = new PrintWriter(src1File);
+                tcMsgs = new TCMessages("Saving csv file:" +src2File , true);
+                logInfo2All("Saving csv file:" +src2File, tcMsgs);
+                src2PWriter = new PrintWriter(src2File);
             }
             List<List<String>> rows = new ArrayList<>();
             int chunk = compare.getChunk();
@@ -196,6 +207,10 @@ public class FetchComparator extends Comparator {
                 } catch (SQLException e) {
                     log.error(e);
                 }
+            if(compare.isFileOutputOn() && diffCounter != 0){
+                TCMessages tcMsgs = new TCMessages("Saving csv file:" +diffFileName , true);
+                logInfo2All("Saving csv file:" +diffFileName, tcMsgs);
+            }
             if (diffPWriter != null)
                 diffPWriter.close();
             if (diffCounter == 0 && compare.isFileOutputOn())

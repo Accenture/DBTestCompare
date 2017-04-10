@@ -45,6 +45,9 @@ import uk.co.objectivity.test.db.beans.xml.Compare;
 import uk.co.objectivity.test.db.beans.xml.Datasource;
 import uk.co.objectivity.test.db.beans.xml.Sql;
 import uk.co.objectivity.test.db.utils.DataSource;
+import uk.co.objectivity.test.db.utils.TCMessages;
+
+import static uk.co.objectivity.test.db.DBTestCompare.logInfo2All;
 
 public class FileComparator extends Comparator {
 
@@ -111,8 +114,13 @@ public class FileComparator extends Comparator {
 
             if (compare.isFileOutputOn()) {
                 diffPWriter = new PrintWriter(diffFileName);
-                src1PWriter = new PrintWriter(
-                        getNewFileBasedOnTestConfigFile(testParams.getTestConfigFile(), "_sql1.csv"));
+                TCMessages tcMsgs = new TCMessages("Saving csv file:" +diffFileName , true);
+                logInfo2All("Saving csv file:" +diffFileName, tcMsgs);
+                File src1File=
+                        getNewFileBasedOnTestConfigFile(testParams.getTestConfigFile(), "_sql1.csv");
+                tcMsgs = new TCMessages("Saving csv file:" +src1File , true);
+                logInfo2All("Saving csv file:" +src1File, tcMsgs);
+                src1PWriter = new PrintWriter(src1File);
             }
 
             String executedQuery = "QUERY 1 [" + sql.getDatasourceName() + "]:\r\n" + sql.getSql() + "\r\n\r\nFile" +

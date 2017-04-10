@@ -125,7 +125,7 @@ public class DBTestCompare implements ITest {
 
     }
 
-    private void logInfo2All(String message, TCMessages tcMsgs) {
+    public static void logInfo2All(String message, TCMessages tcMsgs) {
         tcMsgs.appendStdOut(message);
         Printer.addReporterLog(message);
         log.info(message);
