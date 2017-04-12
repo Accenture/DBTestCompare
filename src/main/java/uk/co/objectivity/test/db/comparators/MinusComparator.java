@@ -41,9 +41,6 @@ import uk.co.objectivity.test.db.beans.xml.CmpSqlResultsTest;
 import uk.co.objectivity.test.db.beans.xml.Compare;
 import uk.co.objectivity.test.db.beans.xml.Datasource;
 import uk.co.objectivity.test.db.utils.DataSource;
-import uk.co.objectivity.test.db.utils.TCMessages;
-
-import static uk.co.objectivity.test.db.DBTestCompare.logInfo2All;
 
 
 public class MinusComparator extends Comparator {
@@ -155,10 +152,6 @@ public class MinusComparator extends Comparator {
                 } catch (SQLException e) {
                     log.error(e);
                 }
-            if(compare.isFileOutputOn() && rowCount != 0){
-                TCMessages tcMsgs = new TCMessages("Saving csv file:" +diffFileName , true);
-                logInfo2All("Saving csv file:" +diffFileName, tcMsgs);
-            }
             if (minusPWriter != null)
                 minusPWriter.close();
             if (rowCount == 0 && compare.isFileOutputOn())
