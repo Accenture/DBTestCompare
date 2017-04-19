@@ -62,7 +62,7 @@ public class MinusComparator extends Comparator {
         // (get(0)/get(1) - IndexOutOfBoundsException) checked in TestDataProvider, but still - schema would be nice!
         String sql1 = cmpSqlResultsTest.getCompare().getSqls().get(0).getSql();
         String sql2 = cmpSqlResultsTest.getCompare().getSqls().get(1).getSql();
-        String query = getMinusQuery(datasource, sql1, sql2);
+        String query = getMinusQuery(datasource, sql1, sql2, testParams);
 
         Connection connection = null;
         try {
@@ -91,6 +91,7 @@ public class MinusComparator extends Comparator {
             ResultSet rs = stmt.executeQuery();
             executedQuery = "Datasource: " + dataSrcName + "\r\n" + executedQuery +
                     "\r\nDifftable size: " + compare.getDiffTableSize() +
+                    " ,Minus Query Indicator: " + compare.isMinusQueryIndicatorOn() +
                     ", File output: " + compare.isFileOutputOn() + "\r\n";
             if (countOnly) {
                 rs.next();
@@ -159,18 +160,28 @@ public class MinusComparator extends Comparator {
         }
     }
 
-    private String getMinusQuery(Datasource datasource, String sql1, String sql2) {
+    private String getMinusQuery(Datasource datasource, String sql1, String sql2,  TestParams testParams) {
         String sqlMinus = " MINUS ";
+        Compare compare = testParams.getCmpSqlResultsTest().getCompare();
         // TODO check if other than SQLServerDriver databases has somethings else (instead of MINUS)
         if (datasource.getDriver().contains("SQLServerDriver") || datasource.getDriver().contains("postgresql")) {
             sqlMinus = " EXCEPT ";
         }
         StringBuffer sqlStrBuff = new StringBuffer("(");
-        sqlStrBuff.append(sql1).append(sqlMinus).append(sql2);
+        if(compare.isMinusQueryIndicatorOn()){
+            sqlStrBuff.append(sql1.replaceAll("\\W(?i:F)(?i:R)(?i:O)(?i:M)\\W",",'query1' \n FROM ")).append(sqlMinus).append(sql2.replaceAll("\\W(?i:F)(?i:R)(?i:O)(?i:M)\\W",",'query1' \n FROM "));
+        } else {
+            sqlStrBuff.append(sql1).append(sqlMinus).append(sql2);
+        }
+
         sqlStrBuff.append(")");
         sqlStrBuff.append(" UNION ");
         sqlStrBuff.append("(");
-        sqlStrBuff.append(sql2).append(sqlMinus).append(sql1);
+        if(compare.isMinusQueryIndicatorOn()) {
+            sqlStrBuff.append(sql2.replaceAll("\\W(?i:F)(?i:R)(?i:O)(?i:M)\\W", ",'query2' \n FROM ")).append(sqlMinus).append(sql1.replaceAll("\\W(?i:F)(?i:R)(?i:O)(?i:M)\\W", ",'query2' \n FROM "));
+        } else {
+            sqlStrBuff.append(sql2).append(sqlMinus).append(sql1);
+        }
         sqlStrBuff.append(")");
         return sqlStrBuff.toString();
 
