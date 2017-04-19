@@ -1,5 +1,5 @@
 <cmpSqlResultsTest>
-    <compare mode="MINUS" defaultDatasourceName="SQL_SERVER" diffTableSize="5">
+    <compare mode="MINUS" defaultDatasourceName="SQL_SERVER" diffTableSize="5" minusQueryIndicatorOn="true">
         <sql>
          <![CDATA[
 SELECT [AddressID]
