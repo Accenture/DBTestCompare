@@ -169,7 +169,7 @@ public class MinusComparator extends Comparator {
         }
         StringBuffer sqlStrBuff = new StringBuffer("(");
         if(compare.isMinusQueryIndicatorOn()){
-            sqlStrBuff.append(sql1.replaceAll("\\W(?i:F)(?i:R)(?i:O)(?i:M)\\W",",'query1' \n FROM ")).append(sqlMinus).append(sql2.replaceAll("\\W(?i:F)(?i:R)(?i:O)(?i:M)\\W",",'query1' \n FROM "));
+            sqlStrBuff.append(sql1.replaceFirst("\\W(?i:F)(?i:R)(?i:O)(?i:M)\\W",",'query1' \n FROM ")).append(sqlMinus).append(sql2.replaceFirst("\\W(?i:F)(?i:R)(?i:O)(?i:M)\\W",",'query1' \n FROM "));
         } else {
             sqlStrBuff.append(sql1).append(sqlMinus).append(sql2);
         }
@@ -178,7 +178,7 @@ public class MinusComparator extends Comparator {
         sqlStrBuff.append(" UNION ");
         sqlStrBuff.append("(");
         if(compare.isMinusQueryIndicatorOn()) {
-            sqlStrBuff.append(sql2.replaceAll("\\W(?i:F)(?i:R)(?i:O)(?i:M)\\W", ",'query2' \n FROM ")).append(sqlMinus).append(sql1.replaceAll("\\W(?i:F)(?i:R)(?i:O)(?i:M)\\W", ",'query2' \n FROM "));
+            sqlStrBuff.append(sql2.replaceFirst("\\W(?i:F)(?i:R)(?i:O)(?i:M)\\W", ",'query2' \n FROM ")).append(sqlMinus).append(sql1.replaceFirst("\\W(?i:F)(?i:R)(?i:O)(?i:M)\\W", ",'query2' \n FROM "));
         } else {
             sqlStrBuff.append(sql2).append(sqlMinus).append(sql1);
         }
