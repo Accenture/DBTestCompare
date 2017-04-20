@@ -168,8 +168,11 @@ public class MinusComparator extends Comparator {
             sqlMinus = " EXCEPT ";
         }
         StringBuffer sqlStrBuff = new StringBuffer("(");
+        String regExp ="\\W(?i:F)(?i:R)(?i:O)(?i:M)\\W";
+
         if(compare.isMinusQueryIndicatorOn()){
-            sqlStrBuff.append(sql1.replaceFirst("\\W(?i:F)(?i:R)(?i:O)(?i:M)\\W",",'query1' \n FROM ")).append(sqlMinus).append(sql2.replaceFirst("\\W(?i:F)(?i:R)(?i:O)(?i:M)\\W",",'query1' \n FROM "));
+            String query1=",'query1' \n FROM ";
+            sqlStrBuff.append(sql1.replaceFirst(regExp,query1)).append(sqlMinus).append(sql2.replaceFirst(regExp,query1));
         } else {
             sqlStrBuff.append(sql1).append(sqlMinus).append(sql2);
         }
@@ -177,8 +180,10 @@ public class MinusComparator extends Comparator {
         sqlStrBuff.append(")");
         sqlStrBuff.append(" UNION ");
         sqlStrBuff.append("(");
+
         if(compare.isMinusQueryIndicatorOn()) {
-            sqlStrBuff.append(sql2.replaceFirst("\\W(?i:F)(?i:R)(?i:O)(?i:M)\\W", ",'query2' \n FROM ")).append(sqlMinus).append(sql1.replaceFirst("\\W(?i:F)(?i:R)(?i:O)(?i:M)\\W", ",'query2' \n FROM "));
+            String query2=",'query2' \n FROM ";
+            sqlStrBuff.append(sql2.replaceFirst(regExp,query2)).append(sqlMinus).append(sql1.replaceFirst(regExp,query2));
         } else {
             sqlStrBuff.append(sql2).append(sqlMinus).append(sql1);
         }
