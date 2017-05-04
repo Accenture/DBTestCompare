@@ -97,7 +97,7 @@ public class MinusComparator extends Comparator {
                 minusQueryIndicator=minusQueryIndicator+
                         ", Minus First Query Indicator Occurence: " + cmpSqlResultsTest.getCompare().getSqls().get(0).getMinusQueryIndicatorOccurence()+
                         ", Minus First Query Indicator Text: " + cmpSqlResultsTest.getCompare().getSqls().get(0).getMinusQueryIndicatorText()+
-                        ", Minus Second Query Indicator Occurence: " + cmpSqlResultsTest.getCompare().getSqls().get(1).getMinusQueryIndicatorOccurence()+
+                        "\n,Minus Second Query Indicator Occurence: " + cmpSqlResultsTest.getCompare().getSqls().get(1).getMinusQueryIndicatorOccurence()+
                         ", Minus Second Query Indicator Text: " + cmpSqlResultsTest.getCompare().getSqls().get(1).getMinusQueryIndicatorText();
             }
             executedQuery = "Datasource: " + dataSrcName + "\r\n" + executedQuery +
@@ -175,21 +175,25 @@ public class MinusComparator extends Comparator {
         String sqlMinus = " MINUS ";
         Compare compare = testParams.getCmpSqlResultsTest().getCompare();
         CmpSqlResultsTest cmpSqlResultsTest = testParams.getCmpSqlResultsTest();
+        String firstMinusQueryIndicatorText;
+        String secondMinusQueryIndicatorText;
 
         if(cmpSqlResultsTest.getCompare().getSqls().get(0).getMinusQueryIndicatorText()== null
-                || cmpSqlResultsTest.getCompare().getSqls().get(0).getMinusQueryIndicatorText().isEmpty())
-            cmpSqlResultsTest.getCompare().getSqls().get(0).setMinusQueryIndicatorText(",'query1' \n From ");
+                || cmpSqlResultsTest.getCompare().getSqls().get(0).getMinusQueryIndicatorText().isEmpty()){
+            firstMinusQueryIndicatorText= ",'query1' \n From ";
+            cmpSqlResultsTest.getCompare().getSqls().get(0).setMinusQueryIndicatorText("query1");
+        }
         else {
-            String text=",'"+cmpSqlResultsTest.getCompare().getSqls().get(0).getMinusQueryIndicatorText()+"' \n From ";
-            cmpSqlResultsTest.getCompare().getSqls().get(0).setMinusQueryIndicatorText(text);
+            firstMinusQueryIndicatorText=",'"+cmpSqlResultsTest.getCompare().getSqls().get(0).getMinusQueryIndicatorText()+"' \n From ";
         }
 
         if(cmpSqlResultsTest.getCompare().getSqls().get(1).getMinusQueryIndicatorText()== null
-                || cmpSqlResultsTest.getCompare().getSqls().get(0).getMinusQueryIndicatorText().isEmpty())
-            cmpSqlResultsTest.getCompare().getSqls().get(1).setMinusQueryIndicatorText(",'query2' \n From ");
+                || cmpSqlResultsTest.getCompare().getSqls().get(0).getMinusQueryIndicatorText().isEmpty()) {
+            secondMinusQueryIndicatorText = ",'query2' \n From ";
+            cmpSqlResultsTest.getCompare().getSqls().get(1).setMinusQueryIndicatorText("query2");
+        }
         else {
-            String text=",'"+cmpSqlResultsTest.getCompare().getSqls().get(1).getMinusQueryIndicatorText()+"' \n From ";
-            cmpSqlResultsTest.getCompare().getSqls().get(1).setMinusQueryIndicatorText(text);
+            secondMinusQueryIndicatorText=",'"+cmpSqlResultsTest.getCompare().getSqls().get(1).getMinusQueryIndicatorText()+"' \n From ";
         }
 
         // TODO check if other than SQLServerDriver databases has somethings else (instead of MINUS)
@@ -198,11 +202,10 @@ public class MinusComparator extends Comparator {
         }
         StringBuffer sqlStrBuff = new StringBuffer("(");
 
-        if(compare.isMinusQueryIndicatorOn()){
-            String query1=cmpSqlResultsTest.getCompare().getSqls().get(0).getMinusQueryIndicatorText();
+        if(compare.isMinusQueryIndicatorOn()){;
             sqlStrBuff.append(replaceNthIndexOf(sql1,cmpSqlResultsTest.getCompare().getSqls().get(0).getMinusQueryIndicatorOccurence()
-                    ,query1)).append(sqlMinus).append(replaceNthIndexOf(sql2
-                    ,cmpSqlResultsTest.getCompare().getSqls().get(1).getMinusQueryIndicatorOccurence(),query1));
+                    ,firstMinusQueryIndicatorText)).append(sqlMinus).append(replaceNthIndexOf(sql2
+                    ,cmpSqlResultsTest.getCompare().getSqls().get(1).getMinusQueryIndicatorOccurence(),firstMinusQueryIndicatorText));
         } else {
             sqlStrBuff.append(sql1).append(sqlMinus).append(sql2);
         }
@@ -212,8 +215,9 @@ public class MinusComparator extends Comparator {
         sqlStrBuff.append("(");
 
         if(compare.isMinusQueryIndicatorOn()) {
-            String query2=cmpSqlResultsTest.getCompare().getSqls().get(1).getMinusQueryIndicatorText();
-            sqlStrBuff.append(replaceNthIndexOf(sql2,cmpSqlResultsTest.getCompare().getSqls().get(1).getMinusQueryIndicatorOccurence(),query2)).append(sqlMinus).append(replaceNthIndexOf(sql1,cmpSqlResultsTest.getCompare().getSqls().get(0).getMinusQueryIndicatorOccurence(),query2));
+            sqlStrBuff.append(replaceNthIndexOf(sql2,cmpSqlResultsTest.getCompare().getSqls().get(1).getMinusQueryIndicatorOccurence()
+                    ,secondMinusQueryIndicatorText)).append(sqlMinus).append(replaceNthIndexOf(sql1
+                    ,cmpSqlResultsTest.getCompare().getSqls().get(0).getMinusQueryIndicatorOccurence(),secondMinusQueryIndicatorText));
         } else {
             sqlStrBuff.append(sql2).append(sqlMinus).append(sql1);
         }

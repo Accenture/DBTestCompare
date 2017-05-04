@@ -12,8 +12,8 @@ SELECT [AddressID]
   FROM [AdventureWorks2008R2].[Person].[Address]
   where AddressID <> 1
         ]]>
-        </sql minusQueryIndicatorOccurence="1" minusQueryIndicatorText="ModelLayer">
-        <sql>
+        </sql>
+        <sql minusQueryIndicatorOccurence="1" minusQueryIndicatorText="ModelLayer" >
         <![CDATA[
 SELECT [AddressID]
       ,[AddressLine1]
