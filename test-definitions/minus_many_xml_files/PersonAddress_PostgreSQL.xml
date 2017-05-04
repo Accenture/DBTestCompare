@@ -1,12 +1,12 @@
 <cmpSqlResultsTest>
     <compare mode="MINUS" defaultDatasourceName="PostgreSQL" diffTableSize="5" minusQueryIndicatorOn="true">
-        <sql>
+        <sql minusQueryIndicatorText="ImportLayer">
          <![CDATA[
 select addressid, addressline1, addressline2, city, stateprovinceid, postalcode, modifieddate
 from public.personaddress
         ]]>
         </sql>
-        <sql>
+        <sql >
         <![CDATA[
 select addressid, addressline1, addressline2, city, stateprovinceid, postalcode, modifieddate
 from public.personaddress

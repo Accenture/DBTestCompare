@@ -1,6 +1,6 @@
 <cmpSqlResultsTest>
     <compare mode="MINUS" defaultDatasourceName="SQL_SERVER" diffTableSize="5" minusQueryIndicatorOn="true">
-        <sql>
+        <sql minusQueryIndicatorOccurence="1" minusQueryIndicatorText="ImportLayer">
          <![CDATA[
 SELECT [AddressID]
       ,[AddressLine1]
@@ -12,7 +12,7 @@ SELECT [AddressID]
   FROM [AdventureWorks2008R2].[Person].[Address]
   where AddressID <> 1
         ]]>
-        </sql>
+        </sql minusQueryIndicatorOccurence="1" minusQueryIndicatorText="ModelLayer">
         <sql>
         <![CDATA[
 SELECT [AddressID]
