@@ -217,7 +217,7 @@ public class MinusComparator extends Comparator {
         } else {
             sqlStrBuff.append(sql2).append(sqlMinus).append(sql1);
         }
-        sqlStrBuff.append(");");
+        sqlStrBuff.append(")");
         return sqlStrBuff.toString();
 
     }
