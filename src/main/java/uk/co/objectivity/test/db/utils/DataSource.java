@@ -59,7 +59,7 @@ public class DataSource {
         while (it.hasNext()) {
             Datasource datasource = it.next();
             Integer maxPoolSize = datasource.getMaxPollSize();
-
+            log.debug("Max Pool Size:" + maxPoolSize + " for datasource: " + datasource.getName());
             ComboPooledDataSource cpds = new ComboPooledDataSource();
             cpds.setJdbcUrl(datasource.getUrl());
             cpds.setUser(datasource.getUser());
@@ -89,6 +89,7 @@ public class DataSource {
                 log.error(e);
             }
         }
+        log.debug("Max Pool Size for each DataSource should be >= Threads");
     }
 
     public static Connection getConnection(String datasourceName) throws SQLException, NoSuchElementException {
