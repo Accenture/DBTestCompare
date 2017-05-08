@@ -43,6 +43,7 @@ import uk.co.objectivity.test.db.beans.xml.Compare;
 import uk.co.objectivity.test.db.beans.xml.Datasource;
 import uk.co.objectivity.test.db.beans.xml.Sql;
 import uk.co.objectivity.test.db.utils.DataSource;
+import uk.co.objectivity.test.db.utils.SavedTimes;
 
 public class FetchComparator extends Comparator {
 
@@ -89,6 +90,8 @@ public class FetchComparator extends Comparator {
         PrintWriter diffPWriter = null;
         PrintWriter src1PWriter = null;
         PrintWriter src2PWriter = null;
+        SavedTimes savedTimes1 = new SavedTimes(testParams.getTestName());
+        SavedTimes savedTimes2 = new SavedTimes(testParams.getTestName());
         int diffCounter = 0;
         File diffFileName = getNewFileBasedOnTestConfigFile(testParams.getTestConfigFile(), "_diff.csv");
         try {
@@ -102,8 +105,13 @@ public class FetchComparator extends Comparator {
                     .CONCUR_READ_ONLY);
             stmt2.setFetchSize(compare.getFetchSize());
 
+            savedTimes1.StartMeasure("Query 1 "+ sql1.getDatasourceName());
             ResultSet result1 = stmt1.executeQuery();
+            savedTimes1.StopMeasure();
+
+            savedTimes2.StartMeasure("Query 2 "+ sql2.getDatasourceName());
             ResultSet result2 = stmt2.executeQuery();
+            savedTimes2.StopMeasure();
 
             int colCount1 = result1.getMetaData().getColumnCount();
             int colCount2 = result2.getMetaData().getColumnCount();
@@ -113,12 +121,16 @@ public class FetchComparator extends Comparator {
             }
 
             String executedQuery = "QUERY 1 [" + sql1.getDatasourceName() + "]:\r\n" + sql1.getSql() + "\r\n\r\nQUERY" +
-                    " 2 [" + sql2.getDatasourceName() + "]:\r\n" + sql2.getSql();
+                    " ;2 [" + sql2.getDatasourceName() + "]:\r\n" + sql2.getSql();
+
             executedQuery += "\r\n\r\nFetch size: " + compare.getFetchSize() +
                     ", Chunk size: " + compare.getChunk() +
                     ", Difftable size: " + compare.getDiffTableSize() +
                     ", Delta : " + compare.getDelta() +
-                    ", File output: " + compare.isFileOutputOn() + "\r\n";
+                    ", File output: " + compare.isFileOutputOn() + "\r\n"+
+                    "Time execution of queries:\n"+
+                    savedTimes1.getFormattedDuration()+
+                    savedTimes2.getFormattedDuration();
             TestResults testResults = new TestResults(executedQuery, -1);
 
             // building columns

@@ -43,6 +43,7 @@ import uk.co.objectivity.test.db.beans.xml.CmpSqlResultsTest;
 import uk.co.objectivity.test.db.beans.xml.Compare;
 import uk.co.objectivity.test.db.beans.xml.Datasource;
 import uk.co.objectivity.test.db.utils.DataSource;
+import uk.co.objectivity.test.db.utils.SavedTimes;
 
 
 public class MinusComparator extends Comparator {
@@ -83,6 +84,7 @@ public class MinusComparator extends Comparator {
         PreparedStatement stmt = null;
         PrintWriter minusPWriter = null;
         int rowCount = 0;
+        SavedTimes savedTimes = new SavedTimes(testParams.getTestName());
         File diffFileName = getNewFileBasedOnTestConfigFile(testParams.getTestConfigFile(), "_minus.csv");
         try {
             boolean countOnly = compare.getDiffTableSize() <= 0;
@@ -91,7 +93,10 @@ public class MinusComparator extends Comparator {
 
             stmt = conn.prepareStatement(executedQuery, ResultSet.TYPE_SCROLL_INSENSITIVE,
                     ResultSet.CONCUR_READ_ONLY);
+            savedTimes.StartMeasure("");
             ResultSet rs = stmt.executeQuery();
+            savedTimes.StopMeasure();
+
             String minusQueryIndicator=", Minus Query Indicator: " + compare.isMinusQueryIndicatorOn();
             if(compare.isMinusQueryIndicatorOn()){
                 minusQueryIndicator=minusQueryIndicator+
@@ -103,7 +108,9 @@ public class MinusComparator extends Comparator {
             executedQuery = "Datasource: " + dataSrcName + "\r\n" + executedQuery +
                     "\r\nDifftable size: " + compare.getDiffTableSize() +
                     minusQueryIndicator+
-                    ", File output: " + compare.isFileOutputOn() + "\r\n";
+                    ", File output: " + compare.isFileOutputOn() + "\r\n"+
+                    "Time execution of query:\n"+
+                    savedTimes.getFormattedDuration();
             if (countOnly) {
                 rs.next();
                 return new TestResults(executedQuery, rs.getInt(1));
@@ -202,7 +209,7 @@ public class MinusComparator extends Comparator {
         }
         StringBuffer sqlStrBuff = new StringBuffer("(");
 
-        if(compare.isMinusQueryIndicatorOn()){;
+        if(compare.isMinusQueryIndicatorOn() && compare.getDiffTableSize() > 0){;
             sqlStrBuff.append(replaceNthIndexOf(sql1,cmpSqlResultsTest.getCompare().getSqls().get(0).getMinusQueryIndicatorOccurence()
                     ,firstMinusQueryIndicatorText)).append(sqlMinus).append(replaceNthIndexOf(sql2
                     ,cmpSqlResultsTest.getCompare().getSqls().get(1).getMinusQueryIndicatorOccurence(),firstMinusQueryIndicatorText));
@@ -214,7 +221,7 @@ public class MinusComparator extends Comparator {
         sqlStrBuff.append(" UNION ");
         sqlStrBuff.append("(");
 
-        if(compare.isMinusQueryIndicatorOn()) {
+        if(compare.isMinusQueryIndicatorOn() && compare.getDiffTableSize() > 0) {
             sqlStrBuff.append(replaceNthIndexOf(sql2,cmpSqlResultsTest.getCompare().getSqls().get(1).getMinusQueryIndicatorOccurence()
                     ,secondMinusQueryIndicatorText)).append(sqlMinus).append(replaceNthIndexOf(sql1
                     ,cmpSqlResultsTest.getCompare().getSqls().get(0).getMinusQueryIndicatorOccurence(),secondMinusQueryIndicatorText));

@@ -1,0 +1,32 @@
+<cmpSqlResultsTest>
+<!-- When diffTableSize="0" is set - count query is executed:  "Select count(*) from ((Q1 EXCEPT Q2) Union (Q2 EXCEPT Q1)) countTable"
+     and minusQueryIndicatorOn="true" is ignored -->
+    <compare mode="MINUS" defaultDatasourceName="SQL_SERVER" diffTableSize="0" minusQueryIndicatorOn="true">
+        <sql minusQueryIndicatorOccurence="1" minusQueryIndicatorText="ImportLayer">
+         <![CDATA[
+SELECT [AddressID]
+      ,[AddressLine1]
+      ,[AddressLine2]
+      ,[City]
+      ,[StateProvinceID]
+      ,[PostalCode]
+      ,[ModifiedDate]
+  FROM [AdventureWorks2008R2].[Person].[Address]
+  where AddressID <> 1
+        ]]>
+        </sql>
+        <sql minusQueryIndicatorOccurence="1" minusQueryIndicatorText="ModelLayer" >
+        <![CDATA[
+SELECT [AddressID]
+      ,[AddressLine1]
+      ,[AddressLine2]
+      ,[City]
+      ,[StateProvinceID]
+      ,[PostalCode]
+      ,[ModifiedDate]
+  FROM [AdventureWorks2008R2].[Person].[Address]
+    where AddressID <> 2
+        ]]>
+        </sql>
+    </compare>
+</cmpSqlResultsTest>

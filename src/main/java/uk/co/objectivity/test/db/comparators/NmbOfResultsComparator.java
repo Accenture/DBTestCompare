@@ -37,6 +37,7 @@ import uk.co.objectivity.test.db.beans.xml.CmpSqlResultsTest;
 import uk.co.objectivity.test.db.beans.xml.Datasource;
 import uk.co.objectivity.test.db.beans.xml.Sql;
 import uk.co.objectivity.test.db.utils.DataSource;
+import uk.co.objectivity.test.db.utils.SavedTimes;
 
 public class NmbOfResultsComparator extends Comparator {
 
@@ -59,7 +60,7 @@ public class NmbOfResultsComparator extends Comparator {
         Connection connection = null;
         try {
             connection = DataSource.getConnection(datasource.getName());
-            return getTestResults(connection, query, sql1.getDatasourceName());
+            return getTestResults(connection, query, sql1.getDatasourceName(), testParams);
         } catch (Exception e) {
             throw  new Exception(e+"\nAssert Query : " + query);
         } finally {
@@ -67,14 +68,19 @@ public class NmbOfResultsComparator extends Comparator {
         }
     }
 
-    public TestResults getTestResults(Connection conn, String query, String datasourceName) throws Exception {
+    public TestResults getTestResults(Connection conn, String query, String datasourceName, TestParams testParams) throws Exception {
         PreparedStatement stmt = null;
+        SavedTimes savedTimes = new SavedTimes(testParams.getTestName());
         try {
             stmt = conn.prepareStatement(query, ResultSet.TYPE_SCROLL_INSENSITIVE,
                     ResultSet.CONCUR_READ_ONLY);
+            savedTimes.StartMeasure("");
             ResultSet rs = stmt.executeQuery();
+            savedTimes.StopMeasure();
             rs.next();
-            String executedQuery = "[" + datasourceName + "]:\r\n" + query;
+            String executedQuery = "[" + datasourceName + "]:\r\n" + query+
+                    "\nTime execution of query:\n"+
+                    savedTimes.getFormattedDuration();
             return new TestResults(executedQuery, rs.getInt(1));
         } finally {
             if (stmt != null)

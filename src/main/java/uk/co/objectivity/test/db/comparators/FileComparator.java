@@ -45,6 +45,7 @@ import uk.co.objectivity.test.db.beans.xml.Compare;
 import uk.co.objectivity.test.db.beans.xml.Datasource;
 import uk.co.objectivity.test.db.beans.xml.Sql;
 import uk.co.objectivity.test.db.utils.DataSource;
+import uk.co.objectivity.test.db.utils.SavedTimes;
 
 public class FileComparator extends Comparator {
 
@@ -91,15 +92,21 @@ public class FileComparator extends Comparator {
         PrintWriter src1PWriter = null;
         BufferedReader bufferedReader = null;
         int diffCounter = 0;
+        SavedTimes savedTimes1 = new SavedTimes(testParams.getTestName());
+        SavedTimes savedTimes2 = new SavedTimes(testParams.getTestName());
         File diffFileName = getNewFileBasedOnTestConfigFile(testParams.getTestConfigFile(), "_diff.csv");
         try {
             Sql sql = compare.getSqls().get(0);
             stmt = conn.prepareStatement(sql.getSql(), ResultSet.TYPE_SCROLL_INSENSITIVE,
                     ResultSet.CONCUR_READ_ONLY);
+            savedTimes1.StartMeasure("Query "+ sql.getDatasourceName());
             ResultSet rs = stmt.executeQuery();
+            savedTimes1.StopMeasure();
 
+            savedTimes2.StartMeasure("File "+ file.getName());
             bufferedReader = new BufferedReader(new FileReader(file));
             String[] csvRow = getCSVFileRow(bufferedReader.readLine());
+            savedTimes2.StopMeasure();
 
             int qColCount = rs.getMetaData().getColumnCount();
             int fColCount = csvRow == null ? 0 : csvRow.length;
@@ -119,7 +126,10 @@ public class FileComparator extends Comparator {
                     " [" + file.getAbsolutePath() + "]\r\n";
             executedQuery += "\r\n\r\nChunk size: " + compare.getChunk() +
                     ", Difftable size: " + compare.getDiffTableSize() +
-                    ", File output: " + compare.isFileOutputOn() + "\r\n";
+                    ", File output: " + compare.isFileOutputOn() + "\r\n"+
+                    "Time execution of queries:\n"+
+                    savedTimes1.getFormattedDuration()+
+                    savedTimes2.getFormattedDuration();
             TestResults testResults = new TestResults(executedQuery, -1);
 
             // building columns
