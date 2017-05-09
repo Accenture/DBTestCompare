@@ -23,9 +23,10 @@
 package uk.co.objectivity.test.db;
 
 import static java.lang.System.currentTimeMillis;
+import static uk.co.objectivity.test.db.TestDataProvider.savedTimesList;
 
 import java.lang.reflect.Field;
-import java.util.List;
+import java.util.*;
 
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
@@ -34,9 +35,7 @@ import org.testng.Assert;
 import org.testng.ITest;
 import org.testng.ITestResult;
 import org.testng.TestException;
-import org.testng.annotations.AfterMethod;
-import org.testng.annotations.Factory;
-import org.testng.annotations.Test;
+import org.testng.annotations.*;
 import org.testng.internal.BaseTestMethod;
 
 import uk.co.objectivity.test.db.beans.CompareMode;
@@ -44,6 +43,7 @@ import uk.co.objectivity.test.db.beans.TestParams;
 import uk.co.objectivity.test.db.beans.TestResults;
 import uk.co.objectivity.test.db.beans.xml.Compare;
 import uk.co.objectivity.test.db.utils.Printer;
+import uk.co.objectivity.test.db.utils.SavedTimes;
 import uk.co.objectivity.test.db.utils.TCMessages;
 
 public class DBTestCompare implements ITest {
@@ -157,6 +157,12 @@ public class DBTestCompare implements ITest {
             log.error(ex);
         }
     }
-
+    @AfterSuite
+    public  void displaySavedTimesStatistics(){
+        System.out.print("\nStatistics of queries execution:\n");
+        savedTimesList.sort(Comparator.comparing(SavedTimes::getDuration).reversed());
+        System.out.print(String.format(" %-70s %-30s %-20s\n", "Test Name", "Measure Type","Duration"));
+        savedTimesList.forEach(s -> System.out.print((String.format(" %-70s %-30s %-20s", s.getTestName(),s.getMeasureType(),s.getFormattedDuration()))));
+    }
 
 }

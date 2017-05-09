@@ -24,31 +24,30 @@ package uk.co.objectivity.test.db.utils;
 import java.util.concurrent.TimeUnit;
 
 public class SavedTimes {
-    public String getTestName() {
-        return testName;
-    }
+
 
     private String testName;
-
-    public String getMeasureType() {
-        return measureType;
-    }
-
     private String measureType;
     private long startTime;
     private long stopTime;
+    private long duration;
+    private String formattedDuration;
 
     public long getDuration() {
         return duration;
     }
 
-    private long duration;
-    private String formattedDuration;
-
     public String getFormattedDuration() {
         return formattedDuration;
     }
 
+    public String getTestName() {
+        return testName;
+    }
+
+    public String getMeasureType() {
+        return measureType;
+    }
     public SavedTimes(String testName)
     {
         this.testName = testName;
