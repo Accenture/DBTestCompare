@@ -47,6 +47,8 @@ import uk.co.objectivity.test.db.beans.xml.Sql;
 import uk.co.objectivity.test.db.utils.DataSource;
 import uk.co.objectivity.test.db.utils.SavedTimes;
 
+import static uk.co.objectivity.test.db.TestDataProvider.savedTimesList;
+
 public class FileComparator extends Comparator {
 
     private final static Logger log = Logger.getLogger(MinusComparator.class);
@@ -102,11 +104,13 @@ public class FileComparator extends Comparator {
             savedTimes1.StartMeasure("Query "+ sql.getDatasourceName());
             ResultSet rs = stmt.executeQuery();
             savedTimes1.StopMeasure();
+            savedTimesList.add(savedTimes1);
 
             savedTimes2.StartMeasure("File "+ file.getName());
             bufferedReader = new BufferedReader(new FileReader(file));
             String[] csvRow = getCSVFileRow(bufferedReader.readLine());
             savedTimes2.StopMeasure();
+            savedTimesList.add(savedTimes2);
 
             int qColCount = rs.getMetaData().getColumnCount();
             int fColCount = csvRow == null ? 0 : csvRow.length;
@@ -128,8 +132,8 @@ public class FileComparator extends Comparator {
                     ", Difftable size: " + compare.getDiffTableSize() +
                     ", File output: " + compare.isFileOutputOn() + "\r\n"+
                     "Time execution of queries:\n"+
-                    savedTimes1.getFormattedDuration()+
-                    savedTimes2.getFormattedDuration();
+                    savedTimes1.getMeasureType() + " " + savedTimes1.getFormattedDuration()+
+                    savedTimes2.getMeasureType() + " " + savedTimes2.getFormattedDuration();
             TestResults testResults = new TestResults(executedQuery, -1);
 
             // building columns

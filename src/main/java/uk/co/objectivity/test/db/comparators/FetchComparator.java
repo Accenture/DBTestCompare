@@ -45,6 +45,8 @@ import uk.co.objectivity.test.db.beans.xml.Sql;
 import uk.co.objectivity.test.db.utils.DataSource;
 import uk.co.objectivity.test.db.utils.SavedTimes;
 
+import static uk.co.objectivity.test.db.TestDataProvider.savedTimesList;
+
 public class FetchComparator extends Comparator {
 
     private final static Logger log = Logger.getLogger(FetchComparator.class);
@@ -108,10 +110,12 @@ public class FetchComparator extends Comparator {
             savedTimes1.StartMeasure("Query 1 "+ sql1.getDatasourceName());
             ResultSet result1 = stmt1.executeQuery();
             savedTimes1.StopMeasure();
+            savedTimesList.add(savedTimes1);
 
             savedTimes2.StartMeasure("Query 2 "+ sql2.getDatasourceName());
             ResultSet result2 = stmt2.executeQuery();
             savedTimes2.StopMeasure();
+            savedTimesList.add(savedTimes2);
 
             int colCount1 = result1.getMetaData().getColumnCount();
             int colCount2 = result2.getMetaData().getColumnCount();
@@ -129,8 +133,8 @@ public class FetchComparator extends Comparator {
                     ", Delta : " + compare.getDelta() +
                     ", File output: " + compare.isFileOutputOn() + "\r\n"+
                     "Time execution of queries:\n"+
-                    savedTimes1.getFormattedDuration()+
-                    savedTimes2.getFormattedDuration();
+                    savedTimes1.getMeasureType() + " " + savedTimes1.getFormattedDuration()+
+                    savedTimes2.getMeasureType() + " " +  savedTimes2.getFormattedDuration();
             TestResults testResults = new TestResults(executedQuery, -1);
 
             // building columns

@@ -46,6 +46,7 @@ import uk.co.objectivity.test.db.beans.xml.CmpSqlResultsConfig;
 import uk.co.objectivity.test.db.beans.xml.CmpSqlResultsTest;
 import uk.co.objectivity.test.db.beans.xml.Compare;
 import uk.co.objectivity.test.db.beans.xml.Sql;
+import uk.co.objectivity.test.db.utils.SavedTimes;
 
 public class TestDataProvider {
 
@@ -54,6 +55,8 @@ public class TestDataProvider {
     private static CmpSqlResultsConfig CMP_SQL_RESULTS_CONFIG;
     private static File TESTS_DIR_FILE;
     private static boolean INITIALIZED = false;
+
+    public static  List<SavedTimes> savedTimesList = new ArrayList<>();
 
     static void init(File testsDirFile, CmpSqlResultsConfig cmpSqlResultsConfig) {
         log.debug("Initializing tests Data Provider...");

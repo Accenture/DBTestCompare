@@ -39,6 +39,8 @@ import uk.co.objectivity.test.db.beans.xml.Sql;
 import uk.co.objectivity.test.db.utils.DataSource;
 import uk.co.objectivity.test.db.utils.SavedTimes;
 
+import static uk.co.objectivity.test.db.TestDataProvider.savedTimesList;
+
 public class NmbOfResultsComparator extends Comparator {
 
     private final static Logger log = Logger.getLogger(MinusComparator.class);
@@ -77,6 +79,8 @@ public class NmbOfResultsComparator extends Comparator {
             savedTimes.StartMeasure("");
             ResultSet rs = stmt.executeQuery();
             savedTimes.StopMeasure();
+            savedTimesList.add(savedTimes);
+
             rs.next();
             String executedQuery = "[" + datasourceName + "]:\r\n" + query+
                     "\nTime execution of query:\n"+

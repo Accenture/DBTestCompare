@@ -45,6 +45,7 @@ import uk.co.objectivity.test.db.beans.xml.Datasource;
 import uk.co.objectivity.test.db.utils.DataSource;
 import uk.co.objectivity.test.db.utils.SavedTimes;
 
+import static uk.co.objectivity.test.db.TestDataProvider.savedTimesList;
 
 public class MinusComparator extends Comparator {
 
@@ -96,6 +97,7 @@ public class MinusComparator extends Comparator {
             savedTimes.StartMeasure("");
             ResultSet rs = stmt.executeQuery();
             savedTimes.StopMeasure();
+            savedTimesList.add(savedTimes);
 
             String minusQueryIndicator=", Minus Query Indicator: " + compare.isMinusQueryIndicatorOn();
             if(compare.isMinusQueryIndicatorOn()){
