@@ -35,6 +35,9 @@ public class File {
     @XmlAttribute
     private String separator = ",";
 
+    @XmlAttribute
+    private int startAtRow = 1;
+
     public String getFilename() {
         return filename;
     }
@@ -49,5 +52,9 @@ public class File {
 
     public void setSeparator(String separator) {
         this.separator = separator;
+    }
+
+    public int getStartAtRow() {
+        return startAtRow;
     }
 }

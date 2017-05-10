@@ -43,10 +43,17 @@ public class Sql {
     private int minusQueryIndicatorOccurence = 1;
 
     @XmlAttribute
+    private int startAtRow = 1;
+
+    @XmlAttribute
     private String minusQueryIndicatorText;
 
     public String getSql() {
         return sql;
+    }
+
+    public int getStartAtRow() {
+        return startAtRow;
     }
 
     public void setSql(String sql) {

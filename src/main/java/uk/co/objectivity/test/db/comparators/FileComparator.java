@@ -108,6 +108,14 @@ public class FileComparator extends Comparator {
 
             savedTimes2.StartMeasure("File "+ file.getName());
             bufferedReader = new BufferedReader(new FileReader(file));
+            int curLineNr = 0;
+            if(compare.getFile().getStartAtRow()-1>0){
+                while (bufferedReader.readLine() != null){
+                    if(curLineNr++ >= compare.getFile().getStartAtRow()-2)
+                        break;
+                }
+            }
+
             String[] csvRow = getCSVFileRow(bufferedReader.readLine());
             savedTimes2.StopMeasure();
             savedTimesList.add(savedTimes2);
@@ -130,6 +138,7 @@ public class FileComparator extends Comparator {
                     " [" + file.getAbsolutePath() + "]\r\n";
             executedQuery += "\r\n\r\nChunk size: " + compare.getChunk() +
                     ", Difftable size: " + compare.getDiffTableSize() +
+                    ", Comparing with file start at row " + compare.getFile().getStartAtRow()+
                     ", File output: " + compare.isFileOutputOn() + "\r\n"+
                     "Time execution of queries:\n"+
                     savedTimes1.getMeasureType() + " " + savedTimes1.getFormattedDuration()+
