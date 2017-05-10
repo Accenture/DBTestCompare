@@ -94,7 +94,7 @@ public class MinusComparator extends Comparator {
 
             stmt = conn.prepareStatement(executedQuery, ResultSet.TYPE_SCROLL_INSENSITIVE,
                     ResultSet.CONCUR_READ_ONLY);
-            savedTimes.StartMeasure("");
+            savedTimes.StartMeasure("Minus " + compare.getDefaultDatasourceName());
             ResultSet rs = stmt.executeQuery();
             savedTimes.StopMeasure();
             savedTimesList.add(savedTimes);

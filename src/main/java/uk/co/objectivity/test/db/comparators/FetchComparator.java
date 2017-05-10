@@ -107,12 +107,12 @@ public class FetchComparator extends Comparator {
                     .CONCUR_READ_ONLY);
             stmt2.setFetchSize(compare.getFetchSize());
 
-            savedTimes1.StartMeasure("Query 1 "+ sql1.getDatasourceName());
+            savedTimes1.StartMeasure("Fetch 1 "+ sql1.getDatasourceName());
             ResultSet result1 = stmt1.executeQuery();
             savedTimes1.StopMeasure();
             savedTimesList.add(savedTimes1);
 
-            savedTimes2.StartMeasure("Query 2 "+ sql2.getDatasourceName());
+            savedTimes2.StartMeasure("Fetch 2 "+ sql2.getDatasourceName());
             ResultSet result2 = stmt2.executeQuery();
             savedTimes2.StopMeasure();
             savedTimesList.add(savedTimes2);
