@@ -117,8 +117,6 @@ public class FileComparator extends Comparator {
             }
 
             String[] csvRow = getCSVFileRow(bufferedReader.readLine());
-            savedTimes2.StopMeasure();
-            savedTimesList.add(savedTimes2);
 
             int qColCount = rs.getMetaData().getColumnCount();
             int fColCount = csvRow == null ? 0 : csvRow.length;
@@ -140,9 +138,8 @@ public class FileComparator extends Comparator {
                     ", Difftable size: " + compare.getDiffTableSize() +
                     ", Comparing with file start at row " + compare.getFile().getStartAtRow()+
                     ", File output: " + compare.isFileOutputOn() + "\r\n"+
-                    "Time execution of queries:\n"+
-                    savedTimes1.getMeasureType() + " " + savedTimes1.getFormattedDuration()+
-                    savedTimes2.getMeasureType() + " " + savedTimes2.getFormattedDuration();
+                    "Time execution of query:\n"+
+                    savedTimes1.getMeasureType() + " " + savedTimes1.getFormattedDuration();
             TestResults testResults = new TestResults(executedQuery, -1);
 
             // building columns
@@ -203,6 +200,8 @@ public class FileComparator extends Comparator {
             testResults.setNmbOfComparedRows(rowNmb);
             return testResults;
         } finally {
+            savedTimes2.StopMeasure();
+            savedTimesList.add(savedTimes2);
             if (stmt != null)
                 try {
                     stmt.close();
