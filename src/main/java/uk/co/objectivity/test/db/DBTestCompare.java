@@ -173,11 +173,7 @@ public class DBTestCompare implements ITest {
         String stringTable = "Statistics of queries execution (" + savedTimesList.size() + " rows):\r\n" + t.render();
         Printer.addReporterLog(stringTable);
 
-        if(testParams.getCmpSqlResultsConfig().getLogger().isTeamcityLogsEnabled()) {
-            log.log(Level.OFF, stringTable);
-        }
-        log.info(stringTable);
-
+        log.log(Level.OFF, stringTable);
     }
 
 }
