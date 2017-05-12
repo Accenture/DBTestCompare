@@ -56,6 +56,9 @@ public class Compare {
     @XmlAttribute
     private boolean fileOutputOn = false;
 
+    @XmlAttribute
+    private boolean minusQueryIndicatorOn = false;
+
     @XmlElement(name = "sql")
     private List<Sql> sqls;
 
@@ -117,8 +120,16 @@ public class Compare {
         return fileOutputOn;
     }
 
+    public boolean isMinusQueryIndicatorOn() {
+        return minusQueryIndicatorOn;
+    }
+
     public void setFileOutputOn(boolean fileOutputOn) {
         this.fileOutputOn = fileOutputOn;
+    }
+
+    public void setMinusQueryIndicatorOn(boolean minusQueryIndicatorOn) {
+        this.minusQueryIndicatorOn = minusQueryIndicatorOn;
     }
 
     public List<Assert> getAssertions() {

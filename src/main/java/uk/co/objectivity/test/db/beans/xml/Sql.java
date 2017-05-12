@@ -39,8 +39,21 @@ public class Sql {
     @XmlAttribute
     private String datasourceName;
 
+    @XmlAttribute
+    private int minusQueryIndicatorOccurence = 1;
+
+    @XmlAttribute
+    private int startAtRow = 1;
+
+    @XmlAttribute
+    private String minusQueryIndicatorText;
+
     public String getSql() {
         return sql;
+    }
+
+    public int getStartAtRow() {
+        return startAtRow;
     }
 
     public void setSql(String sql) {
@@ -61,5 +74,17 @@ public class Sql {
 
     public void setFilename(String filename) {
         this.filename = filename;
+    }
+
+    public int getMinusQueryIndicatorOccurence() {
+        return minusQueryIndicatorOccurence;
+    }
+
+    public String getMinusQueryIndicatorText() {
+        return minusQueryIndicatorText;
+    }
+
+    public void setMinusQueryIndicatorText(String minusQueryIndicatorText) {
+        this.minusQueryIndicatorText = minusQueryIndicatorText;
     }
 }

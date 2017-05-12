@@ -45,6 +45,9 @@ import uk.co.objectivity.test.db.beans.xml.Compare;
 import uk.co.objectivity.test.db.beans.xml.Datasource;
 import uk.co.objectivity.test.db.beans.xml.Sql;
 import uk.co.objectivity.test.db.utils.DataSource;
+import uk.co.objectivity.test.db.utils.SavedTimes;
+
+import static uk.co.objectivity.test.db.TestDataProvider.savedTimesList;
 
 public class FileComparator extends Comparator {
 
@@ -77,7 +80,7 @@ public class FileComparator extends Comparator {
             connection = DataSource.getConnection(datasource.getName());
             return getTestResults(testParams, connection, file);
         } catch (Exception e) {
-            throw e;
+            throw new Exception(e+"\nQuery 1: " + sql.getSql());
         } finally {
             DataSource.closeConnection(connection);
         }
@@ -91,14 +94,28 @@ public class FileComparator extends Comparator {
         PrintWriter src1PWriter = null;
         BufferedReader bufferedReader = null;
         int diffCounter = 0;
+        SavedTimes savedTimes1 = new SavedTimes(testParams.getTestName());
+        SavedTimes savedTimes2 = new SavedTimes(testParams.getTestName());
         File diffFileName = getNewFileBasedOnTestConfigFile(testParams.getTestConfigFile(), "_diff.csv");
         try {
             Sql sql = compare.getSqls().get(0);
             stmt = conn.prepareStatement(sql.getSql(), ResultSet.TYPE_SCROLL_INSENSITIVE,
                     ResultSet.CONCUR_READ_ONLY);
+            savedTimes1.StartMeasure("Query "+ sql.getDatasourceName());
             ResultSet rs = stmt.executeQuery();
+            savedTimes1.StopMeasure();
+            savedTimesList.add(savedTimes1);
 
+            savedTimes2.StartMeasure("File "+ file.getName());
             bufferedReader = new BufferedReader(new FileReader(file));
+            int curLineNr = 0;
+            if(compare.getFile().getStartAtRow()-1>0){
+                while (bufferedReader.readLine() != null){
+                    if(curLineNr++ >= compare.getFile().getStartAtRow()-2)
+                        break;
+                }
+            }
+
             String[] csvRow = getCSVFileRow(bufferedReader.readLine());
 
             int qColCount = rs.getMetaData().getColumnCount();
@@ -119,7 +136,10 @@ public class FileComparator extends Comparator {
                     " [" + file.getAbsolutePath() + "]\r\n";
             executedQuery += "\r\n\r\nChunk size: " + compare.getChunk() +
                     ", Difftable size: " + compare.getDiffTableSize() +
-                    ", File output: " + compare.isFileOutputOn() + "\r\n";
+                    ", Comparing with file start at row " + compare.getFile().getStartAtRow()+
+                    ", File output: " + compare.isFileOutputOn() + "\r\n"+
+                    "Time execution of query:\n"+
+                    savedTimes1.getMeasureType() + " " + savedTimes1.getFormattedDuration();
             TestResults testResults = new TestResults(executedQuery, -1);
 
             // building columns
@@ -180,6 +200,8 @@ public class FileComparator extends Comparator {
             testResults.setNmbOfComparedRows(rowNmb);
             return testResults;
         } finally {
+            savedTimes2.StopMeasure();
+            savedTimesList.add(savedTimes2);
             if (stmt != null)
                 try {
                     stmt.close();

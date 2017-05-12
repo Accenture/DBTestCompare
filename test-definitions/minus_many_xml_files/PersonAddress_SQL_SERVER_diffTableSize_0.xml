@@ -1,5 +1,7 @@
 <cmpSqlResultsTest>
-    <compare mode="MINUS" defaultDatasourceName="SQL_SERVER" diffTableSize="5" minusQueryIndicatorOn="true">
+<!-- When diffTableSize="0" is set - count query is executed:  "Select count(*) from ((Q1 EXCEPT Q2) Union (Q2 EXCEPT Q1)) countTable"
+     and minusQueryIndicatorOn="true" is ignored -->
+    <compare mode="MINUS" defaultDatasourceName="SQL_SERVER" diffTableSize="0" minusQueryIndicatorOn="true">
         <sql minusQueryIndicatorOccurence="1" minusQueryIndicatorText="ImportLayer">
          <![CDATA[
 SELECT [AddressID]

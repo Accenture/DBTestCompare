@@ -81,7 +81,7 @@ public class RunTests {
             log.error("Errors while reading configuration file: " + MAIN_CONFIG_FILE_PATH);
             return null;
         }
-
+        log.debug("Number of Threads set in configuration: " + cmpSqlResultsConfig.getThreads());
         log.debug("Initializing all components ...");
         DataSource.init(cmpSqlResultsConfig.getDatasources()); // it also adds shutdown hook (closing connections)
         TestDataProvider.init(testsDirFile, cmpSqlResultsConfig);

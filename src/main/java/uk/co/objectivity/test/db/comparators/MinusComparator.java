@@ -30,6 +30,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.log4j.Logger;
 import org.testng.TestException;
@@ -41,7 +43,9 @@ import uk.co.objectivity.test.db.beans.xml.CmpSqlResultsTest;
 import uk.co.objectivity.test.db.beans.xml.Compare;
 import uk.co.objectivity.test.db.beans.xml.Datasource;
 import uk.co.objectivity.test.db.utils.DataSource;
+import uk.co.objectivity.test.db.utils.SavedTimes;
 
+import static uk.co.objectivity.test.db.TestDataProvider.savedTimesList;
 
 public class MinusComparator extends Comparator {
 
@@ -62,14 +66,14 @@ public class MinusComparator extends Comparator {
         // (get(0)/get(1) - IndexOutOfBoundsException) checked in TestDataProvider, but still - schema would be nice!
         String sql1 = cmpSqlResultsTest.getCompare().getSqls().get(0).getSql();
         String sql2 = cmpSqlResultsTest.getCompare().getSqls().get(1).getSql();
-        String query = getMinusQuery(datasource, sql1, sql2);
+        String query = getMinusQuery(datasource, sql1, sql2, testParams);
 
         Connection connection = null;
         try {
             connection = DataSource.getConnection(datasource.getName());
             return getTestResults(connection, query, testParams, dataSrcName);
         } catch (Exception e) {
-            throw e;
+            throw new Exception(e+"\nMinus Query : " + query);
         } finally {
             DataSource.closeConnection(connection);
         }
@@ -77,9 +81,11 @@ public class MinusComparator extends Comparator {
 
     public TestResults getTestResults(Connection conn, String query, TestParams testParams,String dataSrcName) throws Exception {
         Compare compare = testParams.getCmpSqlResultsTest().getCompare();
+        CmpSqlResultsTest cmpSqlResultsTest = testParams.getCmpSqlResultsTest();
         PreparedStatement stmt = null;
         PrintWriter minusPWriter = null;
         int rowCount = 0;
+        SavedTimes savedTimes = new SavedTimes(testParams.getTestName());
         File diffFileName = getNewFileBasedOnTestConfigFile(testParams.getTestConfigFile(), "_minus.csv");
         try {
             boolean countOnly = compare.getDiffTableSize() <= 0;
@@ -88,10 +94,25 @@ public class MinusComparator extends Comparator {
 
             stmt = conn.prepareStatement(executedQuery, ResultSet.TYPE_SCROLL_INSENSITIVE,
                     ResultSet.CONCUR_READ_ONLY);
+            savedTimes.StartMeasure("Minus " + compare.getDefaultDatasourceName());
             ResultSet rs = stmt.executeQuery();
+            savedTimes.StopMeasure();
+            savedTimesList.add(savedTimes);
+
+            String minusQueryIndicator=", Minus Query Indicator: " + compare.isMinusQueryIndicatorOn();
+            if(compare.isMinusQueryIndicatorOn()){
+                minusQueryIndicator=minusQueryIndicator+
+                        ", Minus First Query Indicator Occurence: " + cmpSqlResultsTest.getCompare().getSqls().get(0).getMinusQueryIndicatorOccurence()+
+                        ", Minus First Query Indicator Text: " + cmpSqlResultsTest.getCompare().getSqls().get(0).getMinusQueryIndicatorText()+
+                        "\n,Minus Second Query Indicator Occurence: " + cmpSqlResultsTest.getCompare().getSqls().get(1).getMinusQueryIndicatorOccurence()+
+                        ", Minus Second Query Indicator Text: " + cmpSqlResultsTest.getCompare().getSqls().get(1).getMinusQueryIndicatorText();
+            }
             executedQuery = "Datasource: " + dataSrcName + "\r\n" + executedQuery +
                     "\r\nDifftable size: " + compare.getDiffTableSize() +
-                    ", File output: " + compare.isFileOutputOn() + "\r\n";
+                    minusQueryIndicator+
+                    ", File output: " + compare.isFileOutputOn() + "\r\n"+
+                    "Time execution of query:\n"+
+                    savedTimes.getFormattedDuration();
             if (countOnly) {
                 rs.next();
                 return new TestResults(executedQuery, rs.getInt(1));
@@ -159,21 +180,75 @@ public class MinusComparator extends Comparator {
         }
     }
 
-    private String getMinusQuery(Datasource datasource, String sql1, String sql2) {
+    private String getMinusQuery(Datasource datasource, String sql1, String sql2,  TestParams testParams) {
         String sqlMinus = " MINUS ";
+        Compare compare = testParams.getCmpSqlResultsTest().getCompare();
+        CmpSqlResultsTest cmpSqlResultsTest = testParams.getCmpSqlResultsTest();
+        String firstMinusQueryIndicatorText;
+        String secondMinusQueryIndicatorText;
+
+        if(cmpSqlResultsTest.getCompare().getSqls().get(0).getMinusQueryIndicatorText()== null
+                || cmpSqlResultsTest.getCompare().getSqls().get(0).getMinusQueryIndicatorText().isEmpty()){
+            firstMinusQueryIndicatorText= ",'query1' \n From ";
+            cmpSqlResultsTest.getCompare().getSqls().get(0).setMinusQueryIndicatorText("query1");
+        }
+        else {
+            firstMinusQueryIndicatorText=",'"+cmpSqlResultsTest.getCompare().getSqls().get(0).getMinusQueryIndicatorText()+"' \n From ";
+        }
+
+        if(cmpSqlResultsTest.getCompare().getSqls().get(1).getMinusQueryIndicatorText()== null
+                || cmpSqlResultsTest.getCompare().getSqls().get(0).getMinusQueryIndicatorText().isEmpty()) {
+            secondMinusQueryIndicatorText = ",'query2' \n From ";
+            cmpSqlResultsTest.getCompare().getSqls().get(1).setMinusQueryIndicatorText("query2");
+        }
+        else {
+            secondMinusQueryIndicatorText=",'"+cmpSqlResultsTest.getCompare().getSqls().get(1).getMinusQueryIndicatorText()+"' \n From ";
+        }
+
         // TODO check if other than SQLServerDriver databases has somethings else (instead of MINUS)
         if (datasource.getDriver().contains("SQLServerDriver") || datasource.getDriver().contains("postgresql")) {
             sqlMinus = " EXCEPT ";
         }
         StringBuffer sqlStrBuff = new StringBuffer("(");
-        sqlStrBuff.append(sql1).append(sqlMinus).append(sql2);
+
+        if(compare.isMinusQueryIndicatorOn() && compare.getDiffTableSize() > 0){;
+            sqlStrBuff.append(replaceNthIndexOf(sql1,cmpSqlResultsTest.getCompare().getSqls().get(0).getMinusQueryIndicatorOccurence()
+                    ,firstMinusQueryIndicatorText)).append(sqlMinus).append(replaceNthIndexOf(sql2
+                    ,cmpSqlResultsTest.getCompare().getSqls().get(1).getMinusQueryIndicatorOccurence(),firstMinusQueryIndicatorText));
+        } else {
+            sqlStrBuff.append(sql1).append(sqlMinus).append(sql2);
+        }
+
         sqlStrBuff.append(")");
         sqlStrBuff.append(" UNION ");
         sqlStrBuff.append("(");
-        sqlStrBuff.append(sql2).append(sqlMinus).append(sql1);
+
+        if(compare.isMinusQueryIndicatorOn() && compare.getDiffTableSize() > 0) {
+            sqlStrBuff.append(replaceNthIndexOf(sql2,cmpSqlResultsTest.getCompare().getSqls().get(1).getMinusQueryIndicatorOccurence()
+                    ,secondMinusQueryIndicatorText)).append(sqlMinus).append(replaceNthIndexOf(sql1
+                    ,cmpSqlResultsTest.getCompare().getSqls().get(0).getMinusQueryIndicatorOccurence(),secondMinusQueryIndicatorText));
+        } else {
+            sqlStrBuff.append(sql2).append(sqlMinus).append(sql1);
+        }
         sqlStrBuff.append(")");
         return sqlStrBuff.toString();
 
+    }
+
+    public static String replaceNthIndexOf(String str, int occurence, String replace)
+            throws IndexOutOfBoundsException {
+        int index = -1;
+        String regex = "(?i:F)(?i:R)(?i:O)(?i:M)";
+        Pattern p = Pattern.compile(regex, Pattern.MULTILINE);
+        Matcher m = p.matcher(str);
+        while(m.find()) {
+            if (--occurence == 0) {
+                index = m.start();
+                break;
+            }
+        }
+        if (index < 0) throw new IndexOutOfBoundsException();
+        return  str.substring(0, index)+ replace + str.substring(index+ 4, str.length());
     }
 
     private String getCountQuery(String minusSqlQuery) {

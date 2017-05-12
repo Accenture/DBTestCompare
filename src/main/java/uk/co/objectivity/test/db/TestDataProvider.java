@@ -27,10 +27,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Unmarshaller;
@@ -46,6 +43,7 @@ import uk.co.objectivity.test.db.beans.xml.CmpSqlResultsConfig;
 import uk.co.objectivity.test.db.beans.xml.CmpSqlResultsTest;
 import uk.co.objectivity.test.db.beans.xml.Compare;
 import uk.co.objectivity.test.db.beans.xml.Sql;
+import uk.co.objectivity.test.db.utils.SavedTimes;
 
 public class TestDataProvider {
 
@@ -54,6 +52,8 @@ public class TestDataProvider {
     private static CmpSqlResultsConfig CMP_SQL_RESULTS_CONFIG;
     private static File TESTS_DIR_FILE;
     private static boolean INITIALIZED = false;
+
+    public static  List<SavedTimes> savedTimesList = new ArrayList<>();
 
     static void init(File testsDirFile, CmpSqlResultsConfig cmpSqlResultsConfig) {
         log.debug("Initializing tests Data Provider...");

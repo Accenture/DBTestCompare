@@ -1,19 +1,20 @@
 <cmpSqlResultsTest>
-    <compare mode="MINUS" defaultDatasourceName="SQL_SERVER" diffTableSize="5" minusQueryIndicatorOn="true">
-        <sql minusQueryIndicatorOccurence="1" minusQueryIndicatorText="ImportLayer">
+    <compare mode="MINUS" defaultDatasourceName="SQL_SERVER" diffTableSize="5">
+        <sql>
          <![CDATA[
 SELECT [AddressID]
       ,[AddressLine1]
       ,[AddressLine2]
-      ,[City]
+      --,[City]
       ,[StateProvinceID]
       ,[PostalCode]
       ,[ModifiedDate]
   FROM [AdventureWorks2008R2].[Person].[Address]
   where AddressID <> 1
+  	--query raise SQL Exception
         ]]>
         </sql>
-        <sql minusQueryIndicatorOccurence="1" minusQueryIndicatorText="ModelLayer" >
+        <sql>
         <![CDATA[
 SELECT [AddressID]
       ,[AddressLine1]

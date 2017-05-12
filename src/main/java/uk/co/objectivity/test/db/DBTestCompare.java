@@ -23,20 +23,20 @@
 package uk.co.objectivity.test.db;
 
 import static java.lang.System.currentTimeMillis;
+import static uk.co.objectivity.test.db.TestDataProvider.savedTimesList;
 
 import java.lang.reflect.Field;
-import java.util.List;
+import java.util.*;
 
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.apache.log4j.MDC;
-import org.testng.Assert;
-import org.testng.ITest;
-import org.testng.ITestResult;
-import org.testng.TestException;
-import org.testng.annotations.AfterMethod;
-import org.testng.annotations.Factory;
-import org.testng.annotations.Test;
+import org.nocrala.tools.texttablefmt.BorderStyle;
+import org.nocrala.tools.texttablefmt.CellStyle;
+import org.nocrala.tools.texttablefmt.ShownBorders;
+import org.nocrala.tools.texttablefmt.Table;
+import org.testng.*;
+import org.testng.annotations.*;
 import org.testng.internal.BaseTestMethod;
 
 import uk.co.objectivity.test.db.beans.CompareMode;
@@ -44,6 +44,7 @@ import uk.co.objectivity.test.db.beans.TestParams;
 import uk.co.objectivity.test.db.beans.TestResults;
 import uk.co.objectivity.test.db.beans.xml.Compare;
 import uk.co.objectivity.test.db.utils.Printer;
+import uk.co.objectivity.test.db.utils.SavedTimes;
 import uk.co.objectivity.test.db.utils.TCMessages;
 
 public class DBTestCompare implements ITest {
@@ -157,6 +158,23 @@ public class DBTestCompare implements ITest {
             log.error(ex);
         }
     }
+    @AfterSuite
+    public  void displaySavedTimesStatistics(){
+        savedTimesList.sort(Comparator.comparing(SavedTimes::getDuration).reversed());
+        CellStyle cs = new CellStyle(CellStyle.HorizontalAlign.left, CellStyle.AbbreviationStyle.crop,
+                CellStyle.NullStyle.emptyString);
+        Table t = new Table(3, BorderStyle.DESIGN_TUBES, ShownBorders
+                .SURROUND_HEADER_AND_COLUMNS, false, "");
+        t.addCell("Test Name", cs);
+        t.addCell("Measure Type", cs);
+        t.addCell("Duration min:s:ms", cs);
+        savedTimesList.forEach(s -> {t.addCell(s.getTestName().trim(), cs)
+            ;t.addCell(s.getMeasureType().trim(), cs);t.addCell(s.getFormattedDuration().replace("min:s:ms","").trim(), cs);});
+        String stringTable = "Statistics of queries execution (" + savedTimesList.size() + " rows):\r\n" + t.render();
+        Printer.addReporterLog(stringTable);
 
+        log.log(Level.OFF, "##teamcity[message '"+stringTable+"']");
+        log.info(stringTable);
+    }
 
 }
