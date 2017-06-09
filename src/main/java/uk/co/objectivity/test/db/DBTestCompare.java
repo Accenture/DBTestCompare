@@ -94,7 +94,7 @@ public class DBTestCompare implements ITest {
                 }
             } else {
                 Assert.assertEquals(testResults.getNmbOfRows(), Integer.valueOf(0),
-                        "Differences in SQL queries found - ");
+                    "Among " + testResults.getNmbOfComparedRows() + " compared rows, some differences in SQL queries results found - ");
             }
 
             if(compare.getCompareMode() == CompareMode.FETCH || compare.getCompareMode() == CompareMode.FILE){
