@@ -225,7 +225,7 @@ public class MinusComparator extends Comparator {
         }
 
         sqlStrBuff.append(")");
-        sqlStrBuff.append(" UNION ");
+        sqlStrBuff.append(" UNION ALL ");
         sqlStrBuff.append("(");
 
         if(compare.isMinusQueryIndicatorOn() && compare.getDiffTableSize() > 0) {
