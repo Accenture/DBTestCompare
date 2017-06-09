@@ -211,6 +211,9 @@ public class MinusComparator extends Comparator {
         if (datasource.getDriver().contains("SQLServerDriver") || datasource.getDriver().contains("postgresql")) {
             sqlMinus = " EXCEPT ";
         }
+        else if (datasource.getDriver().contains("teradata")) {
+            sqlMinus = " MINUS ALL ";
+        }
         StringBuffer sqlStrBuff = new StringBuffer("(");
 
         if(compare.isMinusQueryIndicatorOn() && compare.getDiffTableSize() > 0){;
