@@ -187,6 +187,7 @@ public class MinusComparator extends Comparator {
         String firstMinusQueryIndicatorText;
         String secondMinusQueryIndicatorText;
 
+        //default query indicator for SQL1
         if(cmpSqlResultsTest.getCompare().getSqls().get(0).getMinusQueryIndicatorText()== null
                 || cmpSqlResultsTest.getCompare().getSqls().get(0).getMinusQueryIndicatorText().isEmpty()){
             firstMinusQueryIndicatorText= ",'query1' \n From ";
@@ -196,6 +197,7 @@ public class MinusComparator extends Comparator {
             firstMinusQueryIndicatorText=",'"+cmpSqlResultsTest.getCompare().getSqls().get(0).getMinusQueryIndicatorText()+"' \n From ";
         }
 
+        //default query indicator for SQL2
         if(cmpSqlResultsTest.getCompare().getSqls().get(1).getMinusQueryIndicatorText()== null
                 || cmpSqlResultsTest.getCompare().getSqls().get(0).getMinusQueryIndicatorText().isEmpty()) {
             secondMinusQueryIndicatorText = ",'query2' \n From ";
@@ -212,9 +214,12 @@ public class MinusComparator extends Comparator {
         StringBuffer sqlStrBuff = new StringBuffer("(");
 
         if(compare.isMinusQueryIndicatorOn() && compare.getDiffTableSize() > 0){;
-            sqlStrBuff.append(replaceNthIndexOf(sql1,cmpSqlResultsTest.getCompare().getSqls().get(0).getMinusQueryIndicatorOccurence()
-                    ,firstMinusQueryIndicatorText)).append(sqlMinus).append(replaceNthIndexOf(sql2
-                    ,cmpSqlResultsTest.getCompare().getSqls().get(1).getMinusQueryIndicatorOccurence(),firstMinusQueryIndicatorText));
+
+            sqlStrBuff.append(
+                    replaceNthIndexOf(sql1, cmpSqlResultsTest.getCompare().getSqls().get(0).getMinusQueryIndicatorOccurence(), firstMinusQueryIndicatorText) +
+                    sqlMinus +
+                    replaceNthIndexOf(sql2, cmpSqlResultsTest.getCompare().getSqls().get(1).getMinusQueryIndicatorOccurence(), firstMinusQueryIndicatorText)
+            );
         } else {
             sqlStrBuff.append(sql1).append(sqlMinus).append(sql2);
         }
@@ -224,9 +229,11 @@ public class MinusComparator extends Comparator {
         sqlStrBuff.append("(");
 
         if(compare.isMinusQueryIndicatorOn() && compare.getDiffTableSize() > 0) {
-            sqlStrBuff.append(replaceNthIndexOf(sql2,cmpSqlResultsTest.getCompare().getSqls().get(1).getMinusQueryIndicatorOccurence()
-                    ,secondMinusQueryIndicatorText)).append(sqlMinus).append(replaceNthIndexOf(sql1
-                    ,cmpSqlResultsTest.getCompare().getSqls().get(0).getMinusQueryIndicatorOccurence(),secondMinusQueryIndicatorText));
+            sqlStrBuff.append(
+                    replaceNthIndexOf(sql2, cmpSqlResultsTest.getCompare().getSqls().get(1).getMinusQueryIndicatorOccurence(), secondMinusQueryIndicatorText) +
+                    sqlMinus +
+                    replaceNthIndexOf(sql1, cmpSqlResultsTest.getCompare().getSqls().get(0).getMinusQueryIndicatorOccurence(), secondMinusQueryIndicatorText)
+            );
         } else {
             sqlStrBuff.append(sql2).append(sqlMinus).append(sql1);
         }
@@ -234,21 +241,30 @@ public class MinusComparator extends Comparator {
         return sqlStrBuff.toString();
 
     }
-
-    public static String replaceNthIndexOf(String str, int occurence, String replace)
+    //add tuple source just before nth "FROM" (case-insensitive)
+    public static String replaceNthIndexOf(String str, String occurrence, String replace)
             throws IndexOutOfBoundsException {
+
         int index = -1;
-        String regex = "(?i:F)(?i:R)(?i:O)(?i:M)";
-        Pattern p = Pattern.compile(regex, Pattern.MULTILINE);
+        String regex = "from";
+        Pattern p = Pattern.compile(regex, Pattern.MULTILINE | Pattern.CASE_INSENSITIVE);
         Matcher m = p.matcher(str);
-        while(m.find()) {
-            if (--occurence == 0) {
-                index = m.start();
-                break;
+
+        //check which occurrence of FROM should be replaced, or is it all occurrences?
+        try {
+            int intOccurrence = Integer.parseInt(occurrence.trim());
+            while(m.find()) {
+                if (--intOccurrence == 0) {
+                    index = m.start();
+                    break;
+                }
             }
+            if (index < 0) throw new IndexOutOfBoundsException();
+            return  str.substring(0, index)+ replace + str.substring(index+ 4, str.length());
+        } catch (NumberFormatException nfe) { //let's assume not-a-number means "*"
+            return str.replaceAll("(?i)FROM", replace );
         }
-        if (index < 0) throw new IndexOutOfBoundsException();
-        return  str.substring(0, index)+ replace + str.substring(index+ 4, str.length());
+
     }
 
     private String getCountQuery(String minusSqlQuery) {
