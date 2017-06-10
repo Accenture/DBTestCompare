@@ -92,15 +92,14 @@ public class DBTestCompare implements ITest {
                     assertList.forEach(a -> logInfo2All(a.getAssertType().name() + " " + a.getValue(), tcMsgs));
                     assertList.forEach(a -> a.getAssertType().assertByType(effFinalTR.getNmbOfRows(), a.getValue()));
                 }
-            } else {
-                if(compare.getCompareMode() == CompareMode.FETCH || compare.getCompareMode() == CompareMode.FILE) {
+            } else if(compare.getCompareMode() == CompareMode.FETCH || compare.getCompareMode() == CompareMode.FILE) {
                     Assert.assertEquals(testResults.getNmbOfRows(), Integer.valueOf(0),
-                            "Among " + testResults.getNmbOfComparedRows() + " compared rows, some differences in SQL queries results found - ");
-                } else {
+                            "Among " + testResults.getNmbOfComparedRows() +
+                                    " compared rows, some differences in SQL queries results found - ");
+            } else {
                     Assert.assertEquals(testResults.getNmbOfRows(), Integer.valueOf(0),
                             "Differences in SQL queries found - ");
                 }
-            }
 
             if(compare.getCompareMode() == CompareMode.FETCH || compare.getCompareMode() == CompareMode.FILE){
                 logInfo2All("TEST PASSED, Compared rows:" + testResults.getNmbOfComparedRows(),tcMsgs);
