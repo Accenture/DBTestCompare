@@ -201,6 +201,12 @@ public class FileComparator extends Comparator {
             testResults.setRows(rows);
             testResults.setNmbOfRows(diffCounter);
             testResults.setNmbOfComparedRows(rowNmb);
+            savedTimes1.setNumberOfComparedRows(String.valueOf(rowNmb));
+            savedTimes2.setNumberOfComparedRows(String.valueOf(rowNmb));
+            if(diffCounter==0){
+                savedTimes1.setTestResult("Passed");
+                savedTimes2.setTestResult("Passed");
+            }
             return testResults;
         } finally {
             savedTimes2.StopMeasure();

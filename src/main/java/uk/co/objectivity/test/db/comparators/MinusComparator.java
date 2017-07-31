@@ -164,9 +164,11 @@ public class MinusComparator extends Comparator {
                 }
             }
             testResults.setRows(rows);
-
             return testResults;
         } finally {
+            if(rowCount==0){
+                savedTimes.setTestResult("Passed");
+            }
             if (stmt != null)
                 try {
                     stmt.close();

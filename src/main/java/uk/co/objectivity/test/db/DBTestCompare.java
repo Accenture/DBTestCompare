@@ -27,6 +27,7 @@ import static uk.co.objectivity.test.db.TestDataProvider.savedTimesList;
 
 import java.lang.reflect.Field;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
@@ -91,6 +92,11 @@ public class DBTestCompare implements ITest {
                     TestResults effFinalTR = testResults;
                     assertList.forEach(a -> logInfo2All(a.getAssertType().name() + " " + a.getValue(), tcMsgs));
                     assertList.forEach(a -> a.getAssertType().assertByType(effFinalTR.getNmbOfRows(), a.getValue()));
+                    int p = getIndexByName(testParams.getTestName());
+                    if(p >= 0){
+                        savedTimesList.get(p).setTestResult("Passed");
+                    }
+
                 }
             } else if(compare.getCompareMode() == CompareMode.FETCH || compare.getCompareMode() == CompareMode.FILE) {
                     Assert.assertEquals(testResults.getNmbOfRows(), Integer.valueOf(0),
@@ -130,6 +136,16 @@ public class DBTestCompare implements ITest {
 
     }
 
+    public int getIndexByName(String testName)
+    {
+        for(SavedTimes _item : savedTimesList)
+        {
+            if(_item.getTestName().equals(testName))
+                return savedTimesList.indexOf(_item);
+        }
+        return -1;
+    }
+
     private void logInfo2All(String message, TCMessages tcMsgs) {
         tcMsgs.appendStdOut(message);
         Printer.addReporterLog(message);
@@ -165,20 +181,50 @@ public class DBTestCompare implements ITest {
     @AfterSuite
     public  void displaySavedTimesStatistics(){
         savedTimesList.sort(Comparator.comparing(SavedTimes::getDuration).reversed());
+        Map<String, List<SavedTimes>> savedTimesListGrouped =
+                savedTimesList.stream().collect(Collectors.groupingBy(w -> w.getTestName()));
+
         CellStyle cs = new CellStyle(CellStyle.HorizontalAlign.left, CellStyle.AbbreviationStyle.crop,
                 CellStyle.NullStyle.emptyString);
-        Table t = new Table(3, BorderStyle.DESIGN_TUBES, ShownBorders
+        Table t = new Table(5, BorderStyle.DESIGN_TUBES, ShownBorders
                 .SURROUND_HEADER_AND_COLUMNS, false, "");
         t.addCell("Test Name", cs);
         t.addCell("Measure Type", cs);
         t.addCell("Duration min:s:ms", cs);
-        savedTimesList.forEach(s -> {t.addCell(s.getTestName().trim(), cs)
-            ;t.addCell(s.getMeasureType().trim(), cs);t.addCell(s.getFormattedDuration().replace("min:s:ms","").trim(), cs);});
-        String stringTable = "Statistics of queries execution (" + savedTimesList.size() + " rows):\r\n" + t.render();
+        t.addCell("Compared rows", cs);
+        t.addCell("Status", cs);
+        int i=0;
+        savedTimesListGrouped.forEach((String key, List<SavedTimes> value) -> {
+            value.forEach((SavedTimes v) -> {
+                t.addCell(v.getTestName().trim(), cs)
+                ;
+                t.addCell(v.getMeasureType().trim(), cs);
+                t.addCell(v.getFormattedDuration().replace("min:s:ms", "").trim(), cs)
+                ;
+                t.addCell(v.getNumberOfComparedRows(), cs);
+                t.addCell(v.getTestResult().trim(), cs);
+            });
+        });
+        String stringTable = "Statistics of queries execution  group by test name(" + savedTimesListGrouped.size() + " rows):\r\n" + t.render();
         Printer.addReporterLog(stringTable);
 
         log.log(Level.OFF, "##teamcity[message '"+stringTable+"']");
         log.info(stringTable);
+
+        Table ts = new Table(3, BorderStyle.DESIGN_TUBES, ShownBorders
+                .SURROUND_HEADER_AND_COLUMNS, false, "");
+        ts.addCell("Test Name", cs);
+        ts.addCell("Measure Type", cs);
+        ts.addCell("Duration min:s:ms", cs);
+        savedTimesList.forEach(s -> {ts.addCell(s.getTestName().trim(), cs)
+        ;ts.addCell(s.getMeasureType().trim(), cs);ts.addCell(s.getFormattedDuration().replace("min:s:ms","").trim(), cs);});
+
+        stringTable = "Statistics of queries execution sorted by time execution (" + savedTimesList.size() + " rows):\r\n" + ts.render();
+        Printer.addReporterLog(stringTable);
+
+        log.log(Level.OFF, "##teamcity[message '"+stringTable+"']");
+        log.info(stringTable);
+
     }
 
 }
