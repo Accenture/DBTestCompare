@@ -32,6 +32,17 @@ public class SavedTimes {
     private long stopTime;
     private long duration;
     private String formattedDuration;
+    private String numberOfComparedRows="-";
+
+    public String getTestResult() {
+        return testResult;
+    }
+
+    public void setTestResult(String testResult) {
+        this.testResult = testResult;
+    }
+
+    private String testResult="Failed";
 
     public long getDuration() {
         return duration;
@@ -51,6 +62,15 @@ public class SavedTimes {
     public SavedTimes(String testName)
     {
         this.testName = testName;
+    }
+
+    public String getNumberOfComparedRows() {
+        return numberOfComparedRows;
+    }
+
+    public void setNumberOfComparedRows(String numberOfComparedRows)
+    {
+        this.numberOfComparedRows = numberOfComparedRows;
     }
 
     public void SetDuration(long loadTime)

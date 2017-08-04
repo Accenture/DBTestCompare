@@ -1,0 +1,50 @@
+<cmpSqlResultsTest>
+    <compare mode="MINUS" defaultDatasourceName="SQL_SERVER" diffTableSize="5" minusQueryIndicatorOn="true">
+        <sql minusQueryIndicatorOccurence="*" minusQueryIndicatorText="ImportLayer">
+         <![CDATA[
+(SELECT [AddressID]
+      ,[AddressLine1]
+      ,[AddressLine2]
+      ,[City]
+      ,[StateProvinceID]
+      ,[PostalCode]
+      ,[ModifiedDate]
+  FROM [AdventureWorks2008R2].[Person].[Address]
+  where AddressID <> 1
+UNION ALL
+SELECT [AddressID]
+      ,[AddressLine1]
+      ,[AddressLine2]
+      ,[City]
+      ,[StateProvinceID]
+      ,[PostalCode]
+      ,[ModifiedDate]
+  FROM [AdventureWorks2008R2].[Person].[Address]
+  where AddressID <> 2)
+        ]]>
+        </sql>
+        <sql minusQueryIndicatorOccurence="*" minusQueryIndicatorText="ModelLayer" >
+        <![CDATA[
+(SELECT [AddressID]
+      ,[AddressLine1]
+      ,[AddressLine2]
+      ,[City]
+      ,[StateProvinceID]
+      ,[PostalCode]
+      ,[ModifiedDate]
+  FROM [AdventureWorks2008R2].[Person].[Address]
+    where AddressID <> 1
+UNION ALL
+SELECT [AddressID]
+      ,[AddressLine1]
+      ,[AddressLine2]
+      ,[City]
+      ,[StateProvinceID]
+      ,[PostalCode]
+      ,[ModifiedDate]
+  FROM [AdventureWorks2008R2].[Person].[Address]
+    where AddressID <> 2)
+        ]]>
+        </sql>
+    </compare>
+</cmpSqlResultsTest>

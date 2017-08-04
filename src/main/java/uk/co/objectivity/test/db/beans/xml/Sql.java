@@ -40,7 +40,7 @@ public class Sql {
     private String datasourceName;
 
     @XmlAttribute
-    private int minusQueryIndicatorOccurence = 1;
+    private String minusQueryIndicatorOccurence = "1";
 
     @XmlAttribute
     private int startAtRow = 1;
@@ -76,7 +76,7 @@ public class Sql {
         this.filename = filename;
     }
 
-    public int getMinusQueryIndicatorOccurence() {
+    public String getMinusQueryIndicatorOccurence() {
         return minusQueryIndicatorOccurence;
     }
 

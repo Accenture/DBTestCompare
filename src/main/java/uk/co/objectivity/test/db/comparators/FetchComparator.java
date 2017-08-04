@@ -172,11 +172,14 @@ public class FetchComparator extends Comparator {
                     // we want NULL to be displayed (to distinguish it from the empty string)
                     if (value1 == null) value1 = "<NULL>";
                     if (value2 == null) value2 = "<NULL>";
-                    row1.add(value1.toString());
-                    row2.add(value2.toString());
+
                     if (!equal(value1, value2, compare.getDelta())) {
                         isRowDiff = true;
+                        value1="<DIFF>" +value1;
+                        value2="<DIFF>" +value2;
                     }
+                    row1.add(value1.toString());
+                    row2.add(value2.toString());
                 }
                 if (rs1NotEmpty) writeRowAsCSV(src1PWriter, row1, true);
                 if (rs2NotEmpty) writeRowAsCSV(src2PWriter, row2, true);
@@ -198,6 +201,12 @@ public class FetchComparator extends Comparator {
             testResults.setRows(rows);
             testResults.setNmbOfRows(diffCounter);
             testResults.setNmbOfComparedRows(rowNmb);
+            savedTimes1.setNumberOfComparedRows(String.valueOf(rowNmb));
+            savedTimes2.setNumberOfComparedRows(String.valueOf(rowNmb));
+            if(diffCounter==0){
+                savedTimes1.setTestResult("Passed");
+                savedTimes2.setTestResult("Passed");
+            }
             return testResults;
         } finally {
             if (stmt1 != null)
