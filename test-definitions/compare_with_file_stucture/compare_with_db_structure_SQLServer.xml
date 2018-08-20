@@ -31,8 +31,7 @@ FROM    sysobjects so
         INNER JOIN syscolumns sc ON so.id = sc.id
         INNER JOIN sys.types st ON st.system_type_id = sc.xtype
 WHERE   so.xtype = 'U'
-ORDER BY so.name ,
-        sc.colorder;
+ORDER BY 1,2,3,4;
          ]]>
         </sql>
         <!-- separator -> CSV file separtor. Default is "," -->
