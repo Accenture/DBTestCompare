@@ -1,5 +1,5 @@
 <cmpSqlResultsTest>
-    <!-- diffTableSize="0"  nie generuje tabeli z wynikami (jest szybsze) -->
+    <!-- diffTableSize="0"  table with differences won't displayed in results (faster execution of test) -->
     <compare mode="MINUS" defaultDatasourceName="SQL_SERVER" diffTableSize="0" >
         <sql>
             <![CDATA[

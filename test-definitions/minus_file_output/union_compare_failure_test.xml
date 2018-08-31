@@ -1,6 +1,6 @@
 <cmpSqlResultsTest>
-    <!-- diffTableSize="0"  nie generuje tabeli z wynikami (jest szybsze) -->
-    <compare mode="MINUS" defaultDatasourceName="SQL_SERVER" diffTableSize="20" fileOutputOn="true" chunk="0">
+    <!-- diffTableSize="0"  table with differences won't displayed in results (faster execution of test) -->
+    <compare mode="MINUS" defaultDatasourceName="SQL_SERVER" diffTableSize="20" fileOutputOn="true">
         <sql>
             <![CDATA[
 SELECT SalesOrderID
