@@ -192,21 +192,21 @@ public class MinusComparator extends Comparator {
         //default query indicator for SQL1
         if(cmpSqlResultsTest.getCompare().getSqls().get(0).getMinusQueryIndicatorText()== null
                 || cmpSqlResultsTest.getCompare().getSqls().get(0).getMinusQueryIndicatorText().isEmpty()){
-            firstMinusQueryIndicatorText= ",'query1' \n From ";
+            firstMinusQueryIndicatorText= ",'query1' as \"Environment\" \n From ";
             cmpSqlResultsTest.getCompare().getSqls().get(0).setMinusQueryIndicatorText("query1");
         }
         else {
-            firstMinusQueryIndicatorText=",'"+cmpSqlResultsTest.getCompare().getSqls().get(0).getMinusQueryIndicatorText()+"' \n From ";
+            firstMinusQueryIndicatorText=",'"+cmpSqlResultsTest.getCompare().getSqls().get(0).getMinusQueryIndicatorText()+"' as \"Environment\" \n From ";
         }
 
         //default query indicator for SQL2
         if(cmpSqlResultsTest.getCompare().getSqls().get(1).getMinusQueryIndicatorText()== null
                 || cmpSqlResultsTest.getCompare().getSqls().get(0).getMinusQueryIndicatorText().isEmpty()) {
-            secondMinusQueryIndicatorText = ",'query2' \n From ";
+            secondMinusQueryIndicatorText = ",'query2' as \"Environment\" \n From ";
             cmpSqlResultsTest.getCompare().getSqls().get(1).setMinusQueryIndicatorText("query2");
         }
         else {
-            secondMinusQueryIndicatorText=",'"+cmpSqlResultsTest.getCompare().getSqls().get(1).getMinusQueryIndicatorText()+"' \n From ";
+            secondMinusQueryIndicatorText=",'"+cmpSqlResultsTest.getCompare().getSqls().get(1).getMinusQueryIndicatorText()+"' as \"Environment\" \n From ";
         }
 
         // TODO check if other than SQLServerDriver databases has somethings else (instead of MINUS)
