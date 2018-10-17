@@ -33,7 +33,8 @@
         <datasource maxPollSize="6">
             <name>SQL_SERVER</name>
             <driver>com.microsoft.sqlserver.jdbc.SQLServerDriver</driver>
-            <url>jdbc:sqlserver://${SQL_SERVER}\${SQL_SERVERINSTANCE};databaseName=${SQL_SERVERDBNAME}</url>
+			<!--<url>jdbc:sqlserver://${SQL_SERVER}\${SQL_SERVERINSTANCE};databaseName=${SQL_SERVERDBNAME}</url>-->
+            <url>jdbc:sqlserver://${SQL_SERVER};databaseName=${SQL_SERVERDBNAME}</url>
             <user>${USERNAME}</user>
             <password>${PASSWORD}</password>
         </datasource>
