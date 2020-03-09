@@ -15,17 +15,13 @@ steps:
 - task: Maven@3
   inputs:
     mavenPomFile: 'pom.xml'
-    mavenOptions: '-Xmx3072m'
+    publishJUnitResults: false
+    mavenOptions: '-Xmx3072m --debug'
     javaHomeOption: 'JDKVersion'
     jdkVersionOption: '1.8'
     jdkArchitectureOption: 'x64'
     goals: 'clean compile assembly:single'
 
-- task: PublishPipelineArtifact@1
-  inputs:
-    targetPath: './target/DBTestCompare-*-SNAPSHOT-jar-with-dependencies.jar'
-    artifact: 'Jar'
-    publishLocation: 'pipeline'
 
 
 
