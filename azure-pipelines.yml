@@ -1,0 +1,39 @@
+# Maven
+# Build your Java project and run tests with Apache Maven.
+# Add steps that analyze code, save build artifacts, deploy, and more:
+# https://docs.microsoft.com/azure/devops/pipelines/languages/java
+
+trigger:
+  branches:
+    include:
+    - '*'
+
+pool:
+  vmImage: 'windows-latest'
+
+variables:
+    dBTestCompareVersion: '1.4'
+
+steps:
+- task: PowerShell@2
+  inputs:
+    targetType: 'inline'
+    script: '((Get-Content -path ./pom.xml -Raw) -replace ''<version>1.0-SNAPSHOT</version>'',''<version>$(dBTestCompareVersion)-SNAPSHOT</version>'') | Set-Content -Path ./pom.xml'
+
+- task: Maven@3
+  inputs:
+    mavenPomFile: 'pom.xml'
+    publishJUnitResults: false
+    mavenOptions: '-Xmx3072m'
+    javaHomeOption: 'JDKVersion'
+    jdkVersionOption: '1.8'
+    jdkArchitectureOption: 'x64'
+    goals: 'clean compile assembly:single'
+
+- task: PublishPipelineArtifact@1
+  inputs:
+    targetPath: './target/DBTestCompare-$(dBTestCompareVersion)-SNAPSHOT-jar-with-dependencies.jar'
+    artifact: 'JAR'
+    publishLocation: 'pipeline'
+
+
