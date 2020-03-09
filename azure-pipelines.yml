@@ -16,7 +16,7 @@ steps:
   inputs:
     mavenPomFile: 'pom.xml'
     publishJUnitResults: false
-    mavenOptions: '-Xmx3072m --debug'
+    mavenOptions: '-Xmx3072m'
     javaHomeOption: 'JDKVersion'
     jdkVersionOption: '1.8'
     jdkArchitectureOption: 'x64'
