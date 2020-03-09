@@ -32,7 +32,7 @@ steps:
 
 - task: PublishPipelineArtifact@1
   inputs:
-    targetPath: './target/*.jar'
+    targetPath: './target/DBTestCompare-$(dBTestCompareVersion)-SNAPSHOT-jar-with-dependencies.jar'
     artifact: 'JAR'
     publishLocation: 'pipeline'
 
