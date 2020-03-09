@@ -22,6 +22,10 @@ steps:
     jdkArchitectureOption: 'x64'
     goals: 'clean compile assembly:single'
 
-
+- task: PublishPipelineArtifact@1
+  inputs:
+    targetPath: './target/*.jar'
+    artifact: 'JAR'
+    publishLocation: 'pipeline'
 
 
