@@ -18,7 +18,7 @@ steps:
 - task: PowerShell@2
   inputs:
     targetType: 'inline'
-    script: '((Get-Content -path ./pom.xml -Raw) -replace ''<version>1.0-SNAPSHOT</version>'',''<version>$(dBTestCompareVersion)-SNAPSHOT</version>'') | Set-Content -Path ./pom.xml'
+    script: '((Get-Content -path ./pom.xml -Raw) -replace ''<version>\d\.\d-SNAPSHOT<\/version>'',''$<version>$(dBTestCompareVersion)-SNAPSHOT</version>'') | Set-Content -Path ./pom.xml'
 
 - task: Maven@3
   inputs:
