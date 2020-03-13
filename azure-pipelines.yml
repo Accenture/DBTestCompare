@@ -9,7 +9,7 @@ trigger:
     - '*'
 
 pool:
-  vmImage: 'windows-latest'
+  vmImage: 'ubuntu-latest'
 
 variables:
     dBTestCompareVersion: '1.4'
