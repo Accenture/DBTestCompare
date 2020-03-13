@@ -36,6 +36,11 @@ steps:
     dockerComposeFile: '**/docker-compose.yml'
     action: 'Run a Docker Compose command'
     dockerComposeCommand: 'up -d'
+    
+  - task: PowerShell@2
+  inputs:
+    targetType: 'inline'
+    script: 'docker ps -a'
 
 - task: PublishPipelineArtifact@1
   inputs:
