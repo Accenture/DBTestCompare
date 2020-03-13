@@ -8,7 +8,7 @@ services:
       MYSQL_USER: dbquality 
       MYSQL_PASSWORD: dbquality
     ports:
-      - 3306:3306
+      - 13306:3306
     volumes:
       - ./my-mysql/sql-scripts:/docker-entrypoint-initdb.d/
       - mysql_db_data_container:/var/lib/mysql
