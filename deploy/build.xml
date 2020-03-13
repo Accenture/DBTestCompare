@@ -25,7 +25,7 @@
 				<fileset dir="@{fromdir}" includes="@{includefiles}" />
 				<filterchain>
 					<filterreader classname="org.apache.tools.ant.filters.ReplaceTokens">
-						<param type="propertiesfile" value=".\deploy\Config\${config}" />
+						<param type="propertiesfile" value="./deploy/Config/${config}" />
 						<param type="tokenchar" name="begintoken" value="${" />
 						<param type="tokenchar" name="endtoken" value="}" />
 					</filterreader>
