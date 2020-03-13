@@ -50,13 +50,14 @@ steps:
     targetType: 'inline'
     script: 'docker ps -a'
 
-- task: PowerShell@2
+- task: Ant@1
   inputs:
-    targetType: 'inline'
-    script: |
-      chmod +x ./target/DBTestCompare-$(dBTestCompareVersion)-SNAPSHOT-jar-with-dependencies.jar
-      
-      java -jar ./target/DBTestCompare-$(dBTestCompareVersion)-SNAPSHOT-jar-with-dependencies.jar
+    buildFile: './deploy/build.xml'
+    options: 
+    targets: 'testdbq.run'
+    publishJUnitResults: true
+    testResultsFiles: '**/TEST-*.xml'
+    javaHomeOption: 'JDKVersion'
 
 - task: PublishPipelineArtifact@1
   inputs:
