@@ -49,7 +49,15 @@ steps:
   inputs:
     targetType: 'inline'
     script: 'docker ps -a'
-    
+
+- task: PowerShell@2
+  inputs:
+    targetType: 'inline'
+    script: |
+      chmod +x ./target/DBTestCompare-$(dBTestCompareVersion)-SNAPSHOT-jar-with-dependencies.jar
+      
+      java -jar ./target/DBTestCompare-$(dBTestCompareVersion)-SNAPSHOT-jar-with-dependencies.jar
+
 - task: PublishPipelineArtifact@1
   inputs:
     targetPath: './target/DBTestCompare-$(dBTestCompareVersion)-SNAPSHOT-jar-with-dependencies.jar'
