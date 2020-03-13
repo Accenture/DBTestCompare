@@ -62,7 +62,7 @@
 	<target name="compile" description="Compile DBTestCompare project">
 		<echo>${line.separator}Compile DBTestCompare project</echo>
 		<echo>${line.separator}</echo>
-		<exec dir="..\" executable="cmd" failonerror="yes">
+		<exec dir="..\" executable="powershell" failonerror="yes">
 			<arg value="/C" />
 			<arg value="mvn" />
 			<arg line="clean compile assembly:single" />
