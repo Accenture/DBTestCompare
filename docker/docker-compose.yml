@@ -1,0 +1,17 @@
+version: '3.7'
+services:
+  mysql_db_container:
+    image: mysql:latest
+    environment:
+      MYSQL_ROOT_PASSWORD: my-secret-pw
+      MYSQL_DATABASE: dbquality
+      MYSQL_USER: dbquality 
+      MYSQL_PASSWORD: dbquality
+    ports:
+      - 3306:3306
+    volumes:
+      - ./my-mysql/sql-scripts:/docker-entrypoint-initdb.d/
+      - mysql_db_data_container:/var/lib/mysql
+
+volumes:
+  mysql_db_data_container:
