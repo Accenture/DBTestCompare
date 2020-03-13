@@ -12,6 +12,19 @@ services:
     volumes:
       - ./my-mysql/sql-scripts:/docker-entrypoint-initdb.d/
       - mysql_db_data_container:/var/lib/mysql
+  
+  postgres:
+    image: postgres:latest
+    environment:
+      POSTGRES_USER: dbquality
+      POSTGRES_PASSWORD: dbquality
+      POSTGRES_DB: dbquality
+    volumes:
+       - ./my-postgres/sql-scripts:/docker-entrypoint-initdb.d/
+       - postgresql_db_data_container:/var/lib/postgresql/data/
+    ports:
+      - 5432:5432
 
 volumes:
-  mysql_db_data_container:
+  mysql_db_data_container: 
+  postgresql_db_data_container:
