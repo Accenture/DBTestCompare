@@ -23,7 +23,7 @@ steps:
   inputs:
     buildFile: './deploy/build.xml'
     options: '-Dconfig=DEV02'
-    targets: 'compile,tokens.copy.files'
+    targets: 'compile tokens.copy.files'
     publishJUnitResults: false
     javaHomeOption: 'JDKVersion'
 
