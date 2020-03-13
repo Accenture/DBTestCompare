@@ -19,16 +19,13 @@ steps:
   inputs:
     targetType: 'inline'
     script: '((Get-Content -path ./pom.xml -Raw) -replace ''<version>\d\.\d-SNAPSHOT<\/version>'',''<version>$(dBTestCompareVersion)-SNAPSHOT</version>'') | Set-Content -Path ./pom.xml'
-
-- task: Maven@3
+- task: Ant@1
   inputs:
-    mavenPomFile: 'pom.xml'
+    buildFile: './deploy/build.xml'
+    options: '-Dconfig=DEV02'
+    targets: 'compile,tokens.copy.files'
     publishJUnitResults: false
-    mavenOptions: '-Xmx3072m'
     javaHomeOption: 'JDKVersion'
-    jdkVersionOption: '1.8'
-    jdkArchitectureOption: 'x64'
-    goals: 'clean compile assembly:single'
 
 - task: DockerCompose@0
   inputs:
@@ -47,5 +44,3 @@ steps:
     targetPath: './target/DBTestCompare-$(dBTestCompareVersion)-SNAPSHOT-jar-with-dependencies.jar'
     artifact: 'JAR'
     publishLocation: 'pipeline'
-
-

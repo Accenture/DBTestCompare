@@ -48,14 +48,14 @@
 		<datasource maxPollSize="6">
             <name>MySQL</name>
             <driver>com.mysql.jdbc.Driver</driver>
-            <url>jdbc:mysql://${MYSQLDBSERVER}:3306/${MYSQLDBNAME}</url>
+            <url>jdbc:mysql://${MYSQLDBSERVER}:${MYSQLDBPORT}/${MYSQLDBNAME}</url>
             <user>${USERNAME}</user>
             <password>${PASSWORD}</password>
 		</datasource>
 		<datasource maxPollSize="6">
             <name>MariaDB</name>
             <driver>org.mariadb.jdbc.Driver</driver>
-            <url>jdbc:mariadb://${MYSQLDBSERVER}:3306/${MYSQLDBNAME}</url>
+            <url>jdbc:mariadb://${MYSQLDBSERVER}:${MYSQLDBPORT}/${MYSQLDBNAME}</url>
             <user>${USERNAME}</user>
             <password>${PASSWORD}</password>
 		</datasource>
