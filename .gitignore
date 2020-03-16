@@ -2,3 +2,7 @@
 /target/
 /test-output/
 /test-definitions2/
+/AdventureWorks2008R2FullDatabaseBackup.zip
+/sqljdbc_8.2.0.0_enu.zip
+/sql-scripts.zip
+/docker/**/*.sql
