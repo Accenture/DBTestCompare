@@ -32,14 +32,6 @@ steps:
     action: 'Run a Docker Compose command'
     dockerComposeCommand: 'up -d'
     
-- task: PowerShell@2
-  inputs:
-    filePath: './restoreBackup.ps1'
-    errorActionPreference: 'silentlyContinue'
-    
-- task: CmdLine@2
-  inputs:
-    script: 'docker exec -i sqlserver-container /opt/mssql-tools/bin/sqlcmd -S 127.0.0.1 -U SA -P ''yourStrongPassword11@'' -Q ''RESTORE DATABASE AdventureWorks2008R2 FROM DISK = "/var/opt/mssql/backup/AdventureWorks2008R2FullDatabaseBackup.bak" WITH MOVE "AdventureWorks2008R2_Data" TO "/var/opt/mssql/data/AdventureWorks2008R2.mdf", MOVE "AdventureWorks2008R2_Log" TO "/var/opt/mssql/data/AdventureWorks2008R2_1.LDF"'''
 - task: Ant@1
   inputs:
     buildFile: './deploy/build.xml'
@@ -52,6 +44,11 @@ steps:
 - task: PowerShell@2
   inputs:
     filePath: './zipArtifact.ps1'
+
+- task: PowerShell@2
+  inputs:
+    filePath: './restoreBackup.ps1'
+    errorActionPreference: 'silentlyContinue'
 
 - task: PublishPipelineArtifact@1
   inputs:
