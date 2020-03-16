@@ -45,7 +45,7 @@ steps:
 - task: Ant@1
   inputs:
     buildFile: './deploy/build.xml'
-    options: 
+    options: '-Dconfig=DEV02'
     targets: 'tokens.copy.files testdbq.run'
     publishJUnitResults: true
     testResultsFiles: '**/TEST-*.xml'

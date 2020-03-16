@@ -15,4 +15,4 @@ POSTGRESSSQLDBNAME=dbquality
 USERNAME=dbquality
 PASSWORD=dbquality
 SQL_SERVER_USERNAME=sa
-SQL_SERVER_PASSWORD=yourStrong(!)Password
+SQL_SERVER_PASSWORD=yourStrong22Password
