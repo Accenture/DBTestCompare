@@ -42,6 +42,12 @@ steps:
     jdkArchitectureOption: 'x64'
     goals: 'clean compile assembly:single'
     
+
+- task: PowerShell@2
+  inputs:
+    filePath: './restoreBackup.ps1'
+    errorActionPreference: 'silentlyContinue'
+    
 - task: Ant@1
   inputs:
     buildFile: './deploy/build.xml'
@@ -64,11 +70,6 @@ steps:
       compress-archive "README.md" DBTestCompare$(dBTestCompareVersion).zip -update
       compress-archive "LICENSE" DBTestCompare$(dBTestCompareVersion).zip -update
       compress-archive "LICENSE-3RD-PARTY" DBTestCompare$(dBTestCompareVersion).zip -update
-
-- task: PowerShell@2
-  inputs:
-    filePath: './restoreBackup.ps1'
-    errorActionPreference: 'silentlyContinue'
 
 - task: PublishPipelineArtifact@1
   inputs:
