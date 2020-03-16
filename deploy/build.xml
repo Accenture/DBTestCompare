@@ -78,9 +78,9 @@
 	<target name="mvn_unix" if="isUnix">
 		<echo>${line.separator}Compile DBTestCompare project</echo>
 		<echo>${line.separator}</echo>
-	<exec dir="." executable="sh">
-		<arg line="-c 'clean compile assembly:single'" />
-	</exec>
+		<exec dir="..\" executable="sh">
+			<arg line="-c 'mvn clean compile assembly:single'" />
+		</exec>
 	</target>
 	<target name="testdbq.run">
 		<echo>${line.separator}Execute tests</echo>
