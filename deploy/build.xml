@@ -45,8 +45,8 @@
 		<echo>${line.separator}Coping test examples</echo>
 		<echo>${line.separator}</echo>
 		<copyfiles fromdir="${sourceFile}\test-definitions" todir="${dist}\test-definitions" includefiles="**/**" flattenfolder="false" />
-     	<replace dir="${dist}\test-definitions\" includes="**\*.sql,**\*.xml" excludes="cmpSqlResults-config.xml" summary="true" failOnNoReplacements="true" >
-		  <replacefilter 
+		<replace dir="${dist}\test-definitions\" includes="**\*.sql,**\*.xml" excludes="cmpSqlResults-config.xml" summary="true" failOnNoReplacements="true" >
+		<replacefilter 
 			token="@datefrom@" 
 			value="${datefrom}"/>
 			<replacefilter 
@@ -59,14 +59,28 @@
 			</fileset>
 		</copy>
 	</target>
-	<target name="compile" description="Compile DBTestCompare project">
+	<condition property="isWindows">
+		<os family="windows" />
+	</condition>
+	<condition property="isUnix">
+		<os family="unix" />
+	</condition>
+	<target name="compile" depends="mvn_windows, mvn_unix"/>	
+	<target name="mvn_windows" description="Compile DBTestCompare project">
 		<echo>${line.separator}Compile DBTestCompare project</echo>
 		<echo>${line.separator}</echo>
-		<exec dir="..\" executable="powershell" failonerror="yes">
+		<exec dir="..\" executable="CMD" failonerror="yes">
 			<arg value="/C" />
 			<arg value="mvn" />
 			<arg line="clean compile assembly:single" />
 		</exec>
+	</target>
+	<target name="mvn_unix" if="isUnix">
+		<echo>${line.separator}Compile DBTestCompare project</echo>
+		<echo>${line.separator}</echo>
+	<exec dir="." executable="sh">
+		<arg line="-c 'clean compile assembly:single'" />
+	</exec>
 	</target>
 	<target name="testdbq.run">
 		<echo>${line.separator}Execute tests</echo>

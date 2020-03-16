@@ -15,28 +15,15 @@ variables:
     dBTestCompareVersion: '1.4'
 
 steps:
+
 - task: PowerShell@2
   inputs:
     targetType: 'inline'
     script: '((Get-Content -path ./pom.xml -Raw) -replace ''<version>\d\.\d-SNAPSHOT<\/version>'',''<version>$(dBTestCompareVersion)-SNAPSHOT</version>'') | Set-Content -Path ./pom.xml'
 
-- task: Maven@3
+- task: PowerShell@2
   inputs:
-    mavenPomFile: 'pom.xml'
-    publishJUnitResults: false
-    mavenOptions: '-Xmx3072m'
-    javaHomeOption: 'JDKVersion'
-    jdkVersionOption: '1.8'
-    jdkArchitectureOption: 'x64'
-    goals: 'clean compile assembly:single'
-    
-- task: Ant@1
-  inputs:
-    buildFile: './deploy/build.xml'
-    options: '-Dconfig=DEV02'
-    targets: 'tokens.copy.files'
-    publishJUnitResults: false
-    javaHomeOption: 'JDKVersion'
+    filePath: './downloadBackupAndJDBCDrivers.ps1'
 
 - task: DockerCompose@0
   inputs:
@@ -44,23 +31,26 @@ steps:
     dockerComposeFile: '**/docker-compose.yml'
     action: 'Run a Docker Compose command'
     dockerComposeCommand: 'up -d'
-    
+
 - task: PowerShell@2
   inputs:
-    targetType: 'inline'
-    script: 'docker ps -a'
+    filePath: './restoreBackup.ps1'
 
 - task: Ant@1
   inputs:
     buildFile: './deploy/build.xml'
     options: 
-    targets: 'testdbq.run'
+    targets: 'compile tokens.copy.files testdbq.run'
     publishJUnitResults: true
     testResultsFiles: '**/TEST-*.xml'
     javaHomeOption: 'JDKVersion'
 
+- task: PowerShell@2
+  inputs:
+    filePath: './zipArtifact.ps1'
+
 - task: PublishPipelineArtifact@1
   inputs:
-    targetPath: './target/DBTestCompare-$(dBTestCompareVersion)-SNAPSHOT-jar-with-dependencies.jar'
+    targetPath: './DBTestCompare$(dBTestCompareVersion).zip'
     artifact: 'JAR'
     publishLocation: 'pipeline'

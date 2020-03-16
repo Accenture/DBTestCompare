@@ -24,7 +24,19 @@ services:
        - postgresql_db_data_container:/var/lib/postgresql/data/
     ports:
       - 5432:5432
+      
+  sqlserver_db_container:
+    image: mcr.microsoft.com/mssql/server:2019-latest
+    container_name: sqlserver-container
+    environment:
+        SA_PASSWORD: yourStrong(!)Password
+        ACCEPT_EULA: Y
+    volumes:
+       - sqlserver_db_data_container:/var/opt/mssql
+    ports:
+      - 1433:1433
 
 volumes:
   mysql_db_data_container: 
   postgresql_db_data_container:
+  sqlserver_db_data_container:
