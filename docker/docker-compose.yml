@@ -29,7 +29,7 @@ services:
     image: mcr.microsoft.com/mssql/server:2019-latest
     container_name: sqlserver-container
     environment:
-        SA_PASSWORD: yourStrong(!)Password
+        SA_PASSWORD: yourStrongPassword11@
         ACCEPT_EULA: Y
     volumes:
        - sqlserver_db_data_container:/var/opt/mssql
