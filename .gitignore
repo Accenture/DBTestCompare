@@ -6,3 +6,7 @@
 /sqljdbc_8.2.0.0_enu.zip
 /sql-scripts.zip
 /docker/**/*.sql
+/docker/AdventureWorks2008R2FullDatabaseBackup.bak
+/jdbc_drivers/mssql-jdbc-8.2.0.jre11.jar
+/jdbc_drivers/mssql-jdbc-8.2.0.jre13.jar
+/jdbc_drivers/mssql-jdbc-8.2.0.jre8.jar
