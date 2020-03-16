@@ -34,8 +34,8 @@ steps:
     
 - task: PowerShell@2
   inputs:
-    errorActionPreference: 'continue'
     filePath: './restoreBackup.ps1'
+    errorActionPreference: 'silentlyContinue'
 
 - task: Ant@1
   inputs:
