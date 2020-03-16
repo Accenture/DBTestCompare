@@ -66,7 +66,7 @@
 		<os family="unix" />
 	</condition>
 	<target name="compile" depends="mvn_windows, mvn_unix"/>	
-	<target name="mvn_windows" description="Compile DBTestCompare project">
+	<target name="mvn_windows" description="Compile DBTestCompare project" if="isWindows">
 		<echo>${line.separator}Compile DBTestCompare project</echo>
 		<echo>${line.separator}</echo>
 		<exec dir="..\" executable="CMD" failonerror="yes">
