@@ -28,6 +28,8 @@ services:
   sqlserver_db_container:
     image: mcr.microsoft.com/mssql/server:2019-latest
     container_name: sqlserver-container
+    healthcheck:
+      test: /opt/mssql-tools/bin/sqlcmd -S localhost -U SA -P "yourStrong22Password" -Q 'select 1'
     environment:
         SA_PASSWORD: yourStrong22Password
         ACCEPT_EULA: Y
