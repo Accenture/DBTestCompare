@@ -32,14 +32,6 @@ steps:
     action: 'Run a Docker Compose command'
     dockerComposeCommand: 'up -d'
 
-- task: Ant@1
-  inputs:
-    buildFile: './deploy/build.xml'
-    options: '-Dconfig=DEV02'
-    targets: 'compile'
-    publishJUnitResults: false
-    javaHomeOption: 'JDKVersion'
-
 - task: PowerShell@2
   inputs:
     filePath: './restoreBackup.ps1'
@@ -49,7 +41,7 @@ steps:
   inputs:
     buildFile: './deploy/build.xml'
     options: '-Dconfig=DEV02'
-    targets: 'tokens.copy.files testdbq.run'
+    targets: 'compile tokens.copy.files testdbq.run'
     publishJUnitResults: true
     testResultsFiles: '**/TEST-*.xml'
     javaHomeOption: 'JDKVersion'

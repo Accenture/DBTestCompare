@@ -2,6 +2,7 @@ version: '3.7'
 services:
   sqlserver_db_container:
     image: mcr.microsoft.com/mssql/server:2019-latest
+    build: ./my_sqlserver
     container_name: sqlserver-container
     environment:
         SA_PASSWORD: yourStrong22Password
