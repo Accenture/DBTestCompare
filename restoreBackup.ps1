@@ -7,7 +7,7 @@ echo "restore backup"
 do	
 {
 	$JSON=docker inspect --format='{{json .State.Health}}'  sqlserver-container |  Out-String | ConvertFrom-Json
-	echo $JSON.Status.ToString()
+	Write-Host HEALTHCHECK: $JSON.Status.ToString() sqlserver-container
 	Start-Sleep -s 10
 }
 Until ($JSON.Status.ToString() -eq 'healthy')
