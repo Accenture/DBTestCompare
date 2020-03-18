@@ -11,4 +11,7 @@ do
 	Start-Sleep -s 10
 }
 Until ($JSON.Status.ToString() -eq 'healthy')
-docker exec -i sqlserver-container /opt/mssql-tools/bin/sqlcmd -S localhost -U SA -P "yourStrong22Password" -Q "RESTORE DATABASE AdventureWorks2008R2 FROM DISK = '/var/opt/mssql/backup/AdventureWorks2008R2FullDatabaseBackup.bak' WITH MOVE 'AdventureWorks2008R2_Data' TO '/var/opt/mssql/data/AdventureWorks2008R2.mdf', MOVE 'AdventureWorks2008R2_Log' TO '/var/opt/mssql/data/AdventureWorks2008R2_1.LDF'"
+docker exec -i sqlserver-container /opt/mssql-tools/bin/sqlcmd -S localhost -U SA -P "yourStrong22Password" `
+	-Q "RESTORE DATABASE AdventureWorks2008R2 FROM DISK = '/var/opt/mssql/backup/AdventureWorks2008R2FullDatabaseBackup.bak' `
+	WITH MOVE 'AdventureWorks2008R2_Data' TO '/var/opt/mssql/data/AdventureWorks2008R2.mdf', `
+	MOVE 'AdventureWorks2008R2_Log' TO '/var/opt/mssql/data/AdventureWorks2008R2_1.LDF'"
