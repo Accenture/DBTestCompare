@@ -7,7 +7,10 @@ trigger:
   branches:
     include:
     - '*'
-
+  tags:
+    include:
+    - '*'
+    
 pool:
   vmImage: 'ubuntu-latest'
 
@@ -18,8 +21,7 @@ steps:
 
 - task: PowerShell@2
   inputs:
-    targetType: 'inline'
-    script: '((Get-Content -path ./pom.xml -Raw) -replace ''<version>\d\.\d-SNAPSHOT<\/version>'',''<version>$(dBTestCompareVersion)-SNAPSHOT</version>'') | Set-Content -Path ./pom.xml'
+    filePath: './setDBTestCompareVersion.ps1'
 
 - task: PowerShell@2
   inputs:
@@ -48,19 +50,22 @@ steps:
 
 - task: PowerShell@2
   inputs:
-    targetType: 'inline'
-    script: |
-      Remove-Item -path "./target/jdbc_drivers" -Recurse -Include mssql*.jar
-      Get-ChildItem -path "./target/" -Recurse -Include DBTestCompare-*SNAPSHOT-jar-with-dependencies.jar | compress-archive -DestinationPath ./DBTestCompare$(dBTestCompareVersion).zip
-      compress-archive -path "./test-definitions" DBTestCompare$(dBTestCompareVersion).zip -update
-      compress-archive -path "./deploy" DBTestCompare$(dBTestCompareVersion).zip -update
-      compress-archive -path "./target/jdbc_drivers" DBTestCompare$(dBTestCompareVersion).zip -update
-      compress-archive "README.md" DBTestCompare$(dBTestCompareVersion).zip -update
-      compress-archive "LICENSE" DBTestCompare$(dBTestCompareVersion).zip -update
-      compress-archive "LICENSE-3RD-PARTY" DBTestCompare$(dBTestCompareVersion).zip -update
+    filePath: './zipArtifact.ps1'
 
 - task: PublishPipelineArtifact@1
   inputs:
-    targetPath: './DBTestCompare$(dBTestCompareVersion).zip'
+    targetPath: './zip/DBTestCompare$(dBTestCompareVersion).zip'
     artifact: 'JAR'
     publishLocation: 'pipeline'
+
+- task: GitHubRelease@1
+  condition: startsWith(variables['Build.SourceBranch'], 'refs/tags/')
+  inputs:
+    gitHubConnection: 'github.com_dbtestcompare'
+    repositoryName: '$(Build.Repository.Name)'
+    action: 'edit'
+    target: '$(Build.SourceVersion)'
+    tag: '$(dBTestCompareVersion)'
+    title: 'Version $(dBTestCompareVersion)'
+    changeLogCompareToRelease: 'lastFullRelease'
+    changeLogType: 'commitBased'

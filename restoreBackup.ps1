@@ -1,9 +1,9 @@
 docker ps -a
-echo "mkdir /var/opt/mssql/backup"
+Write-Output "mkdir /var/opt/mssql/backup"
 docker exec -i "sqlserver-container" mkdir "/var/opt/mssql/backup"
-echo "copy ./docker/AdventureWorks2008R2FullDatabaseBackup.bak to /var/opt/mssql/backup" 
+Write-Output "copy ./docker/AdventureWorks2008R2FullDatabaseBackup.bak to /var/opt/mssql/backup" 
 docker cp "./docker/AdventureWorks2008R2FullDatabaseBackup.bak" sqlserver-container:/var/opt/mssql/backup
-echo "restore backup"
+Write-Output "restore backup"
 do	
 {
 	$JSON=docker inspect --format='{{json .State.Health}}'  sqlserver-container |  Out-String | ConvertFrom-Json
