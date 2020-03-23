@@ -1,4 +1,4 @@
-$zipFile="./zip/DBTestCompare$env:dBTestCompareVersion.zip"
+$zipFile="./zip/DBTestCompare$env:DBTESTCOMPAREVERSION.zip"
 New-Item -Path './zip' -ItemType Directory -Force
 Write-Output "Artifact file name $zipFile"
 Remove-Item -path "./target/jdbc_drivers" -Recurse -Include mssql*.jar
