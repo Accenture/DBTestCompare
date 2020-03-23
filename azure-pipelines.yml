@@ -15,7 +15,8 @@ pool:
   vmImage: 'ubuntu-latest'
 
 variables:
-    dBTestCompareVersion: '1.4'
+- name: dBTestCompareVersion
+  value: 1.4
 
 steps:
 
