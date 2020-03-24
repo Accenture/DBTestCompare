@@ -22,7 +22,7 @@
                       can handle. Default is 0.
     -->
     <compare mode="FETCH" fetchSize="100" chunk="10" diffTableSize="5">
-        <sql datasourceName="MariaDB" filename="sql1.sql" />
+        <sql datasourceName="MySQL" filename="sql1.sql" />
         <sql datasourceName="PostgreSQL" filename="sql2.sql" />
     </compare>
 </cmpSqlResultsTest>
