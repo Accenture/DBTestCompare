@@ -1,7 +1,7 @@
-SELECT `AddressID`,
-`AddressLine1`,
-`City`,
-`StateProvinceID`,
-`PostalCode`,
-`ModifiedDate` FROM `personaddress`
- order by `AddressID`;
+SELECT `personaddress`.`AddressID`,
+    `personaddress`.`AddressLine1`,
+    `personaddress`.`City`,
+    `personaddress`.`StateProvinceID`,
+    `personaddress`.`PostalCode`,
+    `personaddress`.`ModifiedDate`
+FROM `dbquality`.`personaddress`;

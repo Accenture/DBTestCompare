@@ -35,6 +35,6 @@ ORDER BY 1,2,3,4;
          ]]>
         </sql>
         <!-- separator -> CSV file separtor. Default is "," -->
-        <file filename="db_structure_currentFileWithHeader.csv" separator="," startAtRow="2" />
+        <file filename="db_structure_currentFileWithHeader.csv" separator=";" startAtRow="2" />
     </compare>
 </cmpSqlResultsTest>

@@ -56,7 +56,13 @@ steps:
 - task: PublishPipelineArtifact@1
   inputs:
     targetPath: './zip/DBTestCompare$(dBTestCompareVersion).zip'
-    artifact: 'JAR'
+    artifact: 'Application'
+    publishLocation: 'pipeline'
+
+- task: PublishPipelineArtifact@1
+  inputs:
+    targetPath: './zip/DBTestCompare$(dBTestCompareVersion).TestResults.$(Build.BuildId).zip'
+    artifact: 'TestResults'
     publishLocation: 'pipeline'
 
 - task: GitHubRelease@1
@@ -70,3 +76,4 @@ steps:
     title: 'Version $(dBTestCompareVersion)'
     changeLogCompareToRelease: 'lastFullRelease'
     changeLogType: 'commitBased'
+    assets: $(Build.ArtifactStagingDirectory)/DBTestCompare$(dBTestCompareVersion).zip
