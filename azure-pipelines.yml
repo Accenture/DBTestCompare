@@ -61,7 +61,7 @@ steps:
 
 - task: PublishPipelineArtifact@1
   inputs:
-    targetPath: './zip/DBTestCompare$(dBTestCompareVersion).TestResults.$(Build.BuildId).zip'
+    targetPath: './zip/DBTestCompare$(dBTestCompareVersion).TestResults.$(Build.BuildNumber).zip'
     artifact: 'TestResults'
     publishLocation: 'pipeline'
 
