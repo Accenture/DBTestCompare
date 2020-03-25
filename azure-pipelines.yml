@@ -51,18 +51,18 @@ steps:
 
 - task: PowerShell@2
   inputs:
-    filePath: './zipArtifact.ps1'
+    filePath: './copyArtifact.ps1'
 
 - task: PublishPipelineArtifact@1
   inputs:
-    targetPath: './zip/DBTestCompare$(dBTestCompareVersion).zip'
-    artifact: 'Application'
+    targetPath: './release'
+    artifact: 'DBTestCompare$(dBTestCompareVersion)'
     publishLocation: 'pipeline'
 
 - task: PublishPipelineArtifact@1
   inputs:
-    targetPath: './zip/DBTestCompare$(dBTestCompareVersion).TestResults.$(Build.BuildNumber).zip'
-    artifact: 'TestResults'
+    targetPath: './target/test-output'
+    artifact: 'DBTestCompare$(dBTestCompareVersion).TestResults.$(Build.BuildNumber)'
     publishLocation: 'pipeline'
 
 - task: GitHubRelease@1
