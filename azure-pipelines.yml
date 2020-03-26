@@ -65,6 +65,16 @@ steps:
     artifact: 'DBTestCompare$(dBTestCompareVersion).TestResults.$(Build.BuildNumber)'
     publishLocation: 'pipeline'
 
+- task: CopyFiles@2
+  inputs:
+      contents: './release/**'
+      targetFolder: $(Build.ArtifactStagingDirectory)
+
+- task: PublishBuildArtifacts@1
+  inputs:
+       pathToPublish: $(Build.ArtifactStagingDirectory)
+       artifactName: MyBuildOutputs
+
 - task: GitHubRelease@1
   condition: startsWith(variables['Build.SourceBranch'], 'refs/tags/')
   inputs:
