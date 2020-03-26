@@ -67,7 +67,8 @@ steps:
 
 - task: CopyFiles@2
   inputs:
-      contents: './release/**'
+      sourceFolder: './release'
+      contents: '**'
       targetFolder: $(Build.ArtifactStagingDirectory)
 
 - task: PublishBuildArtifacts@1
