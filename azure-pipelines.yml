@@ -59,16 +59,22 @@ steps:
     artifact: 'DBTestCompare$(dBTestCompareVersion).TestResults.$(Build.BuildNumber)'
     publishLocation: 'pipeline'
 
+- task: PublishPipelineArtifact@1
+  inputs:
+      targetPath: './release'
+      artifact: 'DBTestCompare$(dBTestCompareVersion)'
+      publishLocation: 'pipeline'
+
+- task: PowerShell@2
+  inputs:
+    targetType: 'inline'
+    script: 'compress-archive -path "./release" ./release/DBTestCompare$(dBTestCompareVersion).zip'
+
 - task: CopyFiles@2
   inputs:
       sourceFolder: './release'
-      contents: '**'
+      contents: 'DBTestCompare$(dBTestCompareVersion).zip'
       targetFolder: $(Build.ArtifactStagingDirectory)
-
-- task: PublishBuildArtifacts@1
-  inputs:
-       pathToPublish: $(Build.ArtifactStagingDirectory)
-       artifactName: 'DBTestCompare$(dBTestCompareVersion)'
 
 - task: GitHubRelease@1
   condition: startsWith(variables['Build.SourceBranch'], 'refs/tags/')
