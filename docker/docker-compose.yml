@@ -1,0 +1,43 @@
+version: '3.7'
+services:
+  sqlserver_db_container:
+    image: mcr.microsoft.com/mssql/server:2019-latest
+    build: ./my_sqlserver
+    container_name: sqlserver-container
+    environment:
+        SA_PASSWORD: yourStrong22Password
+        ACCEPT_EULA: Y
+    volumes:
+       - sqlserver_db_data_container:/var/opt/mssql
+    ports:
+      - 1433:1433
+
+  mysql_db_container:
+    image: mysql:latest
+    environment:
+      MYSQL_ROOT_PASSWORD: my-secret-pw
+      MYSQL_DATABASE: dbquality
+      MYSQL_USER: dbquality 
+      MYSQL_PASSWORD: dbquality
+    ports:
+      - 13306:3306
+    volumes:
+      - ./my-mysql/sql-scripts:/docker-entrypoint-initdb.d/
+      - mysql_db_data_container:/var/lib/mysql
+  
+  postgres:
+    image: postgres:latest
+    environment:
+      POSTGRES_USER: dbquality
+      POSTGRES_PASSWORD: dbquality
+      POSTGRES_DB: dbquality
+    volumes:
+       - ./my-postgres/sql-scripts:/docker-entrypoint-initdb.d/
+       - postgresql_db_data_container:/var/lib/postgresql/data/
+    ports:
+      - 5432:5432
+     
+volumes:
+  mysql_db_data_container: 
+  postgresql_db_data_container:
+  sqlserver_db_data_container:

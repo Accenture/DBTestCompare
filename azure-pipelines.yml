@@ -7,33 +7,73 @@ trigger:
   branches:
     include:
     - '*'
-
+  tags:
+    include:
+    - '*'
+    
 pool:
-  vmImage: 'windows-latest'
+  vmImage: 'ubuntu-latest'
 
 variables:
-    dBTestCompareVersion: '1.4'
+- name: dBTestCompareVersion
+  value: 1.4
 
 steps:
+
 - task: PowerShell@2
   inputs:
-    targetType: 'inline'
-    script: '((Get-Content -path ./pom.xml -Raw) -replace ''<version>\d\.\d-SNAPSHOT<\/version>'',''$<version>$(dBTestCompareVersion)-SNAPSHOT</version>'') | Set-Content -Path ./pom.xml'
+    filePath: './setDBTestCompareVersion.ps1'
 
-- task: Maven@3
+- task: PowerShell@2
   inputs:
-    mavenPomFile: 'pom.xml'
-    publishJUnitResults: false
-    mavenOptions: '-Xmx3072m'
+    filePath: './downloadBackupAndJDBCDrivers.ps1'
+
+- task: DockerCompose@0
+  inputs:
+    containerregistrytype: 'Container Registry'
+    dockerComposeFile: '**/docker-compose.yml'
+    action: 'Run a Docker Compose command'
+    dockerComposeCommand: 'up -d'
+
+- task: PowerShell@2
+  inputs:
+    filePath: './restoreBackup.ps1'
+    errorActionPreference: 'silentlyContinue'
+    
+- task: Ant@1
+  inputs:
+    buildFile: './deploy/build.xml'
+    options: '-Dconfig=DEV02'
+    targets: 'compile tokens.copy.files testdbq.run'
+    publishJUnitResults: true
+    testResultsFiles: '**/TEST-*.xml'
     javaHomeOption: 'JDKVersion'
-    jdkVersionOption: '1.8'
-    jdkArchitectureOption: 'x64'
-    goals: 'clean compile assembly:single'
+
+- task: PowerShell@2
+  inputs:
+    filePath: './copyArtifact.ps1'
 
 - task: PublishPipelineArtifact@1
   inputs:
-    targetPath: './target/DBTestCompare-$(dBTestCompareVersion)-SNAPSHOT-jar-with-dependencies.jar'
-    artifact: 'JAR'
+    targetPath: './release'
+    artifact: 'DBTestCompare$(dBTestCompareVersion)'
     publishLocation: 'pipeline'
 
+- task: PublishPipelineArtifact@1
+  inputs:
+    targetPath: './target/test-output'
+    artifact: 'DBTestCompare$(dBTestCompareVersion).TestResults.$(Build.BuildNumber)'
+    publishLocation: 'pipeline'
 
+- task: GitHubRelease@1
+  condition: startsWith(variables['Build.SourceBranch'], 'refs/tags/')
+  inputs:
+    gitHubConnection: 'github.com_dbtestcompare'
+    repositoryName: '$(Build.Repository.Name)'
+    action: 'edit'
+    target: '$(Build.SourceVersion)'
+    tag: '$(dBTestCompareVersion)'
+    title: 'Version $(dBTestCompareVersion)'
+    changeLogCompareToRelease: 'lastFullRelease'
+    changeLogType: 'commitBased'
+    assets: $(Build.ArtifactStagingDirectory)/DBTestCompare$(dBTestCompareVersion).zip

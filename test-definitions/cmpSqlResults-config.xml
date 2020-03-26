@@ -35,8 +35,8 @@
             <driver>com.microsoft.sqlserver.jdbc.SQLServerDriver</driver>
 			<!--<url>jdbc:sqlserver://${SQL_SERVER}\${SQL_SERVERINSTANCE};databaseName=${SQL_SERVERDBNAME}</url>-->
             <url>jdbc:sqlserver://${SQL_SERVER};databaseName=${SQL_SERVERDBNAME}</url>
-            <user>${USERNAME}</user>
-            <password>${PASSWORD}</password>
+            <user>${SQL_SERVER_USERNAME}</user>
+            <password>${SQL_SERVER_PASSWORD}</password>
         </datasource>
         <datasource maxPollSize="6">
             <name>SQL_SERVER_WIN_AUTH</name>
@@ -48,14 +48,14 @@
 		<datasource maxPollSize="6">
             <name>MySQL</name>
             <driver>com.mysql.jdbc.Driver</driver>
-            <url>jdbc:mysql://${MYSQLDBSERVER}:3306/${MYSQLDBNAME}</url>
+            <url>jdbc:mysql://${MYSQLDBSERVER}:${MYSQLDBPORT}/${MYSQLDBNAME}</url>
             <user>${USERNAME}</user>
             <password>${PASSWORD}</password>
 		</datasource>
 		<datasource maxPollSize="6">
             <name>MariaDB</name>
             <driver>org.mariadb.jdbc.Driver</driver>
-            <url>jdbc:mariadb://${MYSQLDBSERVER}:3306/${MYSQLDBNAME}</url>
+            <url>jdbc:mariadb://${MYSQLDBSERVER}:${MYSQLDBPORT}/${MYSQLDBNAME}</url>
             <user>${USERNAME}</user>
             <password>${PASSWORD}</password>
 		</datasource>
