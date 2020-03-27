@@ -90,6 +90,7 @@ steps:
     gitHubConnection: 'github.com_dbtestcompare'
     repositoryName: '$(Build.Repository.Name)'
     action: 'edit'
+    tagPattern: '\d\.\d'
     target: '$(Build.SourceVersion)'
     tag: '$(dBTestCompareVersion)'
     title: 'Version $(dBTestCompareVersion)'
