@@ -24,9 +24,9 @@ steps:
   inputs:
     targetType: 'inline'
     script: |
-      $TagArray= git tag -l *
-      $AppVersion = $TagArray[$TagArray.Count – 1]
-      Write-Host "##vso[task.setvariable variable=dBTestCompareVersion]$AppVersion"
+      $tags = git tag --sort=-creatordate   
+      $tag = $tags[0]
+      Write-Host "##vso[task.setvariable variable=dBTestCompareVersion]$tag"
       Write-Host $(dBTestCompareVersion)
 
 - task: PowerShell@2
