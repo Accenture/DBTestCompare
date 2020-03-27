@@ -12,3 +12,5 @@
 /jdbc_drivers/mssql-jdbc-8.2.0.jre8.jar
 /zip
 /release
+/*.iml
+/*.jar
