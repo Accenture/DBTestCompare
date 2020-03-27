@@ -9,8 +9,8 @@
     <version>1.0-SNAPSHOT</version>
 
     <properties>
-        <testng.version>6.8.8</testng.version>
-        <jaxb-impl.version>2.1.8</jaxb-impl.version>
+        <testng.version>7.0.0</testng.version>
+        <jaxb-impl.version>2.2.7</jaxb-impl.version>
         <log4j.version>2.13.1</log4j.version>
         <log4jcore.version>2.13.1</log4jcore.version>
         <c3p0.version>0.9.5.5</c3p0.version>
