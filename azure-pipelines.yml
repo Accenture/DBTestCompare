@@ -16,7 +16,7 @@ pool:
 
 variables:
 - name: dBTestCompareVersion
-  value: 1.5
+  value: 1.6
 
 steps:
 - task: PowerShell@2
@@ -25,10 +25,9 @@ steps:
     targetType: 'inline'
     script: |
       $TagArray= git tag -l *
-      
       $AppVersion = $TagArray[$TagArray.Count – 1]
-
-      Write-Host "##vso[task.setvariable variable=dBTestCompareVersion;]$AppVersion"
+      Write-Host "##vso[task.setvariable variable=dBTestCompareVersion]$AppVersion"
+      Write-Host $(dBTestCompareVersion)
 
 - task: PowerShell@2
   inputs:
