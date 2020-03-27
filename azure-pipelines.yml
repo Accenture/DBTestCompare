@@ -93,6 +93,8 @@ steps:
     tagSource: 'gitTag'
     tagPattern: '\d\.\d'
     target: '$(Build.SourceVersion)'
-    changeLogCompareToRelease: 'lastNonDraftReleaseByTag'
+    tag: '$(dBTestCompareVersion)'
+    title: 'Version $(dBTestCompareVersion)'
+    changeLogCompareToRelease: 'lastFullRelease'
     changeLogType: 'commitBased'
     assets: $(Build.ArtifactStagingDirectory)/DBTestCompare$(dBTestCompareVersion).zip
