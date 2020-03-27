@@ -91,10 +91,10 @@ steps:
     repositoryName: '$(Build.Repository.Name)'
     action: 'edit'
     tagSource: 'gitTag'
-    tagPattern: '\d\.\d'
+    tagPattern: '[0-9].[0-9]'
     target: '$(Build.SourceVersion)'
     tag: '$(dBTestCompareVersion)'
     title: 'Version $(dBTestCompareVersion)'
-    changeLogCompareToRelease: 'lastFullRelease'
+    changeLogCompareToRelease: 'lastNonDraftReleaseByTag'
     changeLogType: 'commitBased'
     assets: $(Build.ArtifactStagingDirectory)/DBTestCompare$(dBTestCompareVersion).zip
