@@ -10,6 +10,14 @@ trigger:
   tags:
     include:
     - '*'
+
+schedules:
+  - cron: "0 19 * * Sun"
+    displayName: Weekly build
+    branches:
+      include:
+      - master
+    always: true 
     
 pool:
   vmImage: 'ubuntu-latest'
@@ -91,7 +99,7 @@ steps:
     repositoryName: '$(Build.Repository.Name)'
     action: 'edit'
     tagSource: 'gitTag'
-    tagPattern: '[0-9].[0-9]'
+    tagPattern: '\d\.\d'
     target: '$(Build.SourceVersion)'
     tag: '$(dBTestCompareVersion)'
     title: 'Version $(dBTestCompareVersion)'
