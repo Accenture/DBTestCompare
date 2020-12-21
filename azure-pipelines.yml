@@ -12,7 +12,7 @@ trigger:
     - '*'
 
 schedules:
-  - cron: "0 19 * * Sun"
+  - cron: "0 19 * * 0"
     displayName: Weekly build
     branches:
       include:
