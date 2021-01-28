@@ -100,10 +100,10 @@ public class FetchComparator extends Comparator {
             Sql sql1 = compare.getSqls().get(0);
             Sql sql2 = compare.getSqls().get(1);
 
-            stmt1 = connection1.prepareStatement(sql1.getSql(), ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet
+            stmt1 = connection1.prepareStatement(sql1.getSql(), ResultSet.TYPE_FORWARD_ONLY, ResultSet
                     .CONCUR_READ_ONLY);
             stmt1.setFetchSize(compare.getFetchSize());
-            stmt2 = connection2.prepareStatement(sql2.getSql(), ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet
+            stmt2 = connection2.prepareStatement(sql2.getSql(), ResultSet.TYPE_FORWARD_ONLY, ResultSet
                     .CONCUR_READ_ONLY);
             stmt2.setFetchSize(compare.getFetchSize());
 
