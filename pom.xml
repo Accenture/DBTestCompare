@@ -132,16 +132,6 @@
             <artifactId>mssql-jdbc</artifactId>
             <version>9.2.0.jre8</version>
         </dependency>
-		        <dependency>
-            <groupId>com.teradata</groupId>
-            <artifactId>tdgssconfig</artifactId>
-            <version>4</version>
-        </dependency>
-        <dependency>
-            <groupId>com.teradata</groupId>
-            <artifactId>terajdbc</artifactId>
-            <version>4</version>
-        </dependency>
 		<dependency>
 			<groupId>org.mariadb.jdbc</groupId>
 			<artifactId>mariadb-java-client</artifactId>
