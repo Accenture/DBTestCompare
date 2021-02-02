@@ -20,31 +20,26 @@
 //     SOFTWARE.
 // </license>
 
-package uk.co.objectivity.test.db.beans;
+package uk.co.objectivity.test.db.transformers;
 
-import uk.co.objectivity.test.db.comparators.KeyComparator;
-import uk.co.objectivity.test.db.comparators.Comparator;
-import uk.co.objectivity.test.db.comparators.FetchComparator;
-import uk.co.objectivity.test.db.comparators.FileComparator;
-import uk.co.objectivity.test.db.comparators.MinusComparator;
-import uk.co.objectivity.test.db.comparators.NmbOfResultsComparator;
+import org.apache.log4j.Logger;
 
-public enum CompareMode {
-    MINUS, FETCH, NMB_OF_RESULTS, FILE, KEY;
+public enum TransformerType {
+    REMOVE_LEADING_ZEROS, SWAP;
 
-    public Comparator getComparator() {
+    private final static Logger log = Logger.getLogger(TransformerType.class);
+
+    public Transformer getTransformer() {
+
         switch (this) {
-            case MINUS:
-                return new MinusComparator();
-            case FETCH:
-                return new FetchComparator();
-            case NMB_OF_RESULTS:
-                return new NmbOfResultsComparator();
-            case FILE:
-                return new FileComparator();
-            case KEY:
-                return new KeyComparator();
+            case REMOVE_LEADING_ZEROS:
+                return new RemoveLeadingZerosTransformer();
+            case SWAP:
+                return new SwapTransformer();
         }
+        log.warn("Unknown transformer. Check your test configuration (Known transformers:"
+                + "REMOVE_LEADING_ZEROS, SWAP)");
         return null;
     }
+
 }

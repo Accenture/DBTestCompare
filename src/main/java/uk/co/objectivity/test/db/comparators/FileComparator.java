@@ -68,7 +68,8 @@ public class FileComparator extends Comparator {
         }
 
         String fileAbsPath = testParams.getTestConfigFile().getParentFile().getAbsolutePath();
-        fileAbsPath += "/" + cmpSqlResultsTest.getCompare().getFile().getFilename(); //null/empty checked in TestDataProvider
+        fileAbsPath += "/" + cmpSqlResultsTest.getCompare().getFile().getFilename(); // null/empty checked in
+                                                                                     // TestDataProvider
         File file = new File(fileAbsPath);
         if (!file.exists()) {
             throw new TestException("File '" + file.getAbsolutePath() + "' not found! Please check configuration");
@@ -80,14 +81,13 @@ public class FileComparator extends Comparator {
             connection = DataSource.getConnection(datasource.getName());
             return getTestResults(testParams, connection, file);
         } catch (Exception e) {
-            throw new Exception(e+"\nQuery 1: " + sql.getSql());
+            throw new Exception(e + "\nQuery 1: " + sql.getSql());
         } finally {
             DataSource.closeConnection(connection);
         }
     }
 
-    public TestResults getTestResults(TestParams testParams, Connection conn, File file) throws
-            Exception {
+    public TestResults getTestResults(TestParams testParams, Connection conn, File file) throws Exception {
         Compare compare = testParams.getCmpSqlResultsTest().getCompare();
         PreparedStatement stmt = null;
         PrintWriter diffPWriter = null;
@@ -99,19 +99,18 @@ public class FileComparator extends Comparator {
         File diffFileName = getNewFileBasedOnTestConfigFile(testParams.getTestConfigFile(), "_diff.csv");
         try {
             Sql sql = compare.getSqls().get(0);
-            stmt = conn.prepareStatement(sql.getSql(), ResultSet.TYPE_SCROLL_INSENSITIVE,
-                    ResultSet.CONCUR_READ_ONLY);
-            savedTimes1.StartMeasure("Query "+ sql.getDatasourceName());
+            stmt = conn.prepareStatement(sql.getSql(), ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+            savedTimes1.StartMeasure("Query " + sql.getDatasourceName());
             ResultSet rs = stmt.executeQuery();
             savedTimes1.StopMeasure();
             savedTimesList.add(savedTimes1);
 
-            savedTimes2.StartMeasure("File "+ file.getName());
+            savedTimes2.StartMeasure("File " + file.getName());
             bufferedReader = new BufferedReader(new FileReader(file));
             int curLineNr = 0;
-            if(compare.getFile().getStartAtRow()-1>0){
-                while (bufferedReader.readLine() != null){
-                    if(curLineNr++ >= compare.getFile().getStartAtRow()-2)
+            if (compare.getFile().getStartAtRow() - 1 > 0) {
+                while (bufferedReader.readLine() != null) {
+                    if (curLineNr++ >= compare.getFile().getStartAtRow() - 2)
                         break;
                 }
             }
@@ -121,9 +120,8 @@ public class FileComparator extends Comparator {
             int qColCount = rs.getMetaData().getColumnCount();
             int fColCount = csvRow == null ? 0 : csvRow.length;
             if (qColCount != fColCount) {
-                throw new TestException(
-                        "Query results and file have a different number of columns (" + qColCount + " / " +
-                                fColCount + ")");
+                throw new TestException("Query results and file have a different number of columns (" + qColCount
+                        + " / " + fColCount + ")");
             }
 
             if (compare.isFileOutputOn()) {
@@ -132,14 +130,13 @@ public class FileComparator extends Comparator {
                         getNewFileBasedOnTestConfigFile(testParams.getTestConfigFile(), "_sql1.csv"));
             }
 
-            String executedQuery = "QUERY 1 [" + sql.getDatasourceName() + "]:\r\n" + sql.getSql() + "\r\n\r\nFile" +
-                    " [" + file.getAbsolutePath() + "]\r\n";
-            executedQuery += "\r\n\r\nChunk size: " + compare.getChunk() +
-                    ", Difftable size: " + compare.getDiffTableSize() +
-                    ", Comparing with file start at row " + compare.getFile().getStartAtRow()+
-                    ", File output: " + compare.isFileOutputOn() + "\r\n"+
-                    "Time execution of query:\n"+
-                    savedTimes1.getMeasureType() + " " + savedTimes1.getFormattedDuration();
+            String executedQuery = "QUERY 1 [" + sql.getDatasourceName() + "]:\r\n" + sql.getSql() + "\r\n\r\nFile"
+                    + " [" + file.getAbsolutePath() + "]\r\n";
+            executedQuery += "\r\n\r\nChunk size: " + compare.getChunk() + ", Difftable size: "
+                    + compare.getDiffTableSize() + ", Comparing with file start at row "
+                    + compare.getFile().getStartAtRow() + ", File output: " + compare.isFileOutputOn() + "\r\n"
+                    + "Time execution of query:\n" + savedTimes1.getMeasureType() + " "
+                    + savedTimes1.getFormattedDuration();
             TestResults testResults = new TestResults(executedQuery, -1);
 
             // building columns
@@ -167,21 +164,25 @@ public class FileComparator extends Comparator {
                 row2.add("FILE    [" + file.getName() + "]");
                 for (int column = 1; column <= qColCount; column++) {
                     Object value1 = rsNotEmpty ? rs.getObject(column) : null;
-                    // column <= csvRow.length means that CSV file is incorrect, but we try to handle this.
+                    // column <= csvRow.length means that CSV file is incorrect, but we try to
+                    // handle this.
                     String value2 = (fileNotEmpty && column <= csvRow.length) ? csvRow[column - 1] : null;
                     // we want NULL to be displayed (to distinguish it from the empty string)
-                    if (value1 == null) value1 = "<NULL>";
-                    if (value2 == null) value2 = "<NULL>";
+                    if (value1 == null)
+                        value1 = "<NULL>";
+                    if (value2 == null)
+                        value2 = "<NULL>";
 
                     if (!value2.equals(value1.toString())) {
                         isRowDiff = true;
-                        value1="<DIFF>" +value1;
-                        value2="<DIFF>" +value2;
+                        value1 = "<DIFF>" + value1;
+                        value2 = "<DIFF>" + value2;
                     }
                     row1.add(value1.toString());
                     row2.add(value2.toString());
                 }
-                if (rsNotEmpty) writeRowAsCSV(src1PWriter, row1, true);
+                if (rsNotEmpty)
+                    writeRowAsCSV(src1PWriter, row1, true);
                 if (isRowDiff) {
                     diffCounter++;
                     if (diffCounter <= compare.getDiffTableSize()) {
@@ -203,7 +204,7 @@ public class FileComparator extends Comparator {
             testResults.setNmbOfComparedRows(rowNmb);
             savedTimes1.setNumberOfComparedRows(String.valueOf(rowNmb));
             savedTimes2.setNumberOfComparedRows(String.valueOf(rowNmb));
-            if(diffCounter==0){
+            if (diffCounter == 0) {
                 savedTimes1.setTestResult("Passed");
                 savedTimes2.setTestResult("Passed");
             }
@@ -229,7 +230,8 @@ public class FileComparator extends Comparator {
     }
 
     private String[] getCSVFileRow(String csvLine) {
-        if (csvLine == null || csvLine.isEmpty()) return null;
+        if (csvLine == null || csvLine.isEmpty())
+            return null;
         String[] results = csvLinePattern.split(csvLine);
         for (int i = 0; i < results.length; i++) {
             if (results[i] != null && !results[i].isEmpty()) {

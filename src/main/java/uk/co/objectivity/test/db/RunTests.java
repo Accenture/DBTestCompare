@@ -70,7 +70,8 @@ public class RunTests {
     }
 
     static CmpSqlResultsConfig readConfigAndInit() {
-        log.debug("Scanning tests directory: " + TEST_DIR + "...");
+        log.debug("Working Directory = " + System.getProperty("user.dir"));
+        log.debug("Scanning tests directory: \"" + TEST_DIR + "\" ...");
         File testsDirFile = new File(TEST_DIR);
         if (!testsDirFile.exists()) {
             log.error("Tests directory does not exists! Please create directory: " + testsDirFile.getAbsolutePath());

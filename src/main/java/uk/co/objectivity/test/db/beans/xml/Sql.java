@@ -22,10 +22,17 @@
 
 package uk.co.objectivity.test.db.beans.xml;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlValue;
+
+import org.testng.TestException;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Sql {
@@ -47,6 +54,21 @@ public class Sql {
 
     @XmlAttribute
     private String minusQueryIndicatorText;
+
+    @XmlAttribute
+    private String keyTableName;
+
+    @XmlAttribute
+    private String keyTableColumns;
+
+    @XmlAttribute
+    private boolean emptyStringToNull = false;
+
+    @XmlAttribute
+    private String duplicatesArbitratorColumns;
+
+    @XmlAttribute
+    private String dateFormat;
 
     public String getSql() {
         return sql;
@@ -87,4 +109,44 @@ public class Sql {
     public void setMinusQueryIndicatorText(String minusQueryIndicatorText) {
         this.minusQueryIndicatorText = minusQueryIndicatorText;
     }
+
+    public String getKeyTableName() {
+        return keyTableName;
+    }
+
+    public void setKeyTableName(String keyTableName) {
+        this.keyTableName = keyTableName;
+    }
+
+    public String getKeyTableColumns() {
+        return keyTableColumns;
+    }
+
+    public void setKeyTableColumns(String keyTableColumns) {
+        this.keyTableColumns = keyTableColumns;
+    }
+
+    public boolean isEmptyStringToNull() {
+        return emptyStringToNull;
+    }
+
+    public void setEmptyStringToNull(boolean emptyStringToNull) {
+        this.emptyStringToNull = emptyStringToNull;
+    }
+
+    public String getDateFormat() {
+        return this.dateFormat != null ? this.dateFormat : "yyyy-MM-dd";
+    }
+
+    public List<Integer> getDuplicatesArbitratorColumns() {
+        if (duplicatesArbitratorColumns == null)
+            return new ArrayList<Integer>();
+        try {
+            return Arrays.stream(duplicatesArbitratorColumns.split(",")).map(s -> s.trim()).map(Integer::valueOf)
+                    .collect(Collectors.toList());
+        } catch (NumberFormatException nfe) {
+            throw new TestException("Incorrect value in the 'duplicatesArbitratorColumns' property");
+        }
+    }
+
 }

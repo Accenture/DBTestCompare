@@ -57,10 +57,16 @@ public class Compare {
     private boolean fileOutputOn = false;
 
     @XmlAttribute
+    private String keyColumns = null;
+
+    @XmlAttribute
     private boolean minusQueryIndicatorOn = false;
 
     @XmlElement(name = "sql")
     private List<Sql> sqls;
+
+    @XmlElement(name = "beforeSqls")
+    private List<BeforeSqls> beforeSqls;
 
     @XmlElement(name = "assert")
     private List<Assert> assertions;
@@ -90,6 +96,10 @@ public class Compare {
 
     public void setSqls(List<Sql> sqls) {
         this.sqls = sqls;
+    }
+
+    public List<BeforeSqls> getBeforeSqls() {
+        return beforeSqls;
     }
 
     public int getDiffTableSize() {
@@ -126,6 +136,14 @@ public class Compare {
 
     public void setFileOutputOn(boolean fileOutputOn) {
         this.fileOutputOn = fileOutputOn;
+    }
+
+    public String getKeyColumns() {
+        return keyColumns;
+    }
+
+    public void setKeyColumns(String keyColumns) {
+        this.keyColumns = keyColumns;
     }
 
     public void setMinusQueryIndicatorOn(boolean minusQueryIndicatorOn) {

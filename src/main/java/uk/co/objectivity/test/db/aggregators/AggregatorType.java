@@ -20,31 +20,21 @@
 //     SOFTWARE.
 // </license>
 
-package uk.co.objectivity.test.db.beans;
+package uk.co.objectivity.test.db.aggregators;
 
-import uk.co.objectivity.test.db.comparators.KeyComparator;
-import uk.co.objectivity.test.db.comparators.Comparator;
-import uk.co.objectivity.test.db.comparators.FetchComparator;
-import uk.co.objectivity.test.db.comparators.FileComparator;
-import uk.co.objectivity.test.db.comparators.MinusComparator;
-import uk.co.objectivity.test.db.comparators.NmbOfResultsComparator;
+public enum AggregatorType {
+    SUM_INTEGERS, DATE, OVERRIDE;
 
-public enum CompareMode {
-    MINUS, FETCH, NMB_OF_RESULTS, FILE, KEY;
-
-    public Comparator getComparator() {
+    public Aggregator getAggregator() {
         switch (this) {
-            case MINUS:
-                return new MinusComparator();
-            case FETCH:
-                return new FetchComparator();
-            case NMB_OF_RESULTS:
-                return new NmbOfResultsComparator();
-            case FILE:
-                return new FileComparator();
-            case KEY:
-                return new KeyComparator();
+            case SUM_INTEGERS:
+                return new SumIntegersAggregator();
+            case DATE:
+                return new DateAggregator();
+            case OVERRIDE:
+                return new OverrideAgregator();
         }
         return null;
     }
+
 }

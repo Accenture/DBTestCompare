@@ -1,4 +1,5 @@
 // <copyright file="TestDataProvider.java" company="Objectivity Bespoke Software Specialists">
+// <copyright file="TestDataProvider.java" company="Objectivity Bespoke Software Specialists">
 // Copyright (c) Objectivity Bespoke Software Specialists. All rights reserved.
 // </copyright>
 // <license>
@@ -27,7 +28,10 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Unmarshaller;
@@ -53,7 +57,7 @@ public class TestDataProvider {
     private static File TESTS_DIR_FILE;
     private static boolean INITIALIZED = false;
 
-    public static  List<SavedTimes> savedTimesList = new ArrayList<>();
+    public static List<SavedTimes> savedTimesList = new ArrayList<>();
 
     static void init(File testsDirFile, CmpSqlResultsConfig cmpSqlResultsConfig) {
         log.debug("Initializing tests Data Provider...");
@@ -66,7 +70,8 @@ public class TestDataProvider {
     public static Iterator<Object[]> getTestsConfiguration(ITestContext context) throws Exception {
         // tests could be run using not standard runner (check RunTests class) - eg. IntelliJ IDEA. In that case we
         // need to read default configuration in the same way as RunTests does it. Tests run by other runner will
-        // be executed in 1 thread (configuration parameter <threads/> will be ignored).
+        // be executed in 1 thread (configuration parameter <threads/>
+        // will be ignored).
         if (!INITIALIZED && RunTests.readConfigAndInit() == null) {
             throw new TestException("Can not read tests configuration");
         }
@@ -82,6 +87,8 @@ public class TestDataProvider {
                 processTestFiles(file, file.getName(), dpParams);
             }
         }
+        log.debug("filterInclude " + CMP_SQL_RESULTS_CONFIG.getFilter().getIncludes());
+        log.debug("filterExclude " + CMP_SQL_RESULTS_CONFIG.getFilter().getExcludes());
         log.debug("Running tests...");
         return dpParams.iterator();
     }
@@ -92,10 +99,12 @@ public class TestDataProvider {
                 String testName = testNamePrefix + "." + file.getName();
                 processTestFiles(file, testName, dpParams);
             } else if (file.getName().toLowerCase().endsWith(".xml")) {
+                log.debug("Test found: " + file.getAbsolutePath());
                 String testName = testNamePrefix + "." + file.getName().substring(0, file.getName().lastIndexOf('.'));
                 if ((isDirOnWhiteList(testNamePrefix) || isTestOnWhiteList(testName)) && !isOnBlackList(testNamePrefix)
                         && !isOnBlackList(testName)) {
                     addTest(file, testName, dpParams);
+                    log.debug("To be executed: Yes");
                 }
             }
         }
@@ -117,13 +126,14 @@ public class TestDataProvider {
             testParam.setSkipTestMessage(msg);
         }
         testParam.setCmpSqlResultsConfig(CMP_SQL_RESULTS_CONFIG);
-        dpParams.add(new Object[]{testParam});
+        dpParams.add(new Object[] { testParam });
     }
 
     private static boolean isDirOnWhiteList(String dirName) {
         List<String> includes = CMP_SQL_RESULTS_CONFIG.getFilter().getIncludes();
         // empty filter list means all tests from dirName are on the white list
-        if (includes == null || includes.isEmpty() || includes.contains(dirName)) return true;
+        if (includes == null || includes.isEmpty() || includes.contains(dirName))
+            return true;
         int dotIndex = dirName.lastIndexOf('.');
         if (dotIndex < 0) {
             return false;
@@ -138,7 +148,8 @@ public class TestDataProvider {
     }
 
     private static boolean isOnBlackList(String dirName) {
-        if (dirName == null || dirName.isEmpty()) return true;
+        if (dirName == null || dirName.isEmpty())
+            return true;
         List<String> excludes = CMP_SQL_RESULTS_CONFIG.getFilter().getExcludes();
         if (excludes != null) {
             for (String exclude : excludes) {
@@ -170,19 +181,24 @@ public class TestDataProvider {
                 validateAndPrepareSql(cmp.getSqls().get(0), xmlConfigFile, testParam);
                 validateAndPrepareSql(cmp.getSqls().get(1), xmlConfigFile, testParam);
             }
-        } else if (cmp.getCompareMode() == CompareMode.FILE || cmp.getCompareMode() == CompareMode.NMB_OF_RESULTS) {
+        } else if (cmp.getCompareMode() == CompareMode.FILE || cmp.getCompareMode() == CompareMode.KEY
+                || cmp.getCompareMode() == CompareMode.NMB_OF_RESULTS) {
             if (cmp.getSqls().size() != 1) {
                 testParam.addSkipTestMessage(
                         "Incorrect number of sqls (1 allowed) in test configuration file " + xmlConfigFile.getAbsolutePath());
             } else {
                 validateAndPrepareSql(cmp.getSqls().get(0), xmlConfigFile, testParam);
             }
-            if (cmp.getCompareMode() == CompareMode.FILE) {
+            if (cmp.getCompareMode() == CompareMode.FILE || cmp.getCompareMode() == CompareMode.KEY) {
                 if (cmp.getFile() == null || cmp.getFile().getFilename() == null || cmp.getFile().getFilename().trim().isEmpty()) {
                     testParam.addSkipTestMessage(
-                            "In compare mode='FILE' you need to specify file with correct filename attrribute: " +
+                            "In compare mode='FILE' you need to specify file with correct filename attribute: " +
                                     xmlConfigFile.getAbsolutePath());
                 }
+            }
+            if (cmp.getCompareMode() == CompareMode.KEY) {
+                if (cmpSqlResultsTest.getCompare().getKeyColumns() == null || cmpSqlResultsTest.getCompare().getKeyColumns().trim().isEmpty())
+                    testParam.addSkipTestMessage("In compare mode='KEY' you need to specify keyColumns attribute");
             }
         }
         if (cmp.getDiffTableSize() < 0 || cmp.getDiffTableSize() > 500) {

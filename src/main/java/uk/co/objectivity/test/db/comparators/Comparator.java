@@ -43,8 +43,12 @@ public abstract class Comparator {
     public abstract TestResults compare(TestParams testParams) throws Exception;
 
     protected File getNewFileBasedOnTestConfigFile(File testFile, String postfix) {
-        String fileAbsPath = testFile.getParentFile().getAbsolutePath();
-        fileAbsPath += "/" + testFile.getName().replaceFirst("[.][^.]+$", "") + postfix;
+        String fileAbsPath = testFile.getParentFile().getAbsolutePath() + File.separator + "results" + File.separator;
+        File resultDir = new File(fileAbsPath);
+        if(!resultDir.exists()){
+            resultDir.mkdir();
+        }
+        fileAbsPath += testFile.getName().replaceFirst("[.][^.]+$", "") + postfix;
         return new File(fileAbsPath);
     }
 
@@ -57,7 +61,9 @@ public abstract class Comparator {
         Iterator<String> rowIt = row.iterator();
         if (skipFirst && rowIt.hasNext()) rowIt.next();
         while (rowIt.hasNext()) {
-            pw.write("\"" + rowIt.next().replaceAll("\"", "\"\"") + "\"");
+            String col = rowIt.next();
+            if(col!=null)
+                pw.write("\"" + col.replaceAll("\"", "\"\"") + "\"");
             if (rowIt.hasNext()) pw.write(",");
             else pw.write("\r\n");
         }

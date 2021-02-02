@@ -1,0 +1,13 @@
+<cmpSqlResultsTest>
+    <compare mode="KEY" diffTableSize="5" chunk="0" fileOutputOn="true" keyColumns="2">
+        <sql datasourceName="SQL_SERVER" filename="ContactTypeActualTable.sql"
+             keyTableName="AdventureWorks2008R2.dbo.TemplateContactType"
+             keyTableColumns="Name varchar(50) NOT NULL" />
+        <!-- separator -> CSV file separtor. Default is "," -->
+        <file filename="..\ContactType.csv" separator=";" startAtRow="2" ignoredColumns="1,5" testSetColumn="1">
+		     <transformers>
+                <transformer column="1">REMOVE_LEADING_ZEROS</transformer>
+             </transformers>
+		</file>
+    </compare>
+</cmpSqlResultsTest>
