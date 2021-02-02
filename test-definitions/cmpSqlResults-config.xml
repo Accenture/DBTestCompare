@@ -64,6 +64,7 @@
             <url>jdbc:postgresql://${POSTGRESSSQLDBSERVER}:5432/${POSTGRESSSQLDBNAME}</url>
             <user>${USERNAME}</user>
             <password>${PASSWORD}</password>
+		</datasource>            
         <datasource maxPollSize="6"> 
             <name>SNOWFLAKE_SERVER</name>
             <driver>com.snowflake.client.jdbc.SnowflakeDriver</driver>
