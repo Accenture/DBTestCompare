@@ -174,7 +174,7 @@ public class KeyComparator extends Comparator {
                 }
                 headers.addExtendedHeader("Source");
                 if (testSetsMap != null) {
-                    headers.addExtendedHeader("Thread No");
+                    headers.addExtendedHeader("TestSet No");
                 }
                 dbResults = getDBResults(rs, keyColumns, sql.getDuplicatesArbitratorColumns(), sql.getDateFormat());
             } catch (Exception e) {
