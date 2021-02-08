@@ -835,6 +835,7 @@ Store;Name;Phone;100;0;0;0
 Store;Name;sysname;100;0;0;0
 Store;rowguid;uniqueidentifier;16;0;0;0
 Store;SalesPersonID;int;4;10;0;1
+TemplateContactType;Name;varchar;50;0;0;0
 TransactionHistory;ActualCost;money;8;19;4;0
 TransactionHistory;ModifiedDate;datetime;8;23;3;0
 TransactionHistory;ProductID;int;4;10;0;0
