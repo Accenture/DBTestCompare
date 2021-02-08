@@ -14,6 +14,9 @@
         <log4j.version>2.13.1</log4j.version>
         <log4jcore.version>2.13.2</log4jcore.version>
         <c3p0.version>0.9.5.5</c3p0.version>
+        <poi.version>5.0.0</poi.version>
+        <commons.version>3.9</commons.version>
+        <sirocco.version>1.0</sirocco.version>
     </properties>
 
     <build>
@@ -72,7 +75,7 @@
         <dependency>
             <groupId>org.ow2.sirocco</groupId>
             <artifactId>sirocco-text-table-formatter</artifactId>
-            <version>1.0</version>
+            <version>${sirocco.version}</version>
         </dependency>
 
         <!-- used to create JDBC Connection Pool -->
@@ -96,13 +99,13 @@
         <dependency>
             <groupId>org.apache.poi</groupId>
             <artifactId>poi</artifactId>
-            <version>4.1.0</version>
+            <version>${poi.version}</version>
         </dependency>
 
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
-            <version>3.9</version>
+            <version>${commons.version}</version>
         </dependency>
     </dependencies>
 </project>
