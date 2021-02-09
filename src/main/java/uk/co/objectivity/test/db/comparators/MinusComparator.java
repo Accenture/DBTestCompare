@@ -94,9 +94,9 @@ public class MinusComparator extends Comparator {
 
             stmt = conn.prepareStatement(executedQuery, ResultSet.TYPE_SCROLL_INSENSITIVE,
                     ResultSet.CONCUR_READ_ONLY);
-            savedTimes.StartMeasure("Minus " + compare.getDefaultDatasourceName());
+            savedTimes.startMeasure("Minus " + compare.getDefaultDatasourceName());
             ResultSet rs = stmt.executeQuery();
-            savedTimes.StopMeasure();
+            savedTimes.stopMeasure();
             savedTimesList.add(savedTimes);
 
             String minusQueryIndicator=", Minus Query Indicator: " + compare.isMinusQueryIndicatorOn();

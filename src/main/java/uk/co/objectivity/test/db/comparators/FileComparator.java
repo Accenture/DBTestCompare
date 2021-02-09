@@ -100,12 +100,12 @@ public class FileComparator extends Comparator {
         try {
             Sql sql = compare.getSqls().get(0);
             stmt = conn.prepareStatement(sql.getSql(), ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
-            savedTimes1.StartMeasure("Query " + sql.getDatasourceName());
+            savedTimes1.startMeasure("Query " + sql.getDatasourceName());
             ResultSet rs = stmt.executeQuery();
-            savedTimes1.StopMeasure();
+            savedTimes1.stopMeasure();
             savedTimesList.add(savedTimes1);
 
-            savedTimes2.StartMeasure("File " + file.getName());
+            savedTimes2.startMeasure("File " + file.getName());
             bufferedReader = new BufferedReader(new FileReader(file));
             int curLineNr = 0;
             if (compare.getFile().getStartAtRow() - 1 > 0) {
@@ -210,7 +210,7 @@ public class FileComparator extends Comparator {
             }
             return testResults;
         } finally {
-            savedTimes2.StopMeasure();
+            savedTimes2.stopMeasure();
             savedTimesList.add(savedTimes2);
             if (stmt != null)
                 try {
