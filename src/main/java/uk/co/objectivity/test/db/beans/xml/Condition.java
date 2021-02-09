@@ -27,23 +27,23 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlValue;
 
-import uk.co.objectivity.test.db.beans.AssertType;
+import uk.co.objectivity.test.db.beans.ConditionType;
 
 @XmlAccessorType(XmlAccessType.FIELD)
-public class Assert {
+public class Condition {
 
     @XmlAttribute(name = "type")
-    private AssertType assertType;
+    private ConditionType conditionType;
 
     @XmlValue
     private Integer value;
 
-    public AssertType getAssertType() {
-        return assertType;
+    public ConditionType getConditionType() {
+        return conditionType;
     }
 
-    public void setAssertType(AssertType assertType) {
-        this.assertType = assertType;
+    public void setConditionType(ConditionType conditionType) {
+        this.conditionType = conditionType;
     }
 
     public Integer getValue() {

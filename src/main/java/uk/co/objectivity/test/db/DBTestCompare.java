@@ -44,6 +44,7 @@ import uk.co.objectivity.test.db.beans.CompareMode;
 import uk.co.objectivity.test.db.beans.TestParams;
 import uk.co.objectivity.test.db.beans.TestResults;
 import uk.co.objectivity.test.db.beans.xml.Compare;
+import uk.co.objectivity.test.db.beans.xml.Condition;
 import uk.co.objectivity.test.db.utils.Printer;
 import uk.co.objectivity.test.db.utils.SavedTimes;
 import uk.co.objectivity.test.db.utils.TCMessages;
@@ -88,12 +89,12 @@ public class DBTestCompare implements ITest {
 
             // assertions
             if (compare.getCompareMode() == CompareMode.NMB_OF_RESULTS) {
-                List<uk.co.objectivity.test.db.beans.xml.Assert> assertList = compare.getAssertions();
+                List<Condition> assertList = compare.getAssertions();
                 if (assertList != null) {
                     logInfo2All("Rows count:" + testResults.getNmbOfRows(), tcMsgs);
                     TestResults effFinalTR = testResults;
-                    assertList.forEach(a -> logInfo2All(a.getAssertType().name() + " " + a.getValue(), tcMsgs));
-                    assertList.forEach(a -> a.getAssertType().assertByType(effFinalTR.getNmbOfRows(), a.getValue()));
+                    assertList.forEach(a -> logInfo2All(a.getConditionType().name() + " " + a.getValue(), tcMsgs));
+                    assertList.forEach(a -> a.getConditionType().assertByType(effFinalTR.getNmbOfRows(), a.getValue()));
                     int p = getIndexByName(testParams.getTestName());
                     if (p >= 0) {
                         savedTimesList.get(p).setTestResult("Passed");

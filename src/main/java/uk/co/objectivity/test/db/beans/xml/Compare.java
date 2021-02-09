@@ -69,7 +69,7 @@ public class Compare {
     private List<BeforeSqls> beforeSqls;
 
     @XmlElement(name = "assert")
-    private List<Assert> assertions;
+    private List<Condition> assertions;
 
     @XmlElement(name = "file")
     private File file;
@@ -150,11 +150,11 @@ public class Compare {
         this.minusQueryIndicatorOn = minusQueryIndicatorOn;
     }
 
-    public List<Assert> getAssertions() {
+    public List<Condition> getAssertions() {
         return assertions;
     }
 
-    public void setAssertions(List<Assert> assertions) {
+    public void setAssertions(List<Condition> assertions) {
         this.assertions = assertions;
     }
 
