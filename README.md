@@ -19,10 +19,14 @@ If you set JAVA_HOME variable:
 java -jar DBTestCompare-1.0-SNAPSHOT-jar-with-dependencies.jar
 ```
 or to add automatically all drivers from the directory to the classspath (jdbc_drivers/*)
+Windows
 ```
-java -cp DBTestCompare-1.0-SNAPSHOT-jar-with-dependencies.jar:jdbc_drivers/* uk.co.objectivity.test.db.RunTests
+java -cp "DBTestCompare-1.0-SNAPSHOT-jar-with-dependencies.jar;jdbc_drivers/*" uk.co.objectivity.test.db.RunTests
 ```
-
+Linux
+```
+java -cp "DBTestCompare-1.0-SNAPSHOT-jar-with-dependencies.jar:jdbc_drivers/*" uk.co.objectivity.test.db.RunTests
+```
 or e.g.
 ```
 "C:\Program Files\Java\jdk1.8.0_92\bin\java" -jar DBTestCompare-1.0-SNAPSHOT-jar-with-dependencies.jar
