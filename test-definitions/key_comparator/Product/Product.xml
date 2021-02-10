@@ -1,0 +1,20 @@
+<cmpSqlResultsTest>
+    <compare mode="KEY" diffTableSize="5" chunk="0" fileOutputOn="true" keyColumns="1,2">
+        <sql datasourceName="SQL_SERVER" filename="product.sql" keyTableName="AdventureWorks2008R2.dbo.TemplateKeyComparatorCheckAggregators" keyTableColumns="StoreNumber INTEGER not NULL, ProductID INTEGER not NULL" />
+		<beforeSqls>
+			<sql datasourceName="SQL_SERVER" filename="drop.sql"/>
+			<sql datasourceName="SQL_SERVER" filename="create.sql"/>
+			<sql datasourceName="SQL_SERVER" filename="insert.sql"/>
+			</beforeSqls>
+        <file filename="product.csv" separator=";" startAtRow="2" ignoredColumns="1" threadColumn="1">
+            <transformers>
+                <transformer column="2">REMOVE_LEADING_ZEROS</transformer>
+            </transformers>
+            <aggregators>
+                <condition column="4" conditionValue="0">NOT_EQUALS</condition>
+                <aggregator column="3" params="yyyy-MM-dd;gt">DATE</aggregator>
+                <aggregator column="4">SUM_INTEGERS</aggregator>
+            </aggregators>
+        </file>
+    </compare>
+</cmpSqlResultsTest>
