@@ -37,9 +37,8 @@ Application provides following features:
 - Supports **all databases with JDBC drivers provided** (tested with Microsoft SQL Server, Teradata, Snowflake, PostgreSQL and MySQL\MariaDB)
 - Supports **all Continuous Integration tools** thanks to TestNG Java unit test framework
 - Possibility to compare data between **two different database engines** even for huge data sets 
-- Possibility to compare query to **expected data defined in csv file** and generating **Excel test raport**, more details [here](https://github.com/ObjectivityLtd/DBTestCompare/wiki/KEY)
-- Possibility to compare data between **two different database engines** even for huge data sets 
 without "Out of memory problem" thanks to incremental solution, more details [here](https://github.com/ObjectivityLtd/DBTestCompare/wiki/Fetch)
+- Possibility to compare query to **expected data defined in csv file** and generate **Excel test raport**, more details [here](https://github.com/ObjectivityLtd/DBTestCompare/wiki/KEY)
 - Possibility to compare data in **one database engine in the fastest way** using MINUS/EXCEPT Sql operator, more details [here](https://github.com/ObjectivityLtd/DBTestCompare/wiki/Minus)
 - **No need to compile program** in order to add new tests - thanks to Test Adapter DataDriven mechanism from TestNG 
 - Possibility to **execute test in parallel** by setting Threads parameter in connection file.
