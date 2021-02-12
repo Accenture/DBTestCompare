@@ -74,6 +74,12 @@ steps:
     targetPath: './target/test-output'
     artifact: 'DBTestCompare$(dBTestCompareVersion).TestResults.$(Build.BuildNumber)'
     publishLocation: 'pipeline'
+    
+- task: PublishPipelineArtifact@1
+  inputs:
+    targetPath: './target/test-definitions'
+    artifact: 'DBTestCompare$(dBTestCompareVersion).TestDefinitionsResults.$(Build.BuildNumber)'
+    publishLocation: 'pipeline'
 
 - task: PublishPipelineArtifact@1
   inputs:

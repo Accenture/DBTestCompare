@@ -44,6 +44,7 @@ import uk.co.objectivity.test.db.beans.CompareMode;
 import uk.co.objectivity.test.db.beans.TestParams;
 import uk.co.objectivity.test.db.beans.TestResults;
 import uk.co.objectivity.test.db.beans.xml.Compare;
+import uk.co.objectivity.test.db.beans.xml.Condition;
 import uk.co.objectivity.test.db.utils.Printer;
 import uk.co.objectivity.test.db.utils.SavedTimes;
 import uk.co.objectivity.test.db.utils.TCMessages;
@@ -82,41 +83,45 @@ public class DBTestCompare implements ITest {
             }
             compare = testParams.getCmpSqlResultsTest().getCompare();
             testResults = compare.getCompareMode().getComparator().compare(testParams);
+            if(!testResults.getOutput().isEmpty())
+                logInfo2All(testResults.getOutput() + "\r\n", tcMsgs);
             logInfo2All("Executed query: \r\n" + testResults.getExecutedQuery(), tcMsgs);
 
             // assertions
             if (compare.getCompareMode() == CompareMode.NMB_OF_RESULTS) {
-                List<uk.co.objectivity.test.db.beans.xml.Assert> assertList = compare.getAssertions();
+                List<Condition> assertList = compare.getAssertions();
                 if (assertList != null) {
-                    logInfo2All("Rows count:" + testResults.getNmbOfRows(),tcMsgs);
+                    logInfo2All("Rows count:" + testResults.getNmbOfRows(), tcMsgs);
                     TestResults effFinalTR = testResults;
-                    assertList.forEach(a -> logInfo2All(a.getAssertType().name() + " " + a.getValue(), tcMsgs));
-                    assertList.forEach(a -> a.getAssertType().assertByType(effFinalTR.getNmbOfRows(), a.getValue()));
+                    assertList.forEach(a -> logInfo2All(a.getConditionType().name() + " " + a.getValue(), tcMsgs));
+                    assertList.forEach(a -> a.getConditionType().assertByType(effFinalTR.getNmbOfRows(), a.getValue()));
                     int p = getIndexByName(testParams.getTestName());
-                    if(p >= 0){
+                    if (p >= 0) {
                         savedTimesList.get(p).setTestResult("Passed");
                     }
 
                 }
-            } else if(compare.getCompareMode() == CompareMode.FETCH || compare.getCompareMode() == CompareMode.FILE) {
-                    Assert.assertEquals(testResults.getNmbOfRows(), Integer.valueOf(0),
-                            "Among " + testResults.getNmbOfComparedRows() +
-                                    " compared rows, some differences in SQL queries results found - ");
+            } else if (compare.getCompareMode() == CompareMode.FETCH || compare.getCompareMode() == CompareMode.FILE
+                    || compare.getCompareMode() == CompareMode.KEY) {
+                Assert.assertEquals(testResults.getNmbOfRows(), Integer.valueOf(0),
+                        "Among " + testResults.getNmbOfComparedRows()
+                                + " compared rows, some differences in SQL queries results found - ");
             } else {
-                    Assert.assertEquals(testResults.getNmbOfRows(), Integer.valueOf(0),
-                            "Differences in SQL queries found - ");
-                }
+                Assert.assertEquals(testResults.getNmbOfRows(), Integer.valueOf(0),
+                        "Differences in SQL queries found - ");
+            }
 
-            if(compare.getCompareMode() == CompareMode.FETCH || compare.getCompareMode() == CompareMode.FILE){
-                logInfo2All("TEST PASSED, Compared rows:" + testResults.getNmbOfComparedRows(),tcMsgs);
+            if (compare.getCompareMode() == CompareMode.FETCH || compare.getCompareMode() == CompareMode.FILE
+                    || compare.getCompareMode() == CompareMode.KEY) {
+                logInfo2All("TEST PASSED, Compared rows:" + testResults.getNmbOfComparedRows(), tcMsgs);
             } else {
                 logInfo2All("TEST PASSED", tcMsgs);
             }
 
         } catch (AssertionError ae) {
             String resultsTextTable = null;
-            if (compare != null && testResults != null && compare.getCompareMode() != CompareMode.NMB_OF_RESULTS &&
-                    compare.getDiffTableSize() > 0) {
+            if (compare != null && testResults != null && compare.getCompareMode() != CompareMode.NMB_OF_RESULTS
+                    && compare.getDiffTableSize() > 0) {
                 resultsTextTable = Printer.getTextTable(testResults);
                 log.info(resultsTextTable);
             }
@@ -124,8 +129,10 @@ public class DBTestCompare implements ITest {
             throw ae;
         } catch (Exception e) {
             logFailed2All(e, tcMsgs, null);
-            // it would be better to skip tests which configuration is wrong, and fail only those which really fails
-            // (AssertionError) but fail is more "visible". Maybe user should choose (configuration) if skip or fail
+            // it would be better to skip tests which configuration is wrong, and fail only
+            // those which really fails
+            // (AssertionError) but fail is more "visible". Maybe user should choose
+            // (configuration) if skip or fail
             // on misconfiguration or i.e. DB problems
             // throw new SkipException(e.getMessage());
             throw new TestException(e);
@@ -136,11 +143,9 @@ public class DBTestCompare implements ITest {
 
     }
 
-    public int getIndexByName(String testName)
-    {
-        for(SavedTimes _item : savedTimesList)
-        {
-            if(_item.getTestName().equals(testName))
+    public int getIndexByName(String testName) {
+        for (SavedTimes _item : savedTimesList) {
+            if (_item.getTestName().equals(testName))
                 return savedTimesList.indexOf(_item);
         }
         return -1;
@@ -159,8 +164,9 @@ public class DBTestCompare implements ITest {
     }
 
     /**
-     * For TestNG HTML reports purposes. Without this method it does not display test name provided by getTestName()
-     * ITest interface). For i.e. Intellij IDEA uses name provided by getTestName() .
+     * For TestNG HTML reports purposes. Without this method it does not display
+     * test name provided by getTestName() ITest interface). For i.e. Intellij IDEA
+     * uses name provided by getTestName() .
      *
      * @param result - test results
      */
@@ -178,51 +184,52 @@ public class DBTestCompare implements ITest {
             log.error(ex);
         }
     }
-    @AfterSuite
-    public  void displaySavedTimesStatistics(){
+
+    @AfterSuite(enabled = false)
+    public void displaySavedTimesStatistics() {
         savedTimesList.sort(Comparator.comparing(SavedTimes::getDuration).reversed());
-        Map<String, List<SavedTimes>> savedTimesListGrouped =
-                savedTimesList.stream().collect(Collectors.groupingBy(w -> w.getTestName()));
+        Map<String, List<SavedTimes>> savedTimesListGrouped = savedTimesList.stream()
+                .collect(Collectors.groupingBy(w -> w.getTestName()));
 
         CellStyle cs = new CellStyle(CellStyle.HorizontalAlign.left, CellStyle.AbbreviationStyle.crop,
                 CellStyle.NullStyle.emptyString);
-        Table t = new Table(5, BorderStyle.DESIGN_TUBES, ShownBorders
-                .SURROUND_HEADER_AND_COLUMNS, false, "");
+        Table t = new Table(5, BorderStyle.DESIGN_TUBES, ShownBorders.SURROUND_HEADER_AND_COLUMNS, false, "");
         t.addCell("Test Name", cs);
         t.addCell("Measure Type", cs);
         t.addCell("Duration min:s:ms", cs);
         t.addCell("Compared rows", cs);
         t.addCell("Status", cs);
-        int i=0;
         savedTimesListGrouped.forEach((String key, List<SavedTimes> value) -> {
             value.forEach((SavedTimes v) -> {
-                t.addCell(v.getTestName().trim(), cs)
-                ;
+                t.addCell(v.getTestName().trim(), cs);
                 t.addCell(v.getMeasureType().trim(), cs);
-                t.addCell(v.getFormattedDuration().replace("min:s:ms", "").trim(), cs)
-                ;
+                t.addCell(v.getFormattedDuration().replace("min:s:ms", "").trim(), cs);
                 t.addCell(v.getNumberOfComparedRows(), cs);
                 t.addCell(v.getTestResult().trim(), cs);
             });
         });
-        String stringTable = "Statistics of queries execution  group by test name(" + savedTimesListGrouped.size() + " rows):\r\n" + t.render();
+        String stringTable = "Statistics of queries execution  group by test name(" + savedTimesListGrouped.size()
+                + " rows):\r\n" + t.render();
         Printer.addReporterLog(stringTable);
 
-        log.log(Level.OFF, "##teamcity[message '"+stringTable+"']");
+        log.log(Level.OFF, "##teamcity[message '" + stringTable + "']");
         log.info(stringTable);
 
-        Table ts = new Table(3, BorderStyle.DESIGN_TUBES, ShownBorders
-                .SURROUND_HEADER_AND_COLUMNS, false, "");
+        Table ts = new Table(3, BorderStyle.DESIGN_TUBES, ShownBorders.SURROUND_HEADER_AND_COLUMNS, false, "");
         ts.addCell("Test Name", cs);
         ts.addCell("Measure Type", cs);
         ts.addCell("Duration min:s:ms", cs);
-        savedTimesList.forEach(s -> {ts.addCell(s.getTestName().trim(), cs)
-        ;ts.addCell(s.getMeasureType().trim(), cs);ts.addCell(s.getFormattedDuration().replace("min:s:ms","").trim(), cs);});
+        savedTimesList.forEach(s -> {
+            ts.addCell(s.getTestName().trim(), cs);
+            ts.addCell(s.getMeasureType().trim(), cs);
+            ts.addCell(s.getFormattedDuration().replace("min:s:ms", "").trim(), cs);
+        });
 
-        stringTable = "Statistics of queries execution sorted by time execution (" + savedTimesList.size() + " rows):\r\n" + ts.render();
+        stringTable = "Statistics of queries execution sorted by time execution (" + savedTimesList.size()
+                + " rows):\r\n" + ts.render();
         Printer.addReporterLog(stringTable);
 
-        log.log(Level.OFF, "##teamcity[message '"+stringTable+"']");
+        log.log(Level.OFF, "##teamcity[message '" + stringTable + "']");
         log.info(stringTable);
 
     }

@@ -25,6 +25,9 @@ package uk.co.objectivity.test.db.beans.xml;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlElement;
+
+import uk.co.objectivity.test.db.beans.CheckPresenceAlgorithm;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 public class File {
@@ -37,6 +40,30 @@ public class File {
 
     @XmlAttribute
     private int startAtRow = 1;
+
+    @XmlAttribute
+    private Integer testSetColumn;
+
+    @XmlAttribute
+    private String checkPresenceColumn;
+
+    @XmlAttribute
+    private CheckPresenceAlgorithm presenceAlgorithm;
+
+    @XmlAttribute
+    private String presenceColumnHeader;
+
+    @XmlAttribute
+    private String absentIndicator;
+
+    @XmlAttribute
+    private String ignoredColumns;
+
+    @XmlElement(name = "transformers")
+    private Transformers transformers;
+
+    @XmlElement(name = "aggregators")
+    private Aggregators aggregators;
 
     public String getFilename() {
         return filename;
@@ -57,4 +84,31 @@ public class File {
     public int getStartAtRow() {
         return startAtRow;
     }
+
+    public String getIgnoredColumns() {
+        return ignoredColumns;
+    }
+
+    public Transformers getTransformers() {
+        return transformers;
+    }
+
+    public Aggregators getAggregators() {
+        return aggregators;
+    }
+
+    public Integer getTestSetColumn() {
+        return testSetColumn;
+    }
+
+    public String getCheckPresenceHeader() {
+        return presenceColumnHeader;
+    }
+
+    public String getAbsentIndicator() {
+        if (absentIndicator != null)
+            return absentIndicator.toUpperCase();
+        return "C";
+    }
+
 }

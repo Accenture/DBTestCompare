@@ -1,0 +1,3 @@
+ThreadNumber;ContactTypeID;Name;ModifiedDate;Ignore
+AAA1;001;Accounting Manager;2002-06-01 00:00:00.000;50
+BBB1;0003;Assistant Sales Representative;2002-06-01 00:00:00.0;0

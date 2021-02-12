@@ -1,4 +1,4 @@
-// <copyright file="Assert.java" company="Objectivity Bespoke Software Specialists">
+// <copyright file="Filter.java" company="Objectivity Bespoke Software Specialists">
 // Copyright (c) Objectivity Bespoke Software Specialists. All rights reserved.
 // </copyright>
 // <license>
@@ -22,35 +22,22 @@
 
 package uk.co.objectivity.test.db.beans.xml;
 
+import java.util.List;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlValue;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
 
-import uk.co.objectivity.test.db.beans.AssertType;
-
+@XmlRootElement(name = "transformers")
 @XmlAccessorType(XmlAccessType.FIELD)
-public class Assert {
+public class Transformers {
 
-    @XmlAttribute(name = "type")
-    private AssertType assertType;
+    @XmlElement(name = "transformer")
+    private List<Transformer> transformers;
 
-    @XmlValue
-    private Integer value;
-
-    public AssertType getAssertType() {
-        return assertType;
+    public List<Transformer> getTransformers() {
+        return transformers;
     }
 
-    public void setAssertType(AssertType assertType) {
-        this.assertType = assertType;
-    }
-
-    public Integer getValue() {
-        return value;
-    }
-
-    public void setValue(Integer value) {
-        this.value = value;
-    }
 }

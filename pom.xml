@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0"
-        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>uk.co.objectivity.test.db</groupId>
@@ -14,6 +14,9 @@
         <log4j.version>2.13.1</log4j.version>
         <log4jcore.version>2.13.2</log4jcore.version>
         <c3p0.version>0.9.5.5</c3p0.version>
+        <poi.version>4.1.1</poi.version>
+        <commons.version>3.9</commons.version>
+        <sirocco.version>1.0</sirocco.version>
     </properties>
 
     <build>
@@ -36,7 +39,7 @@
                         <manifestEntries>
                             <!-- TODO all drivers from directory -->
                             <Class-Path>jdbc_drivers/mssql-jdbc-8.2.0.jre8.jar jdbc_drivers/mssql-jdbc-8.2.0.jre11.jar jdbc_drivers/mssql-jdbc-8.2.0.jre13.jar jdbc_drivers/tdgssconfig-4.jar
-                                jdbc_drivers/terajdbc-4.jar jdbc_drivers/mysql-connector-java-8.0.19.jar
+                                jdbc_drivers/terajdbc-4.jar jdbc_drivers/mysql-connector-java-8.0.23.jar
                                 jdbc_drivers/postgresql-42.2.11.jar jdbc_drivers/mariadb-java-client-2.6.0.jar jdbc_drivers/snowflake-jdbc-3.9.2.jar</Class-Path>
                         </manifestEntries>
                     </archive>
@@ -72,7 +75,7 @@
         <dependency>
             <groupId>org.ow2.sirocco</groupId>
             <artifactId>sirocco-text-table-formatter</artifactId>
-            <version>1.0</version>
+            <version>${sirocco.version}</version>
         </dependency>
 
         <!-- used to create JDBC Connection Pool -->
@@ -91,7 +94,19 @@
             <artifactId>log4j-core</artifactId>
             <version>${log4jcore.version}</version>
         </dependency>
-    </dependencies>
 
+          <!-- used to generate Excel file -->
+        <dependency>
+            <groupId>org.apache.poi</groupId>
+            <artifactId>poi</artifactId>
+            <version>${poi.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+            <version>${commons.version}</version>
+        </dependency>
+    </dependencies>
 </project>
 

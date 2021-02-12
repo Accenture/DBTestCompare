@@ -25,7 +25,7 @@ package uk.co.objectivity.test.db.beans;
 
 import org.testng.Assert;
 
-public enum AssertType {
+public enum ConditionType {
     EQ, NE, LT, LE, GE, GT;
 
     public void assertByType(Integer actual, Integer expected) throws AssertionError {

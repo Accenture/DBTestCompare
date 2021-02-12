@@ -1,4 +1,4 @@
-// <copyright file="CompareMode.java" company="Objectivity Bespoke Software Specialists">
+// <copyright file="Filter.java" company="Objectivity Bespoke Software Specialists">
 // Copyright (c) Objectivity Bespoke Software Specialists. All rights reserved.
 // </copyright>
 // <license>
@@ -20,31 +20,34 @@
 //     SOFTWARE.
 // </license>
 
-package uk.co.objectivity.test.db.beans;
+package uk.co.objectivity.test.db.beans.xml;
 
-import uk.co.objectivity.test.db.comparators.KeyComparator;
-import uk.co.objectivity.test.db.comparators.Comparator;
-import uk.co.objectivity.test.db.comparators.FetchComparator;
-import uk.co.objectivity.test.db.comparators.FileComparator;
-import uk.co.objectivity.test.db.comparators.MinusComparator;
-import uk.co.objectivity.test.db.comparators.NmbOfResultsComparator;
+import java.util.List;
+import java.util.stream.Collectors;
 
-public enum CompareMode {
-    MINUS, FETCH, NMB_OF_RESULTS, FILE, KEY;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
 
-    public Comparator getComparator() {
-        switch (this) {
-            case MINUS:
-                return new MinusComparator();
-            case FETCH:
-                return new FetchComparator();
-            case NMB_OF_RESULTS:
-                return new NmbOfResultsComparator();
-            case FILE:
-                return new FileComparator();
-            case KEY:
-                return new KeyComparator();
-        }
-        return null;
+@XmlRootElement(name = "aggregators")
+@XmlAccessorType(XmlAccessType.FIELD)
+public class Aggregators {
+
+    @XmlElement(name = "aggregator")
+    private List<Aggregator> aggregators;
+
+    @XmlElement(name = "condition")
+    private List<AggregatorCondition> conditions;
+
+    public List<Aggregator> getAggregators() {
+        return aggregators;
     }
+
+    public List<uk.co.objectivity.test.db.aggregators.condition.AggregatorCondition> getConditions() {
+        if (conditions == null || conditions.isEmpty())
+            return null;
+        return conditions.stream().map(cond -> cond.getAggregatorCondition()).collect(Collectors.toList());
+    }
+
 }

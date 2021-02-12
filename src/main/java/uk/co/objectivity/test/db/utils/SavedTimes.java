@@ -73,7 +73,7 @@ public class SavedTimes {
         this.numberOfComparedRows = numberOfComparedRows;
     }
 
-    public void SetDuration(long loadTime)
+    public void setDuration(long loadTime)
     {
         this.duration = loadTime;
         this.formattedDuration = String.format("%02d:%02d:%03d min:s:ms \n",
@@ -83,16 +83,16 @@ public class SavedTimes {
                 ,loadTime - TimeUnit.SECONDS.toMillis(TimeUnit.MILLISECONDS.toSeconds(loadTime)));
     }
 
-    public void StartMeasure(String measureType)
+    public void startMeasure(String measureType)
     {
         this.startTime = System.currentTimeMillis();
         this.measureType=measureType;
     }
 
-    public void StopMeasure()
+    public void stopMeasure()
     {
         this.stopTime = System.currentTimeMillis();
-        SetDuration(this.stopTime - this.startTime);
+        setDuration(this.stopTime - this.startTime);
     }
 
 }

@@ -76,9 +76,9 @@ public class NmbOfResultsComparator extends Comparator {
         try {
             stmt = conn.prepareStatement(query, ResultSet.TYPE_SCROLL_INSENSITIVE,
                     ResultSet.CONCUR_READ_ONLY);
-            savedTimes.StartMeasure("NmbOfResults "+ datasourceName);
+            savedTimes.startMeasure("NmbOfResults "+ datasourceName);
             ResultSet rs = stmt.executeQuery();
-            savedTimes.StopMeasure();
+            savedTimes.stopMeasure();
             savedTimesList.add(savedTimes);
 
             rs.next();

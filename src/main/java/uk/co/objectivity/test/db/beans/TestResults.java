@@ -34,11 +34,21 @@ public class TestResults {
 
     private List<List<String>> rows;
 
+    private String output = "";
+
     private String executedQuery;
 
     public TestResults(String executedQuery, int nmbOfRows) {
         this.executedQuery = executedQuery;
         this.nmbOfRows = nmbOfRows;
+    }
+
+    public void appendOutput(String message){
+        output += message + "\r\n";
+     }
+
+    public String getOutput() {
+         return output;
     }
 
     public Integer getNmbOfComparedRows() {

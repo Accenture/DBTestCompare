@@ -1,4 +1,4 @@
-// <copyright file="CompareMode.java" company="Objectivity Bespoke Software Specialists">
+// <copyright file="Assert.java" company="Objectivity Bespoke Software Specialists">
 // Copyright (c) Objectivity Bespoke Software Specialists. All rights reserved.
 // </copyright>
 // <license>
@@ -20,31 +20,37 @@
 //     SOFTWARE.
 // </license>
 
-package uk.co.objectivity.test.db.beans;
+package uk.co.objectivity.test.db.beans.xml;
 
-import uk.co.objectivity.test.db.comparators.KeyComparator;
-import uk.co.objectivity.test.db.comparators.Comparator;
-import uk.co.objectivity.test.db.comparators.FetchComparator;
-import uk.co.objectivity.test.db.comparators.FileComparator;
-import uk.co.objectivity.test.db.comparators.MinusComparator;
-import uk.co.objectivity.test.db.comparators.NmbOfResultsComparator;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlValue;
 
-public enum CompareMode {
-    MINUS, FETCH, NMB_OF_RESULTS, FILE, KEY;
+import uk.co.objectivity.test.db.beans.ConditionType;
 
-    public Comparator getComparator() {
-        switch (this) {
-            case MINUS:
-                return new MinusComparator();
-            case FETCH:
-                return new FetchComparator();
-            case NMB_OF_RESULTS:
-                return new NmbOfResultsComparator();
-            case FILE:
-                return new FileComparator();
-            case KEY:
-                return new KeyComparator();
-        }
-        return null;
+@XmlAccessorType(XmlAccessType.FIELD)
+public class Condition {
+
+    @XmlAttribute(name = "type")
+    private ConditionType conditionType;
+
+    @XmlValue
+    private Integer value;
+
+    public ConditionType getConditionType() {
+        return conditionType;
+    }
+
+    public void setConditionType(ConditionType conditionType) {
+        this.conditionType = conditionType;
+    }
+
+    public Integer getValue() {
+        return value;
+    }
+
+    public void setValue(Integer value) {
+        this.value = value;
     }
 }
