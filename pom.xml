@@ -70,7 +70,11 @@
             <artifactId>jaxb-impl</artifactId>
             <version>${jaxb-impl.version}</version>
         </dependency>
-
+        <dependency>
+            <groupId>javax.activation</groupId>
+            <artifactId>activation</artifactId>
+            <version>1.1.1</version>
+        </dependency>
         <!-- used to print compare results as ASCII table (console) -->
         <dependency>
             <groupId>org.ow2.sirocco</groupId>
