@@ -7,11 +7,13 @@
 	<property name="dateto" value="2004-02-21 00:00:00.000" />
 	<property file="Config\${config}" />
 	<property name="file" value="build.properties" />
+	<dirname property="my.project.dir" file="${ant.file}"/>
 	<echo message="dist : ${dist}" />
 	<echo message="config : ${config}" />
 	<echo message="user.dir : ${user.dir}" />
 	<echo message="datefrom : ${datefrom}" />
 	<echo message="dateto : ${dateto}" />
+	<echo message="my.project.dir : ${my.project.dir}" />
 	<description>
 		Compile solution and replace tokens
 	</description>
@@ -25,7 +27,7 @@
 				<fileset dir="@{fromdir}" includes="@{includefiles}" />
 				<filterchain>
 					<filterreader classname="org.apache.tools.ant.filters.ReplaceTokens">
-						<param type="propertiesfile" value="./deploy/Config/${config}" />
+						<param type="propertiesfile" value="${my.project.dir}/Config/${config}" />
 						<param type="tokenchar" name="begintoken" value="${" />
 						<param type="tokenchar" name="endtoken" value="}" />
 					</filterreader>
@@ -45,7 +47,7 @@
 		<echo>${line.separator}Coping test examples</echo>
 		<echo>${line.separator}</echo>
 		<copyfiles fromdir="${sourceFile}\test-definitions" todir="${dist}\test-definitions" includefiles="**/**" flattenfolder="false" />
-		<replace dir="${dist}\test-definitions\" includes="**\*.sql,**\*.xml" excludes="cmpSqlResults-config.xml" summary="true" failOnNoReplacements="true" >
+		<replace dir="${dist}\test-definitions\" includes="**\*.sql,**\*.xml" excludes="cmpSqlResults-config.xml" summary="true" failOnNoReplacements="false" >
 		<replacefilter 
 			token="@datefrom@" 
 			value="${datefrom}"/>
