@@ -6,7 +6,9 @@
 [![Azure DevOps tests](https://img.shields.io/azure-devops/tests/DBTestCompare/Build/1?compact_message)](https://dev.azure.com/DBTestCompare/Build/_build?definitionId=1&_a=summary)
 
 
-It reads tests definitions in XML format form [specified directory](https://github.com/ObjectivityLtd/DBTestCompare/tree/master/test-definitions) and than runs them (as TestNG test). 
+It **reads tests definitions in XML** format form [specified directory](https://github.com/ObjectivityLtd/DBTestCompare/tree/master/test-definitions) and than runs them (as TestNG test). 
+
+**You can generate automated tests for your database using [DBTestCompareGenerator](https://github.com/ObjectivityLtd/DBTestCompareGenerator)**
 
 If two SQL returns different results -> test fails. 
 
