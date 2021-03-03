@@ -99,7 +99,7 @@ public class FileComparator extends Comparator {
         File diffFileName = getNewFileBasedOnTestConfigFile(testParams.getTestConfigFile(), "_diff.csv");
         try {
             Sql sql = compare.getSqls().get(0);
-            stmt = conn.prepareStatement(sql.getSql(), ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+            stmt = conn.prepareStatement(sql.getSql(), ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
             savedTimes1.startMeasure("Query " + sql.getDatasourceName());
             ResultSet rs = stmt.executeQuery();
             savedTimes1.stopMeasure();
