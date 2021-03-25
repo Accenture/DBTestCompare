@@ -29,7 +29,7 @@ pool:
 
 variables:
 - name: dBTestCompareVersion
-  value: 1.8
+  value: 1.9.1
 
 steps:
 - task: PowerShell@2
@@ -110,7 +110,7 @@ steps:
     repositoryName: '$(Build.Repository.Name)'
     action: 'edit'
     tagSource: 'gitTag'
-    tagPattern: '\d\.\d'
+    tagPattern: '\d\.\d.\d'
     target: '$(Build.SourceVersion)'
     tag: '$(dBTestCompareVersion)'
     title: 'Version $(dBTestCompareVersion)'

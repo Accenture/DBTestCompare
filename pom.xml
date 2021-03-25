@@ -6,7 +6,7 @@
 
     <groupId>uk.co.objectivity.test.db</groupId>
     <artifactId>DBTestCompare</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>1.0.0-SNAPSHOT</version>
 
     <properties>
         <testng.version>7.0.0</testng.version>
