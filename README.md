@@ -58,6 +58,16 @@ after each tests, but when all tests are finished
 - Possibility to **filter tests** for execution by including or excluding, more details [here](https://github.com/ObjectivityLtd/DBTestCompare/wiki/Filtering-tests-for-execution-by-including-or-excluding)
 - Standard **TestNG html test report** in "test-output" folder, more details [here](https://github.com/ObjectivityLtd/DBTestCompare/wiki/Test-results---TestNG-html-report-in-%22test-output%22-folder)
 
+### How DBTestCompare works:
+
+Comparing databases:
+
+<img src="images/comparingDB.png" alt="DBTestCompare">
+
+With test data delivered by file:
+
+<img src="images/comparingDataDB.png" alt="DBTestCompare">
+
 The program searches for test definitions by default in folder "test-definitions".
 
 JDBC drivers must be present in "jdbc_drivers" folder.
