@@ -109,11 +109,8 @@ steps:
     gitHubConnection: 'github.com_dbtestcompare'
     repositoryName: '$(Build.Repository.Name)'
     action: 'edit'
-    tagSource: 'gitTag'
-    tagPattern: '\d\.\d.\d'
     target: '$(Build.SourceVersion)'
     tag: '$(dBTestCompareVersion)'
     title: 'Version $(dBTestCompareVersion)'
-    changeLogCompareToRelease: 'lastNonDraftReleaseByTag'
-    changeLogType: 'commitBased'
-    assets: $(Build.ArtifactStagingDirectory)/DBTestCompare$(dBTestCompareVersion).zip
+    assets: '$(Build.ArtifactStagingDirectory)/DBTestCompare$(dBTestCompareVersion).zip'
+    addChangeLog: false
