@@ -28,10 +28,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Unmarshaller;
@@ -79,6 +76,8 @@ public class TestDataProvider {
         Collection<Object[]> dpParams = new ArrayList<>();
 
         File[] listOfFiles = TESTS_DIR_FILE.listFiles();
+        Arrays.sort(listOfFiles);
+        
         if (listOfFiles == null) {
             throw new FileNotFoundException("Problems with listing directory " + TESTS_DIR_FILE.getAbsolutePath());
         }
