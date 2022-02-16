@@ -185,7 +185,7 @@ public class DBTestCompare implements ITest {
         }
     }
 
-    @AfterSuite(enabled = false)
+    @AfterSuite(enabled = true)
     public void displaySavedTimesStatistics() {
         savedTimesList.sort(Comparator.comparing(SavedTimes::getDuration).reversed());
         Map<String, List<SavedTimes>> savedTimesListGrouped = savedTimesList.stream()
