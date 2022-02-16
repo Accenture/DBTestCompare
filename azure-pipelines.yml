@@ -29,7 +29,7 @@ pool:
 
 variables:
 - name: dBTestCompareVersion
-  value: 1.9.1
+  value: 1.9.3
 
 steps:
 - task: PowerShell@2
