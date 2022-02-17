@@ -99,6 +99,7 @@ public class RunTests {
             suiteName = "FILTERED compare SQL results suite";
         }
         testng.setDefaultSuiteName(suiteName);
+        testng.setPreserveOrder(true);
         testng.setParallel(XmlSuite.ParallelMode.INSTANCES);
         testng.setThreadCount(threadCount);
         // testng.setDataProviderThreadCount(cmpSqlResultsConfig.getThreads());
