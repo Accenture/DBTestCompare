@@ -1,0 +1,51 @@
+# Maven
+# Build your Java project and run tests with Apache Maven.
+# Add steps that analyze code, save build artifacts, deploy, and more:
+# https://docs.microsoft.com/azure/devops/pipelines/languages/java
+
+on:
+  push:
+    branches:
+    - '*'
+    paths-ignore:
+    - README.md
+    - gh-pages
+    tags:
+    - '*'
+  schedule:
+  - cron: '0 19 * * 0'
+env:
+  dBTestCompareVersion: 1.9.3
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - 
+    - run: |
+        $tags = git tag --sort=-creatordate   
+        $tag = $tags[0]
+        Write-Host "##vso[task.setvariable variable=dBTestCompareVersion]$tag"
+      shell: powershell
+      if: startsWith(github.ref, 'refs/tags/')
+    - run: |
+        ./setDBTestCompareVersion.ps1
+    - run: |
+        ./downloadBackupAndJDBCDrivers.ps1
+    - run: docker-compose -f "**/docker-compose.yml" up -d
+    - run: |
+        ./restoreBackup.ps1
+    - run: ant -noinput -buildfile ./deploy/build.xml
+    - run: |
+        ./copyArtifact.ps1
+    - uses: actions/upload-artifact@v2
+      with:
+        path: ./target/test-output
+    - uses: actions/upload-artifact@v2
+      with:
+        path: ./target/test-definitions
+    - uses: actions/upload-artifact@v2
+      with:
+        path: ./release
+    - run: compress-archive -path "./release/**" ./release/DBTestCompare${{ env.dBTestCompareVersion }}.zip
+    - run: Copy './release/DBTestCompare${{ env.dBTestCompareVersion }}.zip' '${{ github.workspace }}'
