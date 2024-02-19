@@ -23,22 +23,25 @@ jobs:
       dBTestCompareVersion: 1.9.3
     steps:
     - uses: actions/checkout@v2
-    - run: |
+    - shell: powershell
+      run: |
         $tags = git tag --sort=-creatordate   
         $tag = $tags[0]
         Write-Host "##vso[task.setvariable variable=dBTestCompareVersion]$tag"
-      shell: powershell
       if: startsWith(github.ref, 'refs/tags/')
     - shell: pwsh 
       run: |
         ./setDBTestCompareVersion.ps1
-    - run: |
+    - shell: pwsh 
+      run: |
         ./downloadBackupAndJDBCDrivers.ps1
     - run: docker-compose -f "**/docker-compose.yml" up -d
-    - run: |
+    - shell: pwsh 
+      run: |
         ./restoreBackup.ps1
     - run: ant -noinput -buildfile ./deploy/build.xml
-    - run: |
+    - shell: pwsh 
+      run: |
         ./copyArtifact.ps1
     - uses: actions/upload-artifact@v2
       with:
