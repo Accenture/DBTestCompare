@@ -35,7 +35,7 @@ jobs:
     - shell: pwsh 
       run: |
         ./downloadBackupAndJDBCDrivers.ps1
-    - run: docker-compose -f "**/docker-compose.yml" up -d
+    - run: docker-compose -f "./docker/docker-compose.yml" up -d
     - shell: pwsh 
       run: |
         ./restoreBackup.ps1
