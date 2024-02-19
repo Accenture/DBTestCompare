@@ -21,7 +21,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
-    - 
     - run: |
         $tags = git tag --sort=-creatordate   
         $tag = $tags[0]
