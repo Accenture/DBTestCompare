@@ -19,6 +19,8 @@ env:
 jobs:
   build:
     runs-on: ubuntu-latest
+    env:
+      dBTestCompareVersion: 1.9.3
     steps:
     - uses: actions/checkout@v2
     - run: |
