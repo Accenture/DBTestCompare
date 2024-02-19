@@ -44,7 +44,8 @@ jobs:
     - shell: pwsh 
       run: |
         ./restoreBackup.ps1
-    - run: ant -noinput -buildfile ./deploy/build.xml -Dconfig=DEV02
+    - name: Run ant build
+      run: ant -noinput -buildfile ./deploy/build.xml -Dconfig=DEV02
     - shell: pwsh 
       run: |
         ./copyArtifact.ps1
