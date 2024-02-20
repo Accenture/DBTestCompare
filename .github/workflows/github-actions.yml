@@ -29,8 +29,6 @@ jobs:
         java-version: '8'
         distribution: 'temurin'
     - uses: cedx/setup-ant@v2
-      with:
-        version: 1.231.1
     - shell: powershell
       run: |
         $tags = git tag --sort=-creatordate   
