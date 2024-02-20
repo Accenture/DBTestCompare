@@ -30,8 +30,7 @@ jobs:
         distribution: 'temurin'
     - uses: cedx/setup-ant@v2
       with:
-        optional-tasks: true
-        version: 1.10.12
+        version: 1.10.14
     - shell: powershell
       run: |
         $tags = git tag --sort=-creatordate   
