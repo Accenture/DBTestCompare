@@ -30,7 +30,7 @@ jobs:
         distribution: 'temurin'
     - uses: cedx/setup-ant@v2
       with:
-        version: 1.10.14
+        version: 1.231.1
     - shell: powershell
       run: |
         $tags = git tag --sort=-creatordate   
@@ -48,7 +48,7 @@ jobs:
       run: |
         ./restoreBackup.ps1
     - name: Run ant build
-      run: ant -noinput -buildfile ./deploy/build.xml -Dconfig=DEV02
+      run: ant -noinput -buildfile ./deploy/build.xml -Dconfig=DEV02 compile tokens.copy.files testdbq.run
     - shell: pwsh 
       run: |
         ./copyArtifact.ps1
