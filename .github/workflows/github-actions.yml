@@ -59,6 +59,6 @@ jobs:
     - uses: actions/upload-artifact@v2
       with:
         path: ./release
-    - shell: powershell
+    - shell: pwsh
       run: compress-archive -path "./release" ./release/DBTestCompare${{ env.dBTestCompareVersion }}.zip
     - run: Copy './release/DBTestCompare${{ env.dBTestCompareVersion }}.zip' '${{ github.workspace }}'
