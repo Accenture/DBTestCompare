@@ -61,4 +61,5 @@ jobs:
         path: ./release
     - shell: pwsh
       run: compress-archive -path "./release" ./release/DBTestCompare${{ env.dBTestCompareVersion }}.zip
-    - run: Copy './release/DBTestCompare${{ env.dBTestCompareVersion }}.zip' '${{ github.workspace }}'
+    - shell: pwsh
+      run: Copy './release/DBTestCompare${{ env.dBTestCompareVersion }}.zip' '${{ github.workspace }}'
