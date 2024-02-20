@@ -50,14 +50,17 @@ jobs:
     - shell: pwsh 
       run: |
         ./copyArtifact.ps1
-    - uses: actions/upload-artifact@v2
+    - uses: actions/upload-artifact@v4
       with:
+        name: DBTestCompare${{ env.dBTestCompareVersion }}.TestResults.${{github.run_number}}
         path: ./target/test-output
-    - uses: actions/upload-artifact@v2
+    - uses: actions/upload-artifact@v4
       with:
+        name: DBTestCompare${{ env.dBTestCompareVersion }}.TestDefinitionsResults.${{github.run_number}}
         path: ./target/test-definitions
-    - uses: actions/upload-artifact@v2
+    - uses: actions/upload-artifact@v4
       with:
+        name: DBTestCompare${{ env.dBTestCompareVersion }}
         path: ./release
     - shell: pwsh
       run: compress-archive -path "./release" ./release/DBTestCompare${{ env.dBTestCompareVersion }}.zip
