@@ -18,7 +18,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     env:
-      dBTestCompareVersion: 1.9.3
+      dBTestCompareVersion: 1.9.4
     steps:
     - uses: actions/checkout@v4
     - name: Set up JDK 8 
