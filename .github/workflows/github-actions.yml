@@ -18,7 +18,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     env:
-      dBTestCompareVersion: 1.9.4
+      dBTestCompareVersion: 1.9.5
     steps:
     - uses: actions/checkout@v4
     - name: Set up JDK 8 
@@ -76,4 +76,5 @@ jobs:
         artifacts: ./release/DBTestCompare${{ env.dBTestCompareVersion }}.zip
         tag: ${{ env.dBTestCompareVersion }}
         name: "Version_${{ env.dBTestCompareVersion }}"
+        skipIfReleaseExists: true
       if: success() && startsWith(github.ref, 'refs/tags/')
