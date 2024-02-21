@@ -2,9 +2,7 @@
 
 **Application to compare results of two SQL queries** 
 
-[![Build Status](https://dev.azure.com/DBTestCompare/Build/_apis/build/status/ObjectivityLtd.DBTestCompare)](https://dev.azure.com/DBTestCompare/Build/_build?definitionId=1&_a=summary)
-[![Azure DevOps tests](https://img.shields.io/azure-devops/tests/DBTestCompare/Build/1?compact_message)](https://dev.azure.com/DBTestCompare/Build/_build?definitionId=1&_a=summary)
-
+[<img src="images/Githubactions.png">](https://github.com/Accenture/DBTestCompare/actions)
 
 It **reads tests definitions in XML** format form [specified directory](https://github.com/ObjectivityLtd/DBTestCompare/tree/master/test-definitions) and than runs them (as TestNG test). 
 

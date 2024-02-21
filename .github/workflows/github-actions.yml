@@ -75,6 +75,6 @@ jobs:
         token: ${{ secrets.GITHUB_TOKEN }}
         artifacts: ./release/DBTestCompare${{ env.dBTestCompareVersion }}.zip
         tag: ${{ env.dBTestCompareVersion }}
-        name: "Version_${{ env.dBTestCompareVersion }}"
+        name: "Version ${{ env.dBTestCompareVersion }}"
         skipIfReleaseExists: true
       if: success() && startsWith(github.ref, 'refs/tags/')
