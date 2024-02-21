@@ -1,0 +1,80 @@
+# Maven
+# Build your Java project and run tests with Apache Maven.
+# Add steps that analyze code, save build artifacts, deploy, and more:
+# https://docs.microsoft.com/azure/devops/pipelines/languages/java
+
+on:
+  push:
+    branches:
+    - '*'
+    paths-ignore:
+    - README.md
+    - gh-pages
+    tags:
+    - '*'
+  schedule:
+  - cron: '0 19 * * 0'
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    env:
+      dBTestCompareVersion: 1.9.5
+    steps:
+    - uses: actions/checkout@v4
+    - name: Set up JDK 8 
+      uses: actions/setup-java@v3
+      with:
+        java-version: '8'
+        distribution: 'temurin'
+    - uses: cedx/setup-ant@v2
+    - shell: pwsh
+      run: |
+        $tags = git tag --sort=-creatordate   
+        $tag = $tags[0]
+        Write-Host "##vso[task.setvariable variable=dBTestCompareVersion]$tag"
+      if: startsWith(github.ref, 'refs/tags/')
+    - shell: pwsh 
+      run: |
+        ./setDBTestCompareVersion.ps1
+    - shell: pwsh 
+      run: |
+        ./downloadBackupAndJDBCDrivers.ps1
+    - run: docker-compose -f "./docker/docker-compose.yml" up -d
+    - shell: pwsh 
+      run: |
+        ./restoreBackup.ps1
+    - name: Run ant build
+      run: ant -noinput -buildfile ./deploy/build.xml -Dconfig=DEV02 compile tokens.copy.files testdbq.run
+    - name: Publish Test Report
+      uses: mikepenz/action-junit-report@v4
+      if: success() || failure()
+      with:
+        report_paths: '**/TEST-*.xml'
+    - shell: pwsh 
+      run: |
+        ./copyArtifact.ps1
+    - uses: actions/upload-artifact@v4
+      with:
+        name: DBTestCompare${{ env.dBTestCompareVersion }}.TestResults.${{github.run_number}}
+        path: ./target/test-output
+    - uses: actions/upload-artifact@v4
+      with:
+        name: DBTestCompare${{ env.dBTestCompareVersion }}.TestDefinitionsResults.${{github.run_number}}
+        path: ./target/test-definitions
+    - uses: actions/upload-artifact@v4
+      with:
+        name: DBTestCompare${{ env.dBTestCompareVersion }}
+        path: ./release
+    - shell: pwsh
+      run: compress-archive -path "./release" ./release/DBTestCompare${{ env.dBTestCompareVersion }}.zip
+    - shell: pwsh
+      run: Copy './release/DBTestCompare${{ env.dBTestCompareVersion }}.zip' '${{ github.workspace }}'
+    - name: Create Release
+      uses: ncipollo/release-action@v1
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+        artifacts: ./release/DBTestCompare${{ env.dBTestCompareVersion }}.zip
+        tag: ${{ env.dBTestCompareVersion }}
+        name: "Version ${{ env.dBTestCompareVersion }}"
+        skipIfReleaseExists: true
+      if: success() && startsWith(github.ref, 'refs/tags/')
