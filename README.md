@@ -2,7 +2,7 @@
 
 **Application to compare results of two SQL queries** 
 
-[<img src="images/Githubactions.png">](https://github.com/Accenture/DBTestCompare/actions)
+![DBTestCompare Build](https://github.com/Accenture/DBTestCompare/actions/workflows/github-actions.yml/badge.svg)
 
 It **reads tests definitions in XML** format form [specified directory](https://github.com/ObjectivityLtd/DBTestCompare/tree/master/test-definitions) and than runs them (as TestNG test). 
 
