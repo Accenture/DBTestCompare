@@ -2,8 +2,6 @@
 
 **Application to compare results of two SQL queries** 
 
-![DBTestCompare Build](https://github.com/Accenture/DBTestCompare/actions/workflows/github-actions.yml/badge.svg)
-
 It **reads tests definitions in XML** format form [specified directory](https://github.com/ObjectivityLtd/DBTestCompare/tree/master/test-definitions) and than runs them (as TestNG test). 
 
 **You can generate automated tests for your database using [DBTestCompareGenerator](https://github.com/ObjectivityLtd/DBTestCompareGenerator)**
