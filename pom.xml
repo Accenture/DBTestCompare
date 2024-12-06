@@ -40,7 +40,7 @@
                             <!-- TODO all drivers from directory -->
                             <Class-Path>jdbc_drivers/mssql-jdbc-8.2.0.jre8.jar jdbc_drivers/mssql-jdbc-8.2.0.jre11.jar jdbc_drivers/mssql-jdbc-8.2.0.jre13.jar jdbc_drivers/tdgssconfig-4.jar
                                 jdbc_drivers/terajdbc-4.jar jdbc_drivers/mysql-connector-java-8.0.23.jar
-                                jdbc_drivers/postgresql-42.2.11.jar jdbc_drivers/mariadb-java-client-2.6.0.jar jdbc_drivers/snowflake-jdbc-3.9.2.jar</Class-Path>
+                                jdbc_drivers/postgresql-42.7.4.jar jdbc_drivers/mariadb-java-client-2.6.0.jar jdbc_drivers/snowflake-jdbc-3.9.2.jar</Class-Path>
                         </manifestEntries>
                     </archive>
                     <descriptorRefs>
