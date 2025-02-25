@@ -95,6 +95,8 @@
 		<property name="dbtestcompare.file" refid="jar.file.version"/>
 		<echo message="DBTestCompare file: ${dbtestcompare.file}"/> 
 		<java jar="${dbtestcompare.file}" fork="true" failonerror="yes" dir="${dist}\">
+			<jvmarg value="--add-opens"/>
+                        <jvmarg value="java.base/java.lang=ALL-UNNAMED"/>
 		</java>
 	</target>
 </project>
