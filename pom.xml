@@ -11,9 +11,9 @@
     <properties>
         <testng.version>7.5.1</testng.version>
         <jaxb-impl.version>2.2.7</jaxb-impl.version>
-        <log4j.version>2.17.1</log4j.version>
-        <log4jcore.version>2.17.1</log4jcore.version>
-        <c3p0.version>0.9.5.5</c3p0.version>
+        <log4j.version>2.24.2</log4j.version>
+        <log4jcore.version>2.24.2</log4jcore.version>
+        <c3p0.version>0.10.1</c3p0.version>
         <poi.version>4.1.1</poi.version>
         <commons.version>3.9</commons.version>
         <sirocco.version>1.0</sirocco.version>
