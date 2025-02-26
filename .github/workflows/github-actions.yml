@@ -69,12 +69,12 @@ jobs:
       run: compress-archive -path "./release" ./release/DBTestCompare${{ env.dBTestCompareVersion }}.zip
     - shell: pwsh
       run: Copy './release/DBTestCompare${{ env.dBTestCompareVersion }}.zip' '${{ github.workspace }}'
-    - name: Create Release
-      uses: ncipollo/release-action@v1
-      with:
-        token: ${{ secrets.GITHUB_TOKEN }}
-        artifacts: ./release/DBTestCompare${{ env.dBTestCompareVersion }}.zip
-        tag: ${{ env.dBTestCompareVersion }}
-        name: "Version ${{ env.dBTestCompareVersion }}"
-        skipIfReleaseExists: true
-      if: success() && startsWith(github.ref, 'refs/tags/')
+    - shell: bash
+      run: |
+        upload_url=$(curl -sL https://api.github.com/repos/Accenture/DBTestCompare/releases/latest | jq -r '.upload_url')
+        echo UPLOAD_URL=$upload_url >> $GITHUB_ENV
+    - name: 'Upload linux artifact to Release'
+      run: gh release upload ${{ env.dBTestCompareVersion }} ./release/DBTestCompare${{ env.dBTestCompareVersion }}.zip    
+      env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      if: startsWith(github.ref, 'refs/tags/')
