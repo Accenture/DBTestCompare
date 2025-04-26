@@ -8,6 +8,8 @@ It **reads tests definitions in XML** format form [specified directory](https://
 
 **You can generate automated tests for your database using [DBTestCompareGenerator](https://github.com/ObjectivityLtd/DBTestCompareGenerator)**
 
+AI generated documentation [DeepWiki](https://deepwiki.com/Accenture/DBTestCompare)
+
 If two SQL returns different results -> test fails. 
 
 Application [supports TeamCity](https://github.com/ObjectivityLtd/DBTestCompare/wiki/Real-time-test-execution-progress-in-TeamCity) Service Messages ([##teamcity messages](https://confluence.jetbrains.com/display/TCD8/Build+Script+Interaction+with+TeamCity)) so if teamcityLogsEnabled is set to "true" (config file or command line parameter), you will see nice test tree in TeamCity logs.
