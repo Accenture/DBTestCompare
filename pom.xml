@@ -15,7 +15,7 @@
         <log4jcore.version>2.25.0</log4jcore.version>
         <c3p0.version>0.10.1</c3p0.version>
         <poi.version>4.1.1</poi.version>
-        <commons.version>3.9</commons.version>
+        <commons.version>3.18.0</commons.version>
         <sirocco.version>1.0</sirocco.version>
     </properties>
 
