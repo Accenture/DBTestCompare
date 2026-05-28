@@ -13,7 +13,7 @@ services:
       - 1433:1433
 
   mysql_db_container:
-    image: mysql:latest
+    image: public.ecr.aws/docker/library/mysql:latest
     environment:
       MYSQL_ROOT_PASSWORD: my-secret-pw
       MYSQL_DATABASE: dbquality
@@ -26,7 +26,7 @@ services:
       - mysql_db_data_container:/var/lib/mysql
   
   postgres:
-    image: postgres:latest
+    image: public.ecr.aws/docker/library/postgres:latest
     environment:
       POSTGRES_USER: dbquality
       POSTGRES_PASSWORD: dbquality
