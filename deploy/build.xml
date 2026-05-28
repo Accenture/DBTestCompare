@@ -74,14 +74,14 @@
 		<exec dir="..\" executable="CMD" failonerror="yes">
 			<arg value="/C" />
 			<arg value="mvn" />
-			<arg line="clean compile assembly:single" />
+			<arg line="clean package" />
 		</exec>
 	</target>
 	<target name="mvn_unix" if="isUnix">
 		<echo>${line.separator}Compile DBTestCompare project</echo>
 		<echo>${line.separator}</echo>
 		<exec dir="..\" executable="sh">
-			<arg line="-c 'mvn clean compile assembly:single'" />
+			<arg line="-c 'mvn clean package'" />
 		</exec>
 	</target>
 	<target name="testdbq.run">

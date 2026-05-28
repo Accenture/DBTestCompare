@@ -30,23 +30,42 @@
                 </configuration>
             </plugin>
             <plugin>
-                <artifactId>maven-assembly-plugin</artifactId>
-                <configuration>
-                    <archive>
-                        <manifest>
-                            <mainClass>uk.co.objectivity.test.db.RunTests</mainClass>
-                        </manifest>
-                        <manifestEntries>
-                            <!-- TODO all drivers from directory -->
-                            <Class-Path>jdbc_drivers/mssql-jdbc-8.2.0.jre8.jar jdbc_drivers/mssql-jdbc-8.2.0.jre11.jar jdbc_drivers/mssql-jdbc-8.2.0.jre13.jar jdbc_drivers/tdgssconfig-4.jar
-                                jdbc_drivers/terajdbc-4.jar jdbc_drivers/mysql-connector-java-8.0.23.jar
-                                jdbc_drivers/postgresql-42.7.4.jar jdbc_drivers/mariadb-java-client-2.6.0.jar jdbc_drivers/snowflake-jdbc-3.9.2.jar</Class-Path>
-                        </manifestEntries>
-                    </archive>
-                    <descriptorRefs>
-                        <descriptorRef>jar-with-dependencies</descriptorRef>
-                    </descriptorRefs>
-                </configuration>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>3.5.3</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                        <configuration>
+                            <createDependencyReducedPom>false</createDependencyReducedPom>
+                            <shadedArtifactAttached>true</shadedArtifactAttached>
+                            <shadedClassifierName>jar-with-dependencies</shadedClassifierName>
+                            <transformers>
+                                <!-- Merges Log4j2Plugins.dat across log4j-core and log4j-1.2-api so XML/properties parsers, appenders, layouts, filters, and lookups all register. -->
+                                <transformer implementation="org.apache.logging.log4j.maven.plugins.shade.transformer.Log4j2PluginCacheFileTransformer"/>
+                                <transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer"/>
+                                <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                                    <manifestEntries>
+                                        <Main-Class>uk.co.objectivity.test.db.RunTests</Main-Class>
+                                        <!-- TODO all drivers from directory -->
+                                        <Class-Path>jdbc_drivers/mssql-jdbc-8.2.0.jre8.jar jdbc_drivers/mssql-jdbc-8.2.0.jre11.jar jdbc_drivers/mssql-jdbc-8.2.0.jre13.jar jdbc_drivers/tdgssconfig-4.jar jdbc_drivers/terajdbc-4.jar jdbc_drivers/mysql-connector-java-8.0.23.jar jdbc_drivers/postgresql-42.7.4.jar jdbc_drivers/mariadb-java-client-2.6.0.jar jdbc_drivers/snowflake-jdbc-3.9.2.jar</Class-Path>
+                                        <Add-Opens>java.base/java.lang</Add-Opens>
+                                    </manifestEntries>
+                                </transformer>
+                            </transformers>
+                        </configuration>
+                    </execution>
+                </executions>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.apache.logging.log4j</groupId>
+                        <artifactId>log4j-transform-maven-shade-plugin-extensions</artifactId>
+                        <version>0.2.0</version>
+                    </dependency>
+                </dependencies>
             </plugin>
 
             <plugin>

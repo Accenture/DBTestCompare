@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "PowerShell(mvn clean package -q 2>&1)",
+      "Read(//c/CProjektyGIT/Git_OS/DBTestCompare/target/**)"
+    ]
+  }
+}
