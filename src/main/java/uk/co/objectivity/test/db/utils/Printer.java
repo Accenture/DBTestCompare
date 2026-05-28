@@ -24,7 +24,7 @@ package uk.co.objectivity.test.db.utils;
 
 import java.util.List;
 
-import org.apache.log4j.ConsoleAppender;
+import org.apache.log4j.Appender;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PatternLayout;
@@ -46,7 +46,7 @@ public class Printer {
 
     public static void init(CmpSqlResultsConfig cmpSqlResultsConfig) {
         log.debug("Initializing logger / printer ...");
-        ConsoleAppender consoleAppender = (ConsoleAppender) Logger.getRootLogger().getAppender("stdout");
+        Appender consoleAppender = Logger.getRootLogger().getAppender("stdout");
         if (cmpSqlResultsConfig.getLogger() != null && cmpSqlResultsConfig.getLogger().getLogLevel() !=
                 null && !cmpSqlResultsConfig.getLogger().getLogLevel().isEmpty()) {
             Logger.getRootLogger().setLevel(Level.toLevel(cmpSqlResultsConfig.getLogger().getLogLevel()));
