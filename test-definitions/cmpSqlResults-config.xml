@@ -34,7 +34,8 @@
             <name>SQL_SERVER</name>
             <driver>com.microsoft.sqlserver.jdbc.SQLServerDriver</driver>
 			<!--<url>jdbc:sqlserver://${SQL_SERVER}\${SQL_SERVERINSTANCE};databaseName=${SQL_SERVERDBNAME}</url>-->
-            <url>jdbc:sqlserver://${SQL_SERVER};databaseName=${SQL_SERVERDBNAME}</url>
+            <!-- mssql-jdbc 13.x defaults encrypt=true; the container cert is self-signed, so trust it (else PKIX/SSL failure). -->
+            <url>jdbc:sqlserver://${SQL_SERVER};databaseName=${SQL_SERVERDBNAME};encrypt=true;trustServerCertificate=true</url>
             <user>${SQL_SERVER_USERNAME}</user>
             <password>${SQL_SERVER_PASSWORD}</password>
         </datasource>

@@ -26,7 +26,8 @@ services:
       - mysql_db_data_container:/var/lib/mysql
   
   postgres:
-    image: public.ecr.aws/docker/library/postgres:latest
+    # Pin to 16: postgres:latest (v18) refuses the /var/lib/postgresql/data volume mount and the container never comes up.
+    image: public.ecr.aws/docker/library/postgres:16
     environment:
       POSTGRES_USER: dbquality
       POSTGRES_PASSWORD: dbquality
