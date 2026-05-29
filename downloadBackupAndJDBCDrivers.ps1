@@ -9,7 +9,7 @@ Write-Output "Downloading sqljdbc drivers"
 Invoke-WebRequest -Uri "https://go.microsoft.com/fwlink/?linkid=2356503" -OutFile "./zip/sqljdbc_13.4.0.0_enu.zip"
 Write-Output "Unzipping sqljdbc drivers"
 Expand-Archive -LiteralPath './zip/sqljdbc_13.4.0.0_enu.zip' -DestinationPath "./zip/sqljdbc" -Force
-Copy-Item -Path "./zip/sqljdbc/sqljdbc_13.4/enu/*"  -Destination "./jdbc_drivers" -Include "mssql-jdbc-*.jar"
+Copy-Item -Path "./zip/sqljdbc/sqljdbc_13.4/enu/jars/*"  -Destination "./jdbc_drivers" -Include "mssql-jdbc-*.jar"
 
 Write-Output "Downloading mysql sctipts"
 Invoke-WebRequest -Uri "https://github.com/raczeja/DBTestCompare_backups/raw/master/my-mysql/sql-scripts/sql-scripts.zip" -OutFile "./zip/sql-scripts-mysql.zip"
