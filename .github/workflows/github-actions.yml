@@ -39,7 +39,16 @@ jobs:
     - shell: pwsh 
       run: |
         ./downloadBackupAndJDBCDrivers.ps1
-    - run: docker-compose -f "./docker/docker-compose.yml" up -d
+    - name: Start databases (retry on public.ecr.aws rate limiting)
+      shell: bash
+      run: |
+        for i in 1 2 3 4 5; do
+          docker-compose -f "./docker/docker-compose.yml" up -d && exit 0
+          echo "compose up attempt $i failed (likely toomanyrequests); retrying in 30s..."
+          sleep 30
+        done
+        echo "compose up failed after 5 attempts" >&2
+        exit 1
     - shell: pwsh 
       run: |
         ./restoreBackup.ps1
