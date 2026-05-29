@@ -6,10 +6,10 @@ Write-Output "Unzipping AdventureWorks2008R2FullDatabaseBackup"
 Expand-Archive -LiteralPath './zip/AdventureWorks2008R2FullDatabaseBackup.zip' -DestinationPath ./docker -Force
  
 Write-Output "Downloading sqljdbc drivers"
-Invoke-WebRequest -Uri "https://download.microsoft.com/download/4/0/8/40815588-bef6-4715-bde9-baace8726c2a/sqljdbc_8.2.0.0_enu.zip" -OutFile "./zip/sqljdbc_8.2.0.0_enu.zip"
+Invoke-WebRequest -Uri "https://go.microsoft.com/fwlink/?linkid=2356503" -OutFile "./zip/sqljdbc_13.4.0.0_enu.zip"
 Write-Output "Unzipping sqljdbc drivers"
-Expand-Archive -LiteralPath './zip/sqljdbc_8.2.0.0_enu.zip' -DestinationPath "./zip/sqljdbc" -Force
-Copy-Item -Path "./zip/sqljdbc/sqljdbc_8.2/enu/*"  -Destination "./jdbc_drivers" -Include "mssql-jdbc-*.jar"
+Expand-Archive -LiteralPath './zip/sqljdbc_13.4.0.0_enu.zip' -DestinationPath "./zip/sqljdbc" -Force
+Copy-Item -Path "./zip/sqljdbc/sqljdbc_13.4/enu/*"  -Destination "./jdbc_drivers" -Include "mssql-jdbc-*.jar"
 
 Write-Output "Downloading mysql sctipts"
 Invoke-WebRequest -Uri "https://github.com/raczeja/DBTestCompare_backups/raw/master/my-mysql/sql-scripts/sql-scripts.zip" -OutFile "./zip/sql-scripts-mysql.zip"
