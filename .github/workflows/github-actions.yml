@@ -45,11 +45,12 @@ jobs:
         ./restoreBackup.ps1
     - name: Run ant build
       run: ant -noinput -buildfile ./deploy/build.xml -Dconfig=DEV02 compile tokens.copy.files testdbq.run
-    - name: Publish Test Report
-      uses: mikepenz/action-junit-report@v4
+    - name: Publish Test Results
+      uses: EnricoMi/publish-unit-test-result-action/linux@v2
       if: success() || failure()
       with:
-        report_paths: '**/TEST-*.xml'
+        files: '**/TEST-*.xml'
+        report_individual_runs: true
     - shell: pwsh 
       run: |
         ./copyArtifact.ps1
