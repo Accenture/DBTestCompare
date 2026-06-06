@@ -8,7 +8,7 @@ It **reads tests definitions in XML** format form [specified directory](https://
 
 **You can generate automated tests for your database using [DBTestCompareGenerator](https://github.com/ObjectivityLtd/DBTestCompareGenerator)**
 
-AI generated documentation [DeepWiki](https://deepwiki.com/Accenture/DBTestCompare)
+AI generated documentation [![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/Accenture/DBTestCompare)
 
 If two SQL returns different results -> test fails. 
 
