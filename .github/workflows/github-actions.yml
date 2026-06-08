@@ -22,11 +22,10 @@ jobs:
       dBTestCompareVersion: 2.0.0
     steps:
     - uses: actions/checkout@v4
-    - name: Install Docker Compose and build docker image
+    - name: Install Docker Compose and Ant
       run: |
         sudo apt-get update
-        sudo apt-get install -y docker-compose
-    - uses: cedx/setup-ant@v2
+        sudo apt-get install -y docker-compose ant
     - shell: pwsh
       run: |
         $tags = git tag --sort=-creatordate   
