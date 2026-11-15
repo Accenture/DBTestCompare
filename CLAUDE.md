@@ -11,7 +11,7 @@ A Java 8 + Maven CLI tool that compares the results of two SQL queries (or a SQL
 ```
 mvn clean package
 ```
-Produces `target/DBTestCompare-<version>-jar-with-dependencies.jar` via `maven-shade-plugin`. The shade config hard-codes a `Class-Path` entry pointing at `jdbc_drivers/*` and an `Add-Opens: java.base/java.lang` entry (for JAXB on JDK 9+) in the jar manifest — JDBC drivers are **not** bundled. Place driver jars in `jdbc_drivers/` next to the assembled jar.
+Produces `target/DBTestCompare-<version>-jar-with-dependencies.jar` via `maven-shade-plugin`. The manifest includes an `Add-Opens: java.base/java.lang` entry (for JAXB on JDK 9+); JDBC drivers are **not** bundled. At startup, the application loads every JAR directly inside `jdbc_drivers/` next to the executable JAR.
 
 Shade (not the assembly plugin) is used because the application bundles `log4j-core` plus `log4j-1.2-api`, which both ship a binary `META-INF/.../Log4j2Plugins.dat`. Shade's `Log4j2PluginCacheFileTransformer` merges those caches; the assembly plugin would overwrite one with the other, leaving log4j 2 without its XML configuration parser and silently falling back to a default appender (which then breaks `Printer.init`'s lookup of the `stdout` appender).
 

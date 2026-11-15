@@ -20,19 +20,7 @@ If you set JAVA_HOME variable:
 ```
 java -jar DBTestCompare-1.0-SNAPSHOT-jar-with-dependencies.jar
 ```
-or to add automatically all drivers from the directory to the classspath (jdbc_drivers/*)
-Windows
-```
-java -cp "DBTestCompare-1.0-SNAPSHOT-jar-with-dependencies.jar;jdbc_drivers/*" uk.co.objectivity.test.db.RunTests
-```
-Linux
-```
-java -cp "DBTestCompare-1.0-SNAPSHOT-jar-with-dependencies.jar:jdbc_drivers/*" uk.co.objectivity.test.db.RunTests
-```
-or e.g.
-```
-"C:\Program Files\Java\jdk1.8.0_92\bin\java" -jar DBTestCompare-1.0-SNAPSHOT-jar-with-dependencies.jar
-```
+All `.jar` files directly inside the `jdbc_drivers` folder next to the application JAR are loaded automatically when the application starts; driver names do not need to be listed in `pom.xml`.
 
 The application provides the following features:
 - **Platform independence** - possibility to run on Windows and Linux as well (Java Runtime Environment 8 needed)
