@@ -42,7 +42,7 @@ jobs:
       shell: bash
       run: |
         for i in 1 2 3 4 5; do
-          docker compose -f "./docker/docker-compose.yml" up -d && exit 0
+          docker compose -f "./docker/docker-compose.yml" up -d --build && exit 0
           echo "compose up attempt $i failed (likely toomanyrequests); retrying in 30s..."
           sleep 30
         done
