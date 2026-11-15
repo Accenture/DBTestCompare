@@ -22,10 +22,10 @@ jobs:
       dBTestCompareVersion: 2.0.0
     steps:
     - uses: actions/checkout@v4
-    - name: Install Docker Compose and Ant
+    - name: Install Ant
       run: |
         sudo apt-get update
-        sudo apt-get install -y docker-compose ant
+        sudo apt-get install -y ant
     - shell: pwsh
       run: |
         $tags = git tag --sort=-creatordate   
@@ -42,7 +42,7 @@ jobs:
       shell: bash
       run: |
         for i in 1 2 3 4 5; do
-          docker-compose -f "./docker/docker-compose.yml" up -d && exit 0
+          docker compose -f "./docker/docker-compose.yml" up -d && exit 0
           echo "compose up attempt $i failed (likely toomanyrequests); retrying in 30s..."
           sleep 30
         done
