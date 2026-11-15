@@ -23,6 +23,7 @@
 package uk.co.objectivity.test.db;
 
 import java.io.File;
+import java.io.IOException;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
@@ -35,6 +36,7 @@ import org.testng.xml.XmlSuite;
 import uk.co.objectivity.test.db.beans.xml.CmpSqlResultsConfig;
 import uk.co.objectivity.test.db.beans.xml.Filter;
 import uk.co.objectivity.test.db.utils.DataSource;
+import uk.co.objectivity.test.db.utils.JdbcDriverLoader;
 import uk.co.objectivity.test.db.utils.Printer;
 
 public class RunTests {
@@ -84,6 +86,11 @@ public class RunTests {
         }
         log.debug("Number of Threads set in configuration: " + cmpSqlResultsConfig.getThreads());
         log.debug("Initializing all components ...");
+        try {
+            JdbcDriverLoader.loadDrivers();
+        } catch (IOException e) {
+            throw new IllegalStateException("Unable to load JDBC drivers from the application directory", e);
+        }
         DataSource.init(cmpSqlResultsConfig.getDatasources()); // it also adds shutdown hook (closing connections)
         TestDataProvider.init(testsDirFile, cmpSqlResultsConfig);
         Printer.init(cmpSqlResultsConfig);
