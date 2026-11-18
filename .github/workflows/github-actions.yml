@@ -20,6 +20,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
+      checks: write
     env:
       DBTESTCOMPAREVERSION: 2.0.0
     steps:
