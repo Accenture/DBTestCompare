@@ -4,7 +4,6 @@
 
 [![.github/workflows/github-actions.yml](https://github.com/Accenture/DBTestCompare/actions/workflows/github-actions.yml/badge.svg)](https://github.com/Accenture/DBTestCompare/actions/workflows/github-actions.yml)
 [![Test statistics](https://img.shields.io/badge/test%20statistics-30%20days-blue)](https://accenture.github.io/DBTestCompare/stats/)
-[View test statistics dashboard](https://accenture.github.io/DBTestCompare/stats/)
 
 It **reads tests definitions in XML** format form [specified directory](https://github.com/ObjectivityLtd/DBTestCompare/tree/master/test-definitions) and than runs them (as TestNG test). 
 
