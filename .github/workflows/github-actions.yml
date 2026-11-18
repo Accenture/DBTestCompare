@@ -71,7 +71,7 @@ jobs:
           files: "**/TEST-*.xml"
           report_individual_runs: true
       - name: Update test statistics
-        uses: raczeja/test-stats-gh-pages-action@v1.1.3
+        uses: raczeja/test-stats-gh-pages-action@v1.1.4
         if: success() || failure()
         with:
           result-files: "**/TEST-*.xml"
