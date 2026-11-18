@@ -79,7 +79,7 @@ jobs:
           stats-subdirectory: stats
           history-days: 30
           report-name: DBTestCompare tests
-          dashboard-url: https://Accenture.github.io/DBTestCompare/stats/
+          dashboard-url: https://accenture.github.io/DBTestCompare/stats/
           detailed-statistics: "true"
           shell-test-results: "**/TEST-*.xml"
       - uses: actions/upload-artifact@v4
