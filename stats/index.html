@@ -1,0 +1,372 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DBTestCompare · DBTestCompare tests &middot; Test Statistics</title>
+<style>
+*{box-sizing:border-box}
+body{font-family:system-ui,-apple-system,Arial,sans-serif;margin:0;background:#f0f2f5;color:#1a1a2e;min-height:100vh}
+.topbar{background:#1a1a2e;color:#fff;padding:.75rem 2rem;display:flex;align-items:center;gap:1rem}
+.topbar a{color:#93c5fd;text-decoration:none;font-size:.875rem}
+.topbar a:hover{text-decoration:underline}
+.topbar-title{font-weight:700;font-size:1rem;flex:1}
+.topbar-meta{font-size:.78rem;color:#94a3b8}
+.page{max-width:60rem;margin:0 auto;padding:1.5rem 2rem 3rem}
+.legend{display:flex;flex-wrap:wrap;align-items:center;gap:.5rem 1.25rem;margin-bottom:1.25rem;padding:.75rem 1rem;background:#fff;border:1px solid #e2e8f0;border-radius:.625rem;font-size:.8rem;color:#475569}
+.legend-item{display:inline-flex;align-items:center;gap:.375rem}
+.legend-note{width:100%;color:#94a3b8;font-size:.75rem;margin-top:.2rem}
+.legend-swatch{width:.75rem;height:.75rem;border-radius:2px;display:inline-block;flex-shrink:0;border:1px solid rgba(0,0,0,.1)}
+.sw-green{background:#22c55e}.sw-red{background:#ef4444}.sw-yellow{background:#eab308}
+.sw-mixed{background:linear-gradient(to top,#eab308 0%,#eab308 50%,#ef4444 50%)}
+.sw-black{background:#1e293b}
+.card{background:#fff;border:1px solid #e2e8f0;border-radius:.75rem;padding:1.25rem;margin-bottom:1.25rem;box-shadow:0 1px 3px rgba(0,0,0,.06)}
+.card-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:.875rem}
+.card-title{font-size:1rem;font-weight:700;color:#1a1a2e;margin:0}
+.rate-pill{font-size:.875rem;font-weight:700;padding:.2rem .65rem;border-radius:999px}
+.rate-ok{background:#dcfce7;color:#15803d}
+.rate-warn{background:#fef9c3;color:#854d0e}
+.rate-bad{background:#fee2e2;color:#b91c1c}
+.stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:.625rem;margin-bottom:.875rem}
+.selected-run-stats{grid-template-columns:repeat(5,minmax(0,1fr))}
+.duration-stats{grid-template-columns:repeat(3,minmax(0,1fr))}
+.stat-box{background:#f8fafc;border:1px solid #e2e8f0;border-radius:.5rem;padding:.6rem .5rem;text-align:center}
+.stat-val{font-size:1.15rem;font-weight:700;color:#1a1a2e;line-height:1.2}
+.stat-lbl{font-size:.68rem;color:#94a3b8;text-transform:uppercase;letter-spacing:.05em;margin-top:.15rem}
+.stat-fail .stat-val{color:#dc2626}
+.stat-flaky .stat-val{color:#d97706}
+.spark-label{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:#94a3b8;margin-bottom:.3rem}
+.sparkline{height:72px;display:flex;align-items:flex-end;gap:3px;padding:.25rem 0;border-bottom:1px solid #f1f5f9;overflow:hidden;margin-bottom:.875rem}
+.sparkline a{flex:0 0 auto;display:flex;align-items:flex-end}
+.bar{width:7px;border-radius:2px 2px 0 0}
+.bar:hover{opacity:.7}
+.section-lbl{font-size:.7rem;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:.06em;margin:.75rem 0 .35rem}
+.table-scroll{max-width:100%;overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:.8rem}
+th{text-align:left;padding:.3rem .4rem;color:#94a3b8;font-weight:600;border-bottom:2px solid #e2e8f0;font-size:.72rem;text-transform:uppercase;letter-spacing:.05em}
+td{padding:.3rem .4rem;border-bottom:1px solid #f8fafc;word-break:break-word;color:#374151}
+td:last-child{text-align:right;font-weight:700;color:#dc2626;white-space:nowrap}
+.flaky-list{margin:.35rem 0 0;padding-left:1rem;font-size:.8rem;color:#374151}
+.flaky-list li{margin:.2rem 0}
+.flaky-list strong{color:#d97706}
+.all-tests td:last-child{text-align:left;font-weight:400;color:#374151;white-space:normal}
+.all-tests th button{border:0;background:transparent;color:inherit;font:inherit;letter-spacing:inherit;text-transform:inherit;padding:0;cursor:pointer}
+.all-tests th button:hover{color:#475569}
+.comparison-note{font-size:.78rem;color:#64748b;margin:.25rem 0 .5rem}
+.status-badge,.change-badge{display:inline-block;border-radius:999px;padding:.1rem .45rem;font-size:.7rem;font-weight:700;white-space:nowrap}
+.status-passed{background:#dcfce7;color:#15803d}
+.status-failed{background:#fee2e2;color:#b91c1c}
+.status-flaky{background:#fef3c7;color:#b45309}
+.status-skipped{background:#f1f5f9;color:#64748b}
+.change-new{background:#dbeafe;color:#1d4ed8}
+.change-updated{background:#ffedd5;color:#c2410c}
+#all-tests-body tr.test-trend-match td{background:#fef3c7}
+.test-pagination{display:flex;align-items:center;justify-content:flex-end;flex-wrap:wrap;gap:.6rem;margin:.75rem 0;font-size:.78rem;color:#64748b}
+.test-pagination button{border:1px solid #cbd5e1;border-radius:.375rem;background:#fff;color:#334155;padding:.3rem .6rem;cursor:pointer}
+.test-pagination button:disabled{color:#94a3b8;background:#f8fafc;cursor:not-allowed}
+.test-pagination select{border:1px solid #cbd5e1;border-radius:.375rem;background:#fff;color:#334155;padding:.3rem}
+a{color:#2563eb;text-decoration:none}a:hover{text-decoration:underline}
+.empty{text-align:center;padding:4rem;color:#94a3b8}
+@media(max-width:640px){
+  .topbar{padding:.75rem 1rem;flex-wrap:wrap;gap:.5rem .75rem}
+  .topbar-title{flex-basis:calc(100% - 8rem)}
+  .topbar-meta{flex-basis:100%}
+  .page{padding:1rem .75rem 2rem}
+  .card{padding:.875rem}
+  .card-header{align-items:flex-start;flex-wrap:wrap;gap:.5rem}
+  .stats-row,.selected-run-stats,.duration-stats{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .test-pagination{justify-content:flex-start}
+}
+</style>
+</head><body>
+<div class="topbar">
+  <span class="topbar-title">DBTestCompare · DBTestCompare tests &middot; Test Statistics</span>
+  <a href="../">&larr; All reports</a>
+  <span class="topbar-meta">Last 30 days &middot; Updated 2026-11-23 01:00 CET (00:00 UTC)</span>
+</div>
+<div class="page">
+<div class="legend" aria-label="Sparkline legend">
+  <span class="legend-item"><span class="legend-swatch sw-green"></span>All passed</span>
+  <span class="legend-item"><span class="legend-swatch sw-red"></span>Failures</span>
+  <span class="legend-item"><span class="legend-swatch sw-yellow"></span>Flaky only</span>
+  <span class="legend-item"><span class="legend-swatch sw-mixed"></span>Failures + flaky</span>
+  <span class="legend-item"><span class="legend-swatch sw-black"></span>All failed (excluded from stats)</span>
+  <span class="legend-note">Bars: newest &larr; oldest. Bar height = total tests across configured result sources; color = pass/fail status. Cards sorted newest execution first.</span>
+</div>
+<div class="card">
+<div class="section-lbl">Tests in selected run</div>
+<select id="run-picker" style="font-size:.8rem;padding:.35rem .6rem;border:1px solid #e2e8f0;border-radius:.4rem;background:#fff;color:#374151;width:100%;max-width:42rem;cursor:pointer">
+<option value="4" selected>✗ Run #205 — 2026-11-23 00:00Z — 0p / 0f / 0 flaky / Additional 20p 10f</option>
+<option value="3">✗ Run #204 — 2026-11-18 08:15Z — 0p / 0f / 0 flaky / Additional 20p 10f</option>
+<option value="2">✗ Run #203 — 2026-11-18 07:32Z — 0p / 0f / 0 flaky / Additional 20p 10f</option>
+<option value="1">✗ Run #202 — 2026-11-18 07:11Z — 0p / 0f / 0 flaky / Additional 19p 11f</option>
+<option value="0">✓ Run #201 — 2026-11-18 06:31Z — 0p / 0f / 0 flaky / Additional 0p 0f</option>
+</select>
+<div id="selected-run-tests"></div>
+<div id="run-detail" style="margin-top:.875rem"></div>
+<script>var RUNS=[{"run_id": "201", "run_url": "https://github.com/Accenture/DBTestCompare/actions/runs/44251549271", "timestamp": "2026-11-18T06:31:38Z", "total": 0, "passed": 0, "failed": 0, "skipped": 0, "flaky_count": 0, "duration_ms": 0, "slowest_tests": [], "failed_tests": [], "flaky_tests": [], "tests": [], "shell_passed": 0, "shell_failed": 0, "shell_skipped": 0, "shell_failed_tests": [], "test_comparison_available": false}, {"run_id": "202", "run_url": "https://github.com/Accenture/DBTestCompare/actions/runs/44255370826", "timestamp": "2026-11-18T07:11:43Z", "total": 0, "passed": 0, "failed": 0, "skipped": 0, "flaky_count": 0, "duration_ms": 0, "slowest_tests": [{"title": "uk.co.objectivity.test.db.DBTestCompare > fetch_compare_test.from_file_sql_MySQL_PostgreSQL_FAIL", "duration_ms": 30081}, {"title": "uk.co.objectivity.test.db.DBTestCompare > delta.floating_point.SalesOrderDetail_SQL_SERVER", "duration_ms": 2125}, {"title": "uk.co.objectivity.test.db.DBTestCompare > minus_file_output.union_compare_failure_test", "duration_ms": 2073}, {"title": "uk.co.objectivity.test.db.DBTestCompare > minus_file_output.union_compare_failure_count_test", "duration_ms": 1821}, {"title": "uk.co.objectivity.test.db.DBTestCompare > key_comparator.ContactType.KeyContactType_FAIL", "duration_ms": 1513}, {"title": "uk.co.objectivity.test.db.DBTestCompare > minus_many_xml_files.PersonAddress_SQL_SERVER_first_FAIL", "duration_ms": 1267}, {"title": "uk.co.objectivity.test.db.DBTestCompare > minus_many_xml_files.PersonAddress_SQL_SERVER_second", "duration_ms": 1096}, {"title": "uk.co.objectivity.test.db.DBTestCompare > compare_with_file_stucture.compare_with_db_structure_SQLServer", "duration_ms": 969}, {"title": "uk.co.objectivity.test.db.DBTestCompare > minus_on_union.SQL_SERVER_union_noIndicator_SUCCESS", "duration_ms": 905}, {"title": "uk.co.objectivity.test.db.DBTestCompare > compare_with_file.SQLExceptioncompare_with_file_SQL_Server", "duration_ms": 666}], "failed_tests": [], "flaky_tests": [], "tests": [{"source": "JUnit", "title": "uk.co.objectivity.test.db.DBTestCompare > compare_with_file.SQLExceptioncompare_with_file_SQL_Server", "file": "uk.co.objectivity.test.db.DBTestCompare", "duration_ms": 666, "status": "passed", "change": "new"}, {"source": "JUnit", "title": "uk.co.objectivity.test.db.DBTestCompare > minus_many_xml_files.PersonAddress_PostgreSQL", "file": "uk.co.objectivity.test.db.DBTestCompare", "duration_ms": 591, "status": "passed", "change": "new"}, {"source": "JUnit", "title": "uk.co.objectivity.test.db.DBTestCompare > minus_many_xml_files.PersonAddress_SQL_SERVER_first_FAIL", "file": "uk.co.objectivity.test.db.DBTestCompare", "duration_ms": 1267, "status": "failed", "change": "new"}, {"source": "JUnit", "title": "uk.co.objectivity.test.db.DBTestCompare > key_comparator.ContactType.KeyContactType_FAIL", "file": "uk.co.objectivity.test.db.DBTestCompare", "duration_ms": 1513, "status": "failed", "change": "new"}, {"source": "JUnit", "title": "uk.co.objectivity.test.db.DBTestCompare > minus_on_union.SQL_SERVER_union_withIndicator_SUCCESS", "file": "uk.co.objectivity.test.db.DBTestCompare", "duration_ms": 397, "status": "passed", "change": "new"}, {"source": "JUnit", "title": "uk.co.objectivity.test.db.DBTestCompare > sql-from-file.mixed", "file": "uk.co.objectivity.test.db.DBTestCompare", "duration_ms": 564, "status": "passed", "change": "new"}, {"source": "JUnit", "title": "uk.co.objectivity.test.db.DBTestCompare > compare_with_file_stucture.compare_with_db_structure_SQLServerFileWithHeader", "file": "uk.co.objectivity.test.db.DBTestCompare", "duration_ms": 467, "status": "passed", "change": "new"}, {"source": "JUnit", "title": "uk.co.objectivity.test.db.DBTestCompare > fetch_compare_test.from_file_sql_MySQL_PostgreSQL_FAIL", "file": "uk.co.objectivity.test.db.DBTestCompare", "duration_ms": 30081, "status": "failed", "change": "new"}, {"source": "JUnit", "title": "uk.co.objectivity.test.db.DBTestCompare > multilevel_tests.Two.Three.not_from_files", "file": "uk.co.objectivity.test.db.DBTestCompare", "duration_ms": 117, "status": "passed", "change": "new"}, {"source": "JUnit", "title": "uk.co.objectivity.test.db.DBTestCompare > delta.floating_point.SalesOrderDetail_SQL_SERVER", "file": "uk.co.objectivity.test.db.DBTestCompare", "duration_ms": 2125, "status": "passed", "change": "new"}, {"source": "JUnit", "title": "uk.co.objectivity.test.db.DBTestCompare > minus_many_xml_files.PersonAddress_SQL_SERVER_diffTableSize_0_FAIL", "file": "uk.co.objectivity.test.db.DBTestCompare", "duration_ms": 299, "status": "failed", "change": "new"}, {"source": "JUnit", "title": "uk.co.objectivity.test.db.DBTestCompare > sql-from-file.misconfigured_FAIL", "file": "uk.co.objectivity.test.db.DBTestCompare", "duration_ms": 0, "status": "failed", "change": "new"}, {"source": "JUnit", "title": "uk.co.objectivity.test.db.DBTestCompare > multilevel_tests.Two.lvl_two_not_from_files", "file": "uk.co.objectivity.test.db.DBTestCompare", "duration_ms": 129, "status": "passed", "change": "new"}, {"source": "JUnit", "title": "uk.co.objectivity.test.db.DBTestCompare > minus_many_xml_files.PersonAddress_SQL_SERVER_second", "file": "uk.co.objectivity.test.db.DBTestCompare", "duration_ms": 1096, "status": "passed", "change": "new"}, {"source": "JUnit", "title": "uk.co.objectivity.test.db.DBTestCompare > fetch_compare_test.inline_sql_SQL_SERVER_PostgreSQL", "file": "uk.co.objectivity.test.db.DBTestCompare", "duration_ms": 52, "status": "passed", "change": "new"}, {"source": "JUnit", "title": "uk.co.objectivity.test.db.DBTestCompare > sql-from-file.not_from_files", "file": "uk.co.objectivity.test.db.DBTestCompare", "duration_ms": 94, "status": "passed", "change": "new"}, {"source": "JUnit", "title": "uk.co.objectivity.test.db.DBTestCompare > sql-from-file.from_files", "file": "uk.co.objectivity.test.db.DBTestCompare", "duration_ms": 112, "status": "passed", "change": "new"}, {"source": "JUnit", "title": "uk.co.objectivity.test.db.DBTestCompare > nmb_of_results.assert_equal", "file": "uk.co.objectivity.test.db.DBTestCompare", "duration_ms": 20, "status": "passed", "change": "new"}, {"source": "JUnit", "title": "uk.co.objectivity.test.db.DBTestCompare > fetch_compare_test.Exception_inline_sql_SQL_SERVER_PostgreSQL_FAIL", "file": "uk.co.objectivity.test.db.DBTestCompare", "duration_ms": 30, "status": "failed", "change": "new"}, {"source": "JUnit", "title": "uk.co.objectivity.test.db.DBTestCompare > multilevel_tests.union_compare_failure_test", "file": "uk.co.objectivity.test.db.DBTestCompare", "duration_ms": 99, "status": "passed", "change": "new"}, {"source": "JUnit", "title": "uk.co.objectivity.test.db.DBTestCompare > minus_on_union.SQL_SERVER_union_noIndicator_FAIL", "file": "uk.co.objectivity.test.db.DBTestCompare", "duration_ms": 609, "status": "failed", "change": "new"}, {"source": "JUnit", "title": "uk.co.objectivity.test.db.DBTestCompare > minus_file_output.union_compare_failure_count_test", "file": "uk.co.objectivity.test.db.DBTestCompare", "duration_ms": 1821, "status": "passed", "change": "new"}, {"source": "JUnit", "title": "uk.co.objectivity.test.db.DBTestCompare > nmb_of_results.Exception_assert_equal_FAIL", "file": "uk.co.objectivity.test.db.DBTestCompare", "duration_ms": 21, "status": "failed", "change": "new"}, {"source": "JUnit", "title": "uk.co.objectivity.test.db.DBTestCompare > minus_file_output.union_compare_failure_test", "file": "uk.co.objectivity.test.db.DBTestCompare", "duration_ms": 2073, "status": "passed", "change": "new"}, {"source": "JUnit", "title": "uk.co.objectivity.test.db.DBTestCompare > compare_with_file.compare_with_file_SQL_Server", "file": "uk.co.objectivity.test.db.DBTestCompare", "duration_ms": 31, "status": "passed", "change": "new"}, {"source": "JUnit", "title": "uk.co.objectivity.test.db.DBTestCompare > key_comparator.Product.Product", "file": "uk.co.objectivity.test.db.DBTestCompare", "duration_ms": 269, "status": "failed", "change": "new"}, {"source": "JUnit", "title": "uk.co.objectivity.test.db.DBTestCompare > minus_on_union.SQL_SERVER_union_withIndicator_FAIL", "file": "uk.co.objectivity.test.db.DBTestCompare", "duration_ms": 257, "status": "failed", "change": "new"}, {"source": "JUnit", "title": "uk.co.objectivity.test.db.DBTestCompare > minus_many_xml_files.ExceptionPersonAddress_SQL_SERVER_first_FAIL", "file": "uk.co.objectivity.test.db.DBTestCompare", "duration_ms": 10, "status": "failed", "change": "new"}, {"source": "JUnit", "title": "uk.co.objectivity.test.db.DBTestCompare > minus_on_union.SQL_SERVER_union_noIndicator_SUCCESS", "file": "uk.co.objectivity.test.db.DBTestCompare", "duration_ms": 905, "status": "passed", "change": "new"}, {"source": "JUnit", "title": "uk.co.objectivity.test.db.DBTestCompare > compare_with_file_stucture.compare_with_db_structure_SQLServer", "file": "uk.co.objectivity.test.db.DBTestCompare", "duration_ms": 969, "status": "passed", "change": "new"}], "shell_passed": 19, "shell_failed": 11, "shell_skipped": 0, "shell_failed_tests": [{"title": "uk.co.objectivity.test.db.DBTestCompare > minus_many_xml_files.PersonAddress_SQL_SERVER_first_FAIL", "file": "uk.co.objectivity.test.db.DBTestCompare", "error": "Differences in SQL queries found -  expected [0] but found [2]"}, {"title": "uk.co.objectivity.test.db.DBTestCompare > key_comparator.ContactType.KeyContactType_FAIL", "file": "uk.co.objectivity.test.db.DBTestCompare", "error": "Among 2 compared rows, some differences in SQL queries results found -  expected [0] but found [1]"}, {"title": "uk.co.objectivity.test.db.DBTestCompare > fetch_compare_test.from_file_sql_MySQL_PostgreSQL_FAIL", "file": "uk.co.objectivity.test.db.DBTestCompare", "error": "java.lang.Exception: java.sql.SQLException: Connections could not be acquired from the underlying database! Query 1: SELECT personaddress.AddressID,     personaddress.AddressLine1,     personaddress.City,     personaddress.StateProvinceID,     personaddress.PostalCode,     personaddress.ModifiedDate"}, {"title": "uk.co.objectivity.test.db.DBTestCompare > minus_many_xml_files.PersonAddress_SQL_SERVER_diffTableSize_0_FAIL", "file": "uk.co.objectivity.test.db.DBTestCompare", "error": "Differences in SQL queries found -  expected [0] but found [2]"}, {"title": "uk.co.objectivity.test.db.DBTestCompare > sql-from-file.misconfigured_FAIL", "file": "uk.co.objectivity.test.db.DBTestCompare", "error": "org.testng.TestException:  Element SQL should have the filename attribute or sql value defined (NOT both). Test file is invalid /home/runner/work/DBTestCompare/DBTestCompare/target/test-definitions/sql-from-file/misconfigured_FAIL.xml"}, {"title": "uk.co.objectivity.test.db.DBTestCompare > fetch_compare_test.Exception_inline_sql_SQL_SERVER_PostgreSQL_FAIL", "file": "uk.co.objectivity.test.db.DBTestCompare", "error": "java.lang.Exception: org.testng.TestException:  Queries results have a different number of columns 6 / 7 Query 1:               SELECT [AddressID]       ,[AddressLine1]       ,[AddressLine2]       --,[City]       ,[StateProvinceID]       ,[PostalCode]       ,convert(varchar(30),[ModifiedDate],121)  "}, {"title": "uk.co.objectivity.test.db.DBTestCompare > minus_on_union.SQL_SERVER_union_noIndicator_FAIL", "file": "uk.co.objectivity.test.db.DBTestCompare", "error": "Differences in SQL queries found -  expected [0] but found [2]"}, {"title": "uk.co.objectivity.test.db.DBTestCompare > nmb_of_results.Exception_assert_equal_FAIL", "file": "uk.co.objectivity.test.db.DBTestCompare", "error": "java.lang.Exception: org.postgresql.util.PSQLException: ERROR: syntax error at or near \";\"   Position: 170 Assert Query : select COUNT(*) from (               SELECT addressid, addressline1, addressline2, city, stateprovinceid, postalcode, modifieddate  FROM public.personaddress     LIMIT 1;  --quer"}, {"title": "uk.co.objectivity.test.db.DBTestCompare > key_comparator.Product.Product", "file": "uk.co.objectivity.test.db.DBTestCompare", "error": "java.lang.Exception: java.lang.NullPointerException: Cannot invoke \"java.util.Map.get(Object)\" because the return value of \"java.util.Map.get(Object)\" is null"}, {"title": "uk.co.objectivity.test.db.DBTestCompare > minus_on_union.SQL_SERVER_union_withIndicator_FAIL", "file": "uk.co.objectivity.test.db.DBTestCompare", "error": "Differences in SQL queries found -  expected [0] but found [2]"}, {"title": "uk.co.objectivity.test.db.DBTestCompare > minus_many_xml_files.ExceptionPersonAddress_SQL_SERVER_first_FAIL", "file": "uk.co.objectivity.test.db.DBTestCompare", "error": "java.lang.Exception: com.microsoft.sqlserver.jdbc.SQLServerException: All queries combined using a UNION, INTERSECT or EXCEPT operator must have an equal number of expressions in their target lists. Minus Query : (           SELECT [AddressID]       ,[AddressLine1]       ,[AddressLine2]       --,[Ci"}], "test_comparison_available": true, "compared_with_run_id": "201"}, {"run_id": "203", "run_url": "https://github.com/Accenture/DBTestCompare/actions/runs/44259341212", "timestamp": "2026-11-18T07:32:34Z", "total": 0, "passed": 0, "failed": 0, "skipped": 0, "flaky_count": 0, "duration_ms": 0, "slowest_tests": [{"title": "uk.co.objectivity.test.db.DBTestCompare > fetch_compare_test.from_file_sql_MySQL_PostgreSQL_FAIL", "duration_ms": 30072}, {"title": "uk.co.objectivity.test.db.DBTestCompare > key_comparator.Product.Product", "duration_ms": 2200}, {"title": "uk.co.objectivity.test.db.DBTestCompare > key_comparator.ContactType.KeyContactType_FAIL", "duration_ms": 1978}, {"title": "uk.co.objectivity.test.db.DBTestCompare > minus_many_xml_files.PersonAddress_SQL_SERVER_second", "duration_ms": 1766}, {"title": "uk.co.objectivity.test.db.DBTestCompare > delta.floating_point.SalesOrderDetail_SQL_SERVER", "duration_ms": 1671}, {"title": "uk.co.objectivity.test.db.DBTestCompare > minus_file_output.union_compare_failure_count_test", "duration_ms": 1656}, {"title": "uk.co.objectivity.test.db.DBTestCompare > minus_file_output.union_compare_failure_test", "duration_ms": 1328}, {"title": "uk.co.objectivity.test.db.DBTestCompare > minus_on_union.SQL_SERVER_union_noIndicator_FAIL", "duration_ms": 1067}, {"title": "uk.co.objectivity.test.db.DBTestCompare > compare_with_file_stucture.compare_with_db_structure_SQLServer", "duration_ms": 889}, {"title": "uk.co.objectivity.test.db.DBTestCompare > minus_on_union.SQL_SERVER_union_noIndicator_SUCCESS", "duration_ms": 877}], "failed_tests": [], "flaky_tests": [], "tests": [{"source": "JUnit", "title": "uk.co.objectivity.test.db.DBTestCompare > fetch_compare_test.inline_sql_SQL_SERVER_PostgreSQL", "file": "uk.co.objectivity.test.db.DBTestCompare", "duration_ms": 38, "status": "passed"}, {"source": "JUnit", "title": "uk.co.objectivity.test.db.DBTestCompare > key_comparator.ContactType.KeyContactType_FAIL", "file": "uk.co.objectivity.test.db.DBTestCompare", "duration_ms": 1978, "status": "failed"}, {"source": "JUnit", "title": "uk.co.objectivity.test.db.DBTestCompare > compare_with_file_stucture.compare_with_db_structure_SQLServerFileWithHeader", "file": "uk.co.objectivity.test.db.DBTestCompare", "duration_ms": 296, "status": "passed"}, {"source": "JUnit", "title": "uk.co.objectivity.test.db.DBTestCompare > minus_many_xml_files.PersonAddress_SQL_SERVER_first_FAIL", "file": "uk.co.objectivity.test.db.DBTestCompare", "duration_ms": 358, "status": "failed"}, {"source": "JUnit", "title": "uk.co.objectivity.test.db.DBTestCompare > sql-from-file.not_from_files", "file": "uk.co.objectivity.test.db.DBTestCompare", "duration_ms": 59, "status": "passed"}, {"source": "JUnit", "title": "uk.co.objectivity.test.db.DBTestCompare > minus_on_union.SQL_SERVER_union_withIndicator_FAIL", "file": "uk.co.objectivity.test.db.DBTestCompare", "duration_ms": 332, "status": "failed"}, {"source": "JUnit", "title": "uk.co.objectivity.test.db.DBTestCompare > sql-from-file.from_files", "file": "uk.co.objectivity.test.db.DBTestCompare", "duration_ms": 57, "status": "passed"}, {"source": "JUnit", "title": "uk.co.objectivity.test.db.DBTestCompare > multilevel_tests.Two.lvl_two_not_from_files", "file": "uk.co.objectivity.test.db.DBTestCompare", "duration_ms": 48, "status": "passed"}, {"source": "JUnit", "title": "uk.co.objectivity.test.db.DBTestCompare > minus_many_xml_files.PersonAddress_SQL_SERVER_second", "file": "uk.co.objectivity.test.db.DBTestCompare", "duration_ms": 1766, "status": "passed"}, {"source": "JUnit", "title": "uk.co.objectivity.test.db.DBTestCompare > fetch_compare_test.from_file_sql_MySQL_PostgreSQL_FAIL", "file": "uk.co.objectivity.test.db.DBTestCompare", "duration_ms": 30072, "status": "failed"}, {"source": "JUnit", "title": "uk.co.objectivity.test.db.DBTestCompare > compare_with_file.compare_with_file_SQL_Server", "file": "uk.co.objectivity.test.db.DBTestCompare", "duration_ms": 20, "status": "passed"}, {"source": "JUnit", "title": "uk.co.objectivity.test.db.DBTestCompare > sql-from-file.mixed", "file": "uk.co.objectivity.test.db.DBTestCompare", "duration_ms": 607, "status": "passed"}, {"source": "JUnit", "title": "uk.co.objectivity.test.db.DBTestCompare > minus_on_union.SQL_SERVER_union_noIndicator_FAIL", "file": "uk.co.objectivity.test.db.DBTestCompare", "duration_ms": 1067, "status": "failed"}, {"source": "JUnit", "title": "uk.co.objectivity.test.db.DBTestCompare > minus_file_output.union_compare_failure_count_test", "file": "uk.co.objectivity.test.db.DBTestCompare", "duration_ms": 1656, "status": "passed"}, {"source": "JUnit", "title": "uk.co.objectivity.test.db.DBTestCompare > minus_on_union.SQL_SERVER_union_noIndicator_SUCCESS", "file": "uk.co.objectivity.test.db.DBTestCompare", "duration_ms": 877, "status": "passed"}, {"source": "JUnit", "title": "uk.co.objectivity.test.db.DBTestCompare > compare_with_file_stucture.compare_with_db_structure_SQLServer", "file": "uk.co.objectivity.test.db.DBTestCompare", "duration_ms": 889, "status": "passed"}, {"source": "JUnit", "title": "uk.co.objectivity.test.db.DBTestCompare > compare_with_file.SQLExceptioncompare_with_file_SQL_Server", "file": "uk.co.objectivity.test.db.DBTestCompare", "duration_ms": 666, "status": "passed"}, {"source": "JUnit", "title": "uk.co.objectivity.test.db.DBTestCompare > multilevel_tests.union_compare_failure_test", "file": "uk.co.objectivity.test.db.DBTestCompare", "duration_ms": 53, "status": "passed"}, {"source": "JUnit", "title": "uk.co.objectivity.test.db.DBTestCompare > multilevel_tests.Two.Three.not_from_files", "file": "uk.co.objectivity.test.db.DBTestCompare", "duration_ms": 59, "status": "passed"}, {"source": "JUnit", "title": "uk.co.objectivity.test.db.DBTestCompare > key_comparator.Product.Product", "file": "uk.co.objectivity.test.db.DBTestCompare", "duration_ms": 2200, "status": "passed", "change": "changed", "previous_status": "failed"}, {"source": "JUnit", "title": "uk.co.objectivity.test.db.DBTestCompare > minus_many_xml_files.PersonAddress_SQL_SERVER_diffTableSize_0_FAIL", "file": "uk.co.objectivity.test.db.DBTestCompare", "duration_ms": 340, "status": "failed"}, {"source": "JUnit", "title": "uk.co.objectivity.test.db.DBTestCompare > sql-from-file.misconfigured_FAIL", "file": "uk.co.objectivity.test.db.DBTestCompare", "duration_ms": 2, "status": "failed"}, {"source": "JUnit", "title": "uk.co.objectivity.test.db.DBTestCompare > fetch_compare_test.Exception_inline_sql_SQL_SERVER_PostgreSQL_FAIL", "file": "uk.co.objectivity.test.db.DBTestCompare", "duration_ms": 31, "status": "failed"}, {"source": "JUnit", "title": "uk.co.objectivity.test.db.DBTestCompare > nmb_of_results.assert_equal", "file": "uk.co.objectivity.test.db.DBTestCompare", "duration_ms": 11, "status": "passed"}, {"source": "JUnit", "title": "uk.co.objectivity.test.db.DBTestCompare > minus_file_output.union_compare_failure_test", "file": "uk.co.objectivity.test.db.DBTestCompare", "duration_ms": 1328, "status": "passed"}, {"source": "JUnit", "title": "uk.co.objectivity.test.db.DBTestCompare > minus_many_xml_files.PersonAddress_PostgreSQL", "file": "uk.co.objectivity.test.db.DBTestCompare", "duration_ms": 607, "status": "passed"}, {"source": "JUnit", "title": "uk.co.objectivity.test.db.DBTestCompare > minus_many_xml_files.ExceptionPersonAddress_SQL_SERVER_first_FAIL", "file": "uk.co.objectivity.test.db.DBTestCompare", "duration_ms": 8, "status": "failed"}, {"source": "JUnit", "title": "uk.co.objectivity.test.db.DBTestCompare > delta.floating_point.SalesOrderDetail_SQL_SERVER", "file": "uk.co.objectivity.test.db.DBTestCompare", "duration_ms": 1671, "status": "passed"}, {"source": "JUnit", "title": "uk.co.objectivity.test.db.DBTestCompare > minus_on_union.SQL_SERVER_union_withIndicator_SUCCESS", "file": "uk.co.objectivity.test.db.DBTestCompare", "duration_ms": 380, "status": "passed"}, {"source": "JUnit", "title": "uk.co.objectivity.test.db.DBTestCompare > nmb_of_results.Exception_assert_equal_FAIL", "file": "uk.co.objectivity.test.db.DBTestCompare", "duration_ms": 25, "status": "failed"}], "shell_passed": 20, "shell_failed": 10, "shell_skipped": 0, "shell_failed_tests": [{"title": "uk.co.objectivity.test.db.DBTestCompare > key_comparator.ContactType.KeyContactType_FAIL", "file": "uk.co.objectivity.test.db.DBTestCompare", "error": "Among 2 compared rows, some differences in SQL queries results found -  expected [0] but found [1]"}, {"title": "uk.co.objectivity.test.db.DBTestCompare > minus_many_xml_files.PersonAddress_SQL_SERVER_first_FAIL", "file": "uk.co.objectivity.test.db.DBTestCompare", "error": "Differences in SQL queries found -  expected [0] but found [2]"}, {"title": "uk.co.objectivity.test.db.DBTestCompare > minus_on_union.SQL_SERVER_union_withIndicator_FAIL", "file": "uk.co.objectivity.test.db.DBTestCompare", "error": "Differences in SQL queries found -  expected [0] but found [2]"}, {"title": "uk.co.objectivity.test.db.DBTestCompare > fetch_compare_test.from_file_sql_MySQL_PostgreSQL_FAIL", "file": "uk.co.objectivity.test.db.DBTestCompare", "error": "java.lang.Exception: java.sql.SQLException: Connections could not be acquired from the underlying database! Query 1: SELECT personaddress.AddressID,     personaddress.AddressLine1,     personaddress.City,     personaddress.StateProvinceID,     personaddress.PostalCode,     personaddress.ModifiedDate"}, {"title": "uk.co.objectivity.test.db.DBTestCompare > minus_on_union.SQL_SERVER_union_noIndicator_FAIL", "file": "uk.co.objectivity.test.db.DBTestCompare", "error": "Differences in SQL queries found -  expected [0] but found [2]"}, {"title": "uk.co.objectivity.test.db.DBTestCompare > minus_many_xml_files.PersonAddress_SQL_SERVER_diffTableSize_0_FAIL", "file": "uk.co.objectivity.test.db.DBTestCompare", "error": "Differences in SQL queries found -  expected [0] but found [2]"}, {"title": "uk.co.objectivity.test.db.DBTestCompare > sql-from-file.misconfigured_FAIL", "file": "uk.co.objectivity.test.db.DBTestCompare", "error": "org.testng.TestException:  Element SQL should have the filename attribute or sql value defined (NOT both). Test file is invalid /home/runner/work/DBTestCompare/DBTestCompare/target/test-definitions/sql-from-file/misconfigured_FAIL.xml"}, {"title": "uk.co.objectivity.test.db.DBTestCompare > fetch_compare_test.Exception_inline_sql_SQL_SERVER_PostgreSQL_FAIL", "file": "uk.co.objectivity.test.db.DBTestCompare", "error": "java.lang.Exception: org.testng.TestException:  Queries results have a different number of columns 6 / 7 Query 1:               SELECT [AddressID]       ,[AddressLine1]       ,[AddressLine2]       --,[City]       ,[StateProvinceID]       ,[PostalCode]       ,convert(varchar(30),[ModifiedDate],121)  "}, {"title": "uk.co.objectivity.test.db.DBTestCompare > minus_many_xml_files.ExceptionPersonAddress_SQL_SERVER_first_FAIL", "file": "uk.co.objectivity.test.db.DBTestCompare", "error": "java.lang.Exception: com.microsoft.sqlserver.jdbc.SQLServerException: All queries combined using a UNION, INTERSECT or EXCEPT operator must have an equal number of expressions in their target lists. Minus Query : (           SELECT [AddressID]       ,[AddressLine1]       ,[AddressLine2]       --,[Ci"}, {"title": "uk.co.objectivity.test.db.DBTestCompare > nmb_of_results.Exception_assert_equal_FAIL", "file": "uk.co.objectivity.test.db.DBTestCompare", "error": "java.lang.Exception: org.postgresql.util.PSQLException: ERROR: syntax error at or near \";\"   Position: 170 Assert Query : select COUNT(*) from (               SELECT addressid, addressline1, addressline2, city, stateprovinceid, postalcode, modifieddate  FROM public.personaddress     LIMIT 1;  --quer"}], "test_comparison_available": true, "compared_with_run_id": "202"}, {"run_id": "204", "run_url": "https://github.com/Accenture/DBTestCompare/actions/runs/44265107619", "timestamp": "2026-11-18T08:15:50Z", "total": 0, "passed": 0, "failed": 0, "skipped": 0, "flaky_count": 0, "duration_ms": 0, "slowest_tests": [{"title": "uk.co.objectivity.test.db.DBTestCompare > fetch_compare_test.from_file_sql_MySQL_PostgreSQL_FAIL", "duration_ms": 30113}, {"title": "uk.co.objectivity.test.db.DBTestCompare > key_comparator.Product.Product", "duration_ms": 1986}, {"title": "uk.co.objectivity.test.db.DBTestCompare > key_comparator.ContactType.KeyContactType_FAIL", "duration_ms": 1679}, {"title": "uk.co.objectivity.test.db.DBTestCompare > minus_file_output.union_compare_failure_count_test", "duration_ms": 1479}, {"title": "uk.co.objectivity.test.db.DBTestCompare > minus_file_output.union_compare_failure_test", "duration_ms": 1438}, {"title": "uk.co.objectivity.test.db.DBTestCompare > delta.floating_point.SalesOrderDetail_SQL_SERVER", "duration_ms": 1299}, {"title": "uk.co.objectivity.test.db.DBTestCompare > minus_many_xml_files.PersonAddress_SQL_SERVER_second", "duration_ms": 964}, {"title": "uk.co.objectivity.test.db.DBTestCompare > compare_with_file_stucture.compare_with_db_structure_SQLServer", "duration_ms": 952}, {"title": "uk.co.objectivity.test.db.DBTestCompare > minus_many_xml_files.PersonAddress_SQL_SERVER_first_FAIL", "duration_ms": 816}, {"title": "uk.co.objectivity.test.db.DBTestCompare > minus_many_xml_files.PersonAddress_PostgreSQL", "duration_ms": 729}], "failed_tests": [], "flaky_tests": [], "tests": [{"source": "JUnit", "title": "uk.co.objectivity.test.db.DBTestCompare > compare_with_file_stucture.compare_with_db_structure_SQLServer", "file": "uk.co.objectivity.test.db.DBTestCompare", "duration_ms": 952, "status": "passed"}, {"source": "JUnit", "title": "uk.co.objectivity.test.db.DBTestCompare > sql-from-file.misconfigured_FAIL", "file": "uk.co.objectivity.test.db.DBTestCompare", "duration_ms": 2, "status": "failed"}, {"source": "JUnit", "title": "uk.co.objectivity.test.db.DBTestCompare > minus_file_output.union_compare_failure_count_test", "file": "uk.co.objectivity.test.db.DBTestCompare", "duration_ms": 1479, "status": "passed"}, {"source": "JUnit", "title": "uk.co.objectivity.test.db.DBTestCompare > compare_with_file.compare_with_file_SQL_Server", "file": "uk.co.objectivity.test.db.DBTestCompare", "duration_ms": 73, "status": "passed"}, {"source": "JUnit", "title": "uk.co.objectivity.test.db.DBTestCompare > sql-from-file.from_files", "file": "uk.co.objectivity.test.db.DBTestCompare", "duration_ms": 65, "status": "passed"}, {"source": "JUnit", "title": "uk.co.objectivity.test.db.DBTestCompare > compare_with_file.SQLExceptioncompare_with_file_SQL_Server", "file": "uk.co.objectivity.test.db.DBTestCompare", "duration_ms": 725, "status": "passed"}, {"source": "JUnit", "title": "uk.co.objectivity.test.db.DBTestCompare > minus_on_union.SQL_SERVER_union_withIndicator_SUCCESS", "file": "uk.co.objectivity.test.db.DBTestCompare", "duration_ms": 201, "status": "passed"}, {"source": "JUnit", "title": "uk.co.objectivity.test.db.DBTestCompare > sql-from-file.mixed", "file": "uk.co.objectivity.test.db.DBTestCompare", "duration_ms": 713, "status": "passed"}, {"source": "JUnit", "title": "uk.co.objectivity.test.db.DBTestCompare > minus_many_xml_files.ExceptionPersonAddress_SQL_SERVER_first_FAIL", "file": "uk.co.objectivity.test.db.DBTestCompare", "duration_ms": 6, "status": "failed"}, {"source": "JUnit", "title": "uk.co.objectivity.test.db.DBTestCompare > key_comparator.ContactType.KeyContactType_FAIL", "file": "uk.co.objectivity.test.db.DBTestCompare", "duration_ms": 1679, "status": "failed"}, {"source": "JUnit", "title": "uk.co.objectivity.test.db.DBTestCompare > nmb_of_results.Exception_assert_equal_FAIL", "file": "uk.co.objectivity.test.db.DBTestCompare", "duration_ms": 23, "status": "failed"}, {"source": "JUnit", "title": "uk.co.objectivity.test.db.DBTestCompare > fetch_compare_test.Exception_inline_sql_SQL_SERVER_PostgreSQL_FAIL", "file": "uk.co.objectivity.test.db.DBTestCompare", "duration_ms": 28, "status": "failed"}, {"source": "JUnit", "title": "uk.co.objectivity.test.db.DBTestCompare > minus_file_output.union_compare_failure_test", "file": "uk.co.objectivity.test.db.DBTestCompare", "duration_ms": 1438, "status": "passed"}, {"source": "JUnit", "title": "uk.co.objectivity.test.db.DBTestCompare > minus_many_xml_files.PersonAddress_SQL_SERVER_diffTableSize_0_FAIL", "file": "uk.co.objectivity.test.db.DBTestCompare", "duration_ms": 135, "status": "failed"}, {"source": "JUnit", "title": "uk.co.objectivity.test.db.DBTestCompare > sql-from-file.not_from_files", "file": "uk.co.objectivity.test.db.DBTestCompare", "duration_ms": 50, "status": "passed"}, {"source": "JUnit", "title": "uk.co.objectivity.test.db.DBTestCompare > key_comparator.Product.Product", "file": "uk.co.objectivity.test.db.DBTestCompare", "duration_ms": 1986, "status": "passed"}, {"source": "JUnit", "title": "uk.co.objectivity.test.db.DBTestCompare > multilevel_tests.Two.lvl_two_not_from_files", "file": "uk.co.objectivity.test.db.DBTestCompare", "duration_ms": 57, "status": "passed"}, {"source": "JUnit", "title": "uk.co.objectivity.test.db.DBTestCompare > minus_on_union.SQL_SERVER_union_noIndicator_SUCCESS", "file": "uk.co.objectivity.test.db.DBTestCompare", "duration_ms": 696, "status": "passed"}, {"source": "JUnit", "title": "uk.co.objectivity.test.db.DBTestCompare > minus_many_xml_files.PersonAddress_PostgreSQL", "file": "uk.co.objectivity.test.db.DBTestCompare", "duration_ms": 729, "status": "passed"}, {"source": "JUnit", "title": "uk.co.objectivity.test.db.DBTestCompare > nmb_of_results.assert_equal", "file": "uk.co.objectivity.test.db.DBTestCompare", "duration_ms": 14, "status": "passed"}, {"source": "JUnit", "title": "uk.co.objectivity.test.db.DBTestCompare > minus_on_union.SQL_SERVER_union_noIndicator_FAIL", "file": "uk.co.objectivity.test.db.DBTestCompare", "duration_ms": 292, "status": "failed"}, {"source": "JUnit", "title": "uk.co.objectivity.test.db.DBTestCompare > minus_many_xml_files.PersonAddress_SQL_SERVER_first_FAIL", "file": "uk.co.objectivity.test.db.DBTestCompare", "duration_ms": 816, "status": "failed"}, {"source": "JUnit", "title": "uk.co.objectivity.test.db.DBTestCompare > multilevel_tests.union_compare_failure_test", "file": "uk.co.objectivity.test.db.DBTestCompare", "duration_ms": 75, "status": "passed"}, {"source": "JUnit", "title": "uk.co.objectivity.test.db.DBTestCompare > multilevel_tests.Two.Three.not_from_files", "file": "uk.co.objectivity.test.db.DBTestCompare", "duration_ms": 53, "status": "passed"}, {"source": "JUnit", "title": "uk.co.objectivity.test.db.DBTestCompare > fetch_compare_test.from_file_sql_MySQL_PostgreSQL_FAIL", "file": "uk.co.objectivity.test.db.DBTestCompare", "duration_ms": 30113, "status": "failed"}, {"source": "JUnit", "title": "uk.co.objectivity.test.db.DBTestCompare > minus_on_union.SQL_SERVER_union_withIndicator_FAIL", "file": "uk.co.objectivity.test.db.DBTestCompare", "duration_ms": 177, "status": "failed"}, {"source": "JUnit", "title": "uk.co.objectivity.test.db.DBTestCompare > delta.floating_point.SalesOrderDetail_SQL_SERVER", "file": "uk.co.objectivity.test.db.DBTestCompare", "duration_ms": 1299, "status": "passed"}, {"source": "JUnit", "title": "uk.co.objectivity.test.db.DBTestCompare > minus_many_xml_files.PersonAddress_SQL_SERVER_second", "file": "uk.co.objectivity.test.db.DBTestCompare", "duration_ms": 964, "status": "passed"}, {"source": "JUnit", "title": "uk.co.objectivity.test.db.DBTestCompare > fetch_compare_test.inline_sql_SQL_SERVER_PostgreSQL", "file": "uk.co.objectivity.test.db.DBTestCompare", "duration_ms": 42, "status": "passed"}, {"source": "JUnit", "title": "uk.co.objectivity.test.db.DBTestCompare > compare_with_file_stucture.compare_with_db_structure_SQLServerFileWithHeader", "file": "uk.co.objectivity.test.db.DBTestCompare", "duration_ms": 249, "status": "passed"}], "shell_passed": 20, "shell_failed": 10, "shell_skipped": 0, "shell_failed_tests": [{"title": "uk.co.objectivity.test.db.DBTestCompare > sql-from-file.misconfigured_FAIL", "file": "uk.co.objectivity.test.db.DBTestCompare", "error": "org.testng.TestException:  Element SQL should have the filename attribute or sql value defined (NOT both). Test file is invalid /home/runner/work/DBTestCompare/DBTestCompare/target/test-definitions/sql-from-file/misconfigured_FAIL.xml"}, {"title": "uk.co.objectivity.test.db.DBTestCompare > minus_many_xml_files.ExceptionPersonAddress_SQL_SERVER_first_FAIL", "file": "uk.co.objectivity.test.db.DBTestCompare", "error": "java.lang.Exception: com.microsoft.sqlserver.jdbc.SQLServerException: All queries combined using a UNION, INTERSECT or EXCEPT operator must have an equal number of expressions in their target lists. Minus Query : (           SELECT [AddressID]       ,[AddressLine1]       ,[AddressLine2]       --,[Ci"}, {"title": "uk.co.objectivity.test.db.DBTestCompare > key_comparator.ContactType.KeyContactType_FAIL", "file": "uk.co.objectivity.test.db.DBTestCompare", "error": "Among 2 compared rows, some differences in SQL queries results found -  expected [0] but found [1]"}, {"title": "uk.co.objectivity.test.db.DBTestCompare > nmb_of_results.Exception_assert_equal_FAIL", "file": "uk.co.objectivity.test.db.DBTestCompare", "error": "java.lang.Exception: org.postgresql.util.PSQLException: ERROR: syntax error at or near \";\"   Position: 170 Assert Query : select COUNT(*) from (               SELECT addressid, addressline1, addressline2, city, stateprovinceid, postalcode, modifieddate  FROM public.personaddress     LIMIT 1;  --quer"}, {"title": "uk.co.objectivity.test.db.DBTestCompare > fetch_compare_test.Exception_inline_sql_SQL_SERVER_PostgreSQL_FAIL", "file": "uk.co.objectivity.test.db.DBTestCompare", "error": "java.lang.Exception: org.testng.TestException:  Queries results have a different number of columns 6 / 7 Query 1:               SELECT [AddressID]       ,[AddressLine1]       ,[AddressLine2]       --,[City]       ,[StateProvinceID]       ,[PostalCode]       ,convert(varchar(30),[ModifiedDate],121)  "}, {"title": "uk.co.objectivity.test.db.DBTestCompare > minus_many_xml_files.PersonAddress_SQL_SERVER_diffTableSize_0_FAIL", "file": "uk.co.objectivity.test.db.DBTestCompare", "error": "Differences in SQL queries found -  expected [0] but found [2]"}, {"title": "uk.co.objectivity.test.db.DBTestCompare > minus_on_union.SQL_SERVER_union_noIndicator_FAIL", "file": "uk.co.objectivity.test.db.DBTestCompare", "error": "Differences in SQL queries found -  expected [0] but found [2]"}, {"title": "uk.co.objectivity.test.db.DBTestCompare > minus_many_xml_files.PersonAddress_SQL_SERVER_first_FAIL", "file": "uk.co.objectivity.test.db.DBTestCompare", "error": "Differences in SQL queries found -  expected [0] but found [2]"}, {"title": "uk.co.objectivity.test.db.DBTestCompare > fetch_compare_test.from_file_sql_MySQL_PostgreSQL_FAIL", "file": "uk.co.objectivity.test.db.DBTestCompare", "error": "java.lang.Exception: java.sql.SQLException: Connections could not be acquired from the underlying database! Query 1: SELECT personaddress.AddressID,     personaddress.AddressLine1,     personaddress.City,     personaddress.StateProvinceID,     personaddress.PostalCode,     personaddress.ModifiedDate"}, {"title": "uk.co.objectivity.test.db.DBTestCompare > minus_on_union.SQL_SERVER_union_withIndicator_FAIL", "file": "uk.co.objectivity.test.db.DBTestCompare", "error": "Differences in SQL queries found -  expected [0] but found [2]"}], "test_comparison_available": true, "compared_with_run_id": "203"}, {"run_id": "205", "run_url": "https://github.com/Accenture/DBTestCompare/actions/runs/45086005148", "timestamp": "2026-11-23T00:00:14Z", "total": 0, "passed": 0, "failed": 0, "skipped": 0, "flaky_count": 0, "duration_ms": 0, "slowest_tests": [{"title": "uk.co.objectivity.test.db.DBTestCompare > fetch_compare_test.from_file_sql_MySQL_PostgreSQL_FAIL", "duration_ms": 30064}, {"title": "uk.co.objectivity.test.db.DBTestCompare > key_comparator.Product.Product", "duration_ms": 2563}, {"title": "uk.co.objectivity.test.db.DBTestCompare > minus_many_xml_files.PersonAddress_SQL_SERVER_diffTableSize_0_FAIL", "duration_ms": 2248}, {"title": "uk.co.objectivity.test.db.DBTestCompare > minus_many_xml_files.PersonAddress_SQL_SERVER_second", "duration_ms": 2246}, {"title": "uk.co.objectivity.test.db.DBTestCompare > delta.floating_point.SalesOrderDetail_SQL_SERVER", "duration_ms": 2233}, {"title": "uk.co.objectivity.test.db.DBTestCompare > minus_file_output.union_compare_failure_test", "duration_ms": 1935}, {"title": "uk.co.objectivity.test.db.DBTestCompare > key_comparator.ContactType.KeyContactType_FAIL", "duration_ms": 1851}, {"title": "uk.co.objectivity.test.db.DBTestCompare > minus_file_output.union_compare_failure_count_test", "duration_ms": 1456}, {"title": "uk.co.objectivity.test.db.DBTestCompare > minus_on_union.SQL_SERVER_union_noIndicator_FAIL", "duration_ms": 1273}, {"title": "uk.co.objectivity.test.db.DBTestCompare > minus_many_xml_files.PersonAddress_SQL_SERVER_first_FAIL", "duration_ms": 1005}], "failed_tests": [], "flaky_tests": [], "tests": [{"source": "JUnit", "title": "uk.co.objectivity.test.db.DBTestCompare > sql-from-file.from_files", "file": "uk.co.objectivity.test.db.DBTestCompare", "duration_ms": 610, "status": "passed"}, {"source": "JUnit", "title": "uk.co.objectivity.test.db.DBTestCompare > multilevel_tests.Two.lvl_two_not_from_files", "file": "uk.co.objectivity.test.db.DBTestCompare", "duration_ms": 94, "status": "passed"}, {"source": "JUnit", "title": "uk.co.objectivity.test.db.DBTestCompare > key_comparator.Product.Product", "file": "uk.co.objectivity.test.db.DBTestCompare", "duration_ms": 2563, "status": "passed"}, {"source": "JUnit", "title": "uk.co.objectivity.test.db.DBTestCompare > fetch_compare_test.inline_sql_SQL_SERVER_PostgreSQL", "file": "uk.co.objectivity.test.db.DBTestCompare", "duration_ms": 46, "status": "passed"}, {"source": "JUnit", "title": "uk.co.objectivity.test.db.DBTestCompare > nmb_of_results.Exception_assert_equal_FAIL", "file": "uk.co.objectivity.test.db.DBTestCompare", "duration_ms": 7, "status": "failed"}, {"source": "JUnit", "title": "uk.co.objectivity.test.db.DBTestCompare > minus_on_union.SQL_SERVER_union_noIndicator_FAIL", "file": "uk.co.objectivity.test.db.DBTestCompare", "duration_ms": 1273, "status": "failed"}, {"source": "JUnit", "title": "uk.co.objectivity.test.db.DBTestCompare > key_comparator.ContactType.KeyContactType_FAIL", "file": "uk.co.objectivity.test.db.DBTestCompare", "duration_ms": 1851, "status": "failed"}, {"source": "JUnit", "title": "uk.co.objectivity.test.db.DBTestCompare > fetch_compare_test.from_file_sql_MySQL_PostgreSQL_FAIL", "file": "uk.co.objectivity.test.db.DBTestCompare", "duration_ms": 30064, "status": "failed"}, {"source": "JUnit", "title": "uk.co.objectivity.test.db.DBTestCompare > compare_with_file.SQLExceptioncompare_with_file_SQL_Server", "file": "uk.co.objectivity.test.db.DBTestCompare", "duration_ms": 582, "status": "passed"}, {"source": "JUnit", "title": "uk.co.objectivity.test.db.DBTestCompare > minus_on_union.SQL_SERVER_union_noIndicator_SUCCESS", "file": "uk.co.objectivity.test.db.DBTestCompare", "duration_ms": 206, "status": "passed"}, {"source": "JUnit", "title": "uk.co.objectivity.test.db.DBTestCompare > multilevel_tests.union_compare_failure_test", "file": "uk.co.objectivity.test.db.DBTestCompare", "duration_ms": 117, "status": "passed"}, {"source": "JUnit", "title": "uk.co.objectivity.test.db.DBTestCompare > delta.floating_point.SalesOrderDetail_SQL_SERVER", "file": "uk.co.objectivity.test.db.DBTestCompare", "duration_ms": 2233, "status": "passed"}, {"source": "JUnit", "title": "uk.co.objectivity.test.db.DBTestCompare > multilevel_tests.Two.Three.not_from_files", "file": "uk.co.objectivity.test.db.DBTestCompare", "duration_ms": 65, "status": "passed"}, {"source": "JUnit", "title": "uk.co.objectivity.test.db.DBTestCompare > minus_many_xml_files.ExceptionPersonAddress_SQL_SERVER_first_FAIL", "file": "uk.co.objectivity.test.db.DBTestCompare", "duration_ms": 3, "status": "failed"}, {"source": "JUnit", "title": "uk.co.objectivity.test.db.DBTestCompare > compare_with_file_stucture.compare_with_db_structure_SQLServerFileWithHeader", "file": "uk.co.objectivity.test.db.DBTestCompare", "duration_ms": 898, "status": "passed"}, {"source": "JUnit", "title": "uk.co.objectivity.test.db.DBTestCompare > minus_many_xml_files.PersonAddress_SQL_SERVER_second", "file": "uk.co.objectivity.test.db.DBTestCompare", "duration_ms": 2246, "status": "passed"}, {"source": "JUnit", "title": "uk.co.objectivity.test.db.DBTestCompare > sql-from-file.mixed", "file": "uk.co.objectivity.test.db.DBTestCompare", "duration_ms": 99, "status": "passed"}, {"source": "JUnit", "title": "uk.co.objectivity.test.db.DBTestCompare > minus_many_xml_files.PersonAddress_PostgreSQL", "file": "uk.co.objectivity.test.db.DBTestCompare", "duration_ms": 87, "status": "passed"}, {"source": "JUnit", "title": "uk.co.objectivity.test.db.DBTestCompare > minus_file_output.union_compare_failure_count_test", "file": "uk.co.objectivity.test.db.DBTestCompare", "duration_ms": 1456, "status": "passed"}, {"source": "JUnit", "title": "uk.co.objectivity.test.db.DBTestCompare > nmb_of_results.assert_equal", "file": "uk.co.objectivity.test.db.DBTestCompare", "duration_ms": 11, "status": "passed"}, {"source": "JUnit", "title": "uk.co.objectivity.test.db.DBTestCompare > compare_with_file.compare_with_file_SQL_Server", "file": "uk.co.objectivity.test.db.DBTestCompare", "duration_ms": 23, "status": "passed"}, {"source": "JUnit", "title": "uk.co.objectivity.test.db.DBTestCompare > fetch_compare_test.Exception_inline_sql_SQL_SERVER_PostgreSQL_FAIL", "file": "uk.co.objectivity.test.db.DBTestCompare", "duration_ms": 32, "status": "failed"}, {"source": "JUnit", "title": "uk.co.objectivity.test.db.DBTestCompare > sql-from-file.not_from_files", "file": "uk.co.objectivity.test.db.DBTestCompare", "duration_ms": 124, "status": "passed"}, {"source": "JUnit", "title": "uk.co.objectivity.test.db.DBTestCompare > minus_file_output.union_compare_failure_test", "file": "uk.co.objectivity.test.db.DBTestCompare", "duration_ms": 1935, "status": "passed"}, {"source": "JUnit", "title": "uk.co.objectivity.test.db.DBTestCompare > minus_on_union.SQL_SERVER_union_withIndicator_SUCCESS", "file": "uk.co.objectivity.test.db.DBTestCompare", "duration_ms": 200, "status": "passed"}, {"source": "JUnit", "title": "uk.co.objectivity.test.db.DBTestCompare > minus_on_union.SQL_SERVER_union_withIndicator_FAIL", "file": "uk.co.objectivity.test.db.DBTestCompare", "duration_ms": 495, "status": "failed"}, {"source": "JUnit", "title": "uk.co.objectivity.test.db.DBTestCompare > minus_many_xml_files.PersonAddress_SQL_SERVER_diffTableSize_0_FAIL", "file": "uk.co.objectivity.test.db.DBTestCompare", "duration_ms": 2248, "status": "failed"}, {"source": "JUnit", "title": "uk.co.objectivity.test.db.DBTestCompare > sql-from-file.misconfigured_FAIL", "file": "uk.co.objectivity.test.db.DBTestCompare", "duration_ms": 1, "status": "failed"}, {"source": "JUnit", "title": "uk.co.objectivity.test.db.DBTestCompare > compare_with_file_stucture.compare_with_db_structure_SQLServer", "file": "uk.co.objectivity.test.db.DBTestCompare", "duration_ms": 274, "status": "passed"}, {"source": "JUnit", "title": "uk.co.objectivity.test.db.DBTestCompare > minus_many_xml_files.PersonAddress_SQL_SERVER_first_FAIL", "file": "uk.co.objectivity.test.db.DBTestCompare", "duration_ms": 1005, "status": "failed"}], "shell_passed": 20, "shell_failed": 10, "shell_skipped": 0, "shell_failed_tests": [{"title": "uk.co.objectivity.test.db.DBTestCompare > nmb_of_results.Exception_assert_equal_FAIL", "file": "uk.co.objectivity.test.db.DBTestCompare", "error": "java.lang.Exception: org.postgresql.util.PSQLException: ERROR: syntax error at or near \";\"   Position: 170 Assert Query : select COUNT(*) from (               SELECT addressid, addressline1, addressline2, city, stateprovinceid, postalcode, modifieddate  FROM public.personaddress     LIMIT 1;  --quer"}, {"title": "uk.co.objectivity.test.db.DBTestCompare > minus_on_union.SQL_SERVER_union_noIndicator_FAIL", "file": "uk.co.objectivity.test.db.DBTestCompare", "error": "Differences in SQL queries found -  expected [0] but found [2]"}, {"title": "uk.co.objectivity.test.db.DBTestCompare > key_comparator.ContactType.KeyContactType_FAIL", "file": "uk.co.objectivity.test.db.DBTestCompare", "error": "Among 2 compared rows, some differences in SQL queries results found -  expected [0] but found [1]"}, {"title": "uk.co.objectivity.test.db.DBTestCompare > fetch_compare_test.from_file_sql_MySQL_PostgreSQL_FAIL", "file": "uk.co.objectivity.test.db.DBTestCompare", "error": "java.lang.Exception: java.sql.SQLException: Connections could not be acquired from the underlying database! Query 1: SELECT personaddress.AddressID,     personaddress.AddressLine1,     personaddress.City,     personaddress.StateProvinceID,     personaddress.PostalCode,     personaddress.ModifiedDate"}, {"title": "uk.co.objectivity.test.db.DBTestCompare > minus_many_xml_files.ExceptionPersonAddress_SQL_SERVER_first_FAIL", "file": "uk.co.objectivity.test.db.DBTestCompare", "error": "java.lang.Exception: com.microsoft.sqlserver.jdbc.SQLServerException: All queries combined using a UNION, INTERSECT or EXCEPT operator must have an equal number of expressions in their target lists. Minus Query : (           SELECT [AddressID]       ,[AddressLine1]       ,[AddressLine2]       --,[Ci"}, {"title": "uk.co.objectivity.test.db.DBTestCompare > fetch_compare_test.Exception_inline_sql_SQL_SERVER_PostgreSQL_FAIL", "file": "uk.co.objectivity.test.db.DBTestCompare", "error": "java.lang.Exception: org.testng.TestException:  Queries results have a different number of columns 6 / 7 Query 1:               SELECT [AddressID]       ,[AddressLine1]       ,[AddressLine2]       --,[City]       ,[StateProvinceID]       ,[PostalCode]       ,convert(varchar(30),[ModifiedDate],121)  "}, {"title": "uk.co.objectivity.test.db.DBTestCompare > minus_on_union.SQL_SERVER_union_withIndicator_FAIL", "file": "uk.co.objectivity.test.db.DBTestCompare", "error": "Differences in SQL queries found -  expected [0] but found [2]"}, {"title": "uk.co.objectivity.test.db.DBTestCompare > minus_many_xml_files.PersonAddress_SQL_SERVER_diffTableSize_0_FAIL", "file": "uk.co.objectivity.test.db.DBTestCompare", "error": "Differences in SQL queries found -  expected [0] but found [2]"}, {"title": "uk.co.objectivity.test.db.DBTestCompare > sql-from-file.misconfigured_FAIL", "file": "uk.co.objectivity.test.db.DBTestCompare", "error": "org.testng.TestException:  Element SQL should have the filename attribute or sql value defined (NOT both). Test file is invalid /home/runner/work/DBTestCompare/DBTestCompare/target/test-definitions/sql-from-file/misconfigured_FAIL.xml"}, {"title": "uk.co.objectivity.test.db.DBTestCompare > minus_many_xml_files.PersonAddress_SQL_SERVER_first_FAIL", "file": "uk.co.objectivity.test.db.DBTestCompare", "error": "Differences in SQL queries found -  expected [0] but found [2]"}], "test_comparison_available": true, "compared_with_run_id": "204"}];</script>
+<script>
+(function(){
+  var picker=document.getElementById('run-picker');
+  var testsBox=document.getElementById('selected-run-tests');
+  var detail=document.getElementById('run-detail');
+  var testsPerPage=30;
+  var currentPage=0;
+  var currentTests=[];
+  var sortColumn='priority';
+  var sortDirection=1;
+  function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+  function fmtDur(ms){if(!ms)return '&mdash;';if(ms<1000)return Math.round(ms)+' ms';var s=ms/1000;if(s<60)return s.toFixed(0)+'s';return Math.floor(s/60)+'m '+Math.floor(s%60)+'s';}
+  function fmtTestDur(ms){if(typeof ms!=='number'||ms<=0)return '&mdash;';if(ms<1000)return Math.round(ms)+' ms';if(ms<60000)return (ms/1000).toFixed(2)+' s';var s=ms/1000;return Math.floor(s/60)+'m '+(s%60).toFixed(1)+'s';}
+  function shortName(t){var p=t.split('>').map(function(x){return x.trim();}).filter(Boolean);return p.length>=2?p.slice(-2).join(' › '):(p[p.length-1]||t);}
+  function clip(s,n){return s.length>n?s.slice(-n):s;}
+  function statusRank(status){
+    var ranks={failed:0,flaky:1,passed:2,skipped:3};
+    return Object.prototype.hasOwnProperty.call(ranks,status)?ranks[status]:4;
+  }
+  function changeRank(test){
+    return test.change==='new'?0:(test.change==='changed'?1:2);
+  }
+  function compareTestValues(a,b,column){
+    var left,right;
+    if(column==='priority'){
+      left=statusRank(a.status||'unknown');
+      right=statusRank(b.status||'unknown');
+      if(left!==right){return left-right;}
+      left=changeRank(a);
+      right=changeRank(b);
+      if(left!==right){return left-right;}
+      return (a.title||'').localeCompare(b.title||'');
+    }
+    if(column==='title'){
+      left=a.title||'';
+      right=b.title||'';
+    }else if(column==='source'){
+      left=['JUnit','NUnit','xUnit','VSTest'].includes(a.source)?'Additional':(a.source||'');
+      right=['JUnit','NUnit','xUnit','VSTest'].includes(b.source)?'Additional':(b.source||'');
+    }else if(column==='status'){
+      left=statusRank(a.status||'unknown');
+      right=statusRank(b.status||'unknown');
+    }else if(column==='duration'){
+      left=Number(a.duration_ms)||0;
+      right=Number(b.duration_ms)||0;
+    }else{
+      left=changeRank(a);
+      right=changeRank(b);
+    }
+    if(left<right){return -sortDirection;}
+    if(left>right){return sortDirection;}
+    return (a.title||'').localeCompare(b.title||'');
+  }
+  function updateSortHeaders(){
+    var headers=document.querySelectorAll('.all-tests th');
+    for(var i=0;i<headers.length;i++){
+      var button=headers[i].querySelector('button');
+      var column=button.getAttribute('data-sort');
+      var label=button.getAttribute('data-label');
+      var active=column===sortColumn;
+      button.textContent=label+(active?(sortDirection===1?' ↑':' ↓'):'');
+      button.setAttribute('aria-label','Sort by '+label+(active?(sortDirection===1?' ascending':' descending'):''));
+      headers[i].setAttribute('aria-sort',active?(sortDirection===1?'ascending':'descending'):'none');
+    }
+  }
+  function renderTestPage(){
+    var pageCount=Math.max(1,Math.ceil(currentTests.length/testsPerPage));
+    currentPage=Math.min(Math.max(0,currentPage),pageCount-1);
+    var start=currentPage*testsPerPage,end=Math.min(start+testsPerPage,currentTests.length),rows='';
+    for(var i=start;i<end;i++){
+      var test=currentTests[i],title=test.title||'',status=test.status||'unknown';
+      var statusClass={passed:'status-passed',failed:'status-failed',flaky:'status-flaky',skipped:'status-skipped'}[status]||'';
+      var change='—';
+      if(test.change==='new'){
+        change='<span class="change-badge change-new">New</span>';
+      }else if(test.change==='changed'){
+        change='<span class="change-badge change-updated">'+esc(test.previous_status||'unknown')+' &rarr; '+esc(status)+'</span>';
+      }
+      rows+='<tr data-test-title="'+esc(title)+'"><td title="'+esc(title)+'">'+esc(clip(shortName(title),90))+'</td>'
+        +'<td>'+esc(['JUnit','NUnit','xUnit','VSTest'].includes(test.source)?'Additional':test.source||'')+'</td><td><span class="status-badge '+statusClass+'">'+esc(status)+'</span></td>'
+        +'<td>'+fmtTestDur(test.duration_ms)+'</td><td>'+change+'</td></tr>';
+    }
+    document.getElementById('all-tests-body').innerHTML=rows;
+    document.getElementById('test-page-range').textContent='Showing '+(currentTests.length?start+1:0)+'-'+end+' of '+currentTests.length+' tests';
+    document.getElementById('test-page-count').textContent='Page '+(currentPage+1)+' of '+pageCount;
+    document.getElementById('test-page-prev').disabled=currentPage===0;
+    document.getElementById('test-page-next').disabled=currentPage>=pageCount-1;
+    var aggPicker=document.getElementById('agg-picker');
+    if(aggPicker){aggPicker.dispatchEvent(new Event('change'));}
+  }
+  function renderTests(run){
+    var tests=run.tests||[];
+    currentTests=tests.slice().sort(function(a,b){return compareTestValues(a,b,sortColumn);});
+    currentPage=0;
+    var counts={total:0,passed:0,failed:0,flaky:0,skipped:0};
+    if(tests.length){
+      counts.total=tests.length;
+      for(var i=0;i<tests.length;i++){
+        if(Object.prototype.hasOwnProperty.call(counts,tests[i].status)){counts[tests[i].status]++;}
+      }
+    }else{
+      counts.total=(run.total||0)+(run.shell_passed||0)+(run.shell_failed||0)+(run.shell_skipped||0);
+      counts.passed=(run.passed||0)+(run.shell_passed||0);
+      counts.failed=(run.failed||0)+(run.shell_failed||0);
+      counts.flaky=run.flaky_count||0;
+      counts.skipped=(run.skipped||0)+(run.shell_skipped||0);
+    }
+    var html='<div class="stats-row selected-run-stats" style="margin:.6rem 0">'
+      +'<div class="stat-box"><div class="stat-val">'+counts.total+'</div><div class="stat-lbl">Tests</div></div>'
+      +'<div class="stat-box"><div class="stat-val">'+counts.passed+'</div><div class="stat-lbl">Passed</div></div>'
+      +'<div class="stat-box stat-fail"><div class="stat-val">'+counts.failed+'</div><div class="stat-lbl">Failed</div></div>'
+      +'<div class="stat-box stat-flaky"><div class="stat-val">'+counts.flaky+'</div><div class="stat-lbl">Flaky</div></div>'
+      +'<div class="stat-box"><div class="stat-val">'+counts.skipped+'</div><div class="stat-lbl">Skipped</div></div>'
+      +'</div>';
+    if(run.test_comparison_available){
+      html+='<p class="comparison-note">Compared with run #'+esc(run.compared_with_run_id)+'. '
+        +'<span class="change-badge change-new">New</span> test, '
+        +'<span class="change-badge change-updated">previous status &rarr; current status</span>.</p>';
+    }else{
+      html+='<p class="comparison-note">No previous test-level data is available for comparison.</p>';
+    }
+    if(!tests.length){
+      html+='<p class="comparison-note">Individual test results were not saved for this run; showing available aggregate counts.</p>';
+      testsBox.innerHTML=html;
+      return;
+    }
+    html+='<div class="test-pagination" aria-label="Test table pagination">'
+      +'<button type="button" id="test-page-prev" aria-label="Previous test page">Prev</button>'
+      +'<span id="test-page-range"></span><span id="test-page-count"></span>'
+      +'<button type="button" id="test-page-next" aria-label="Next test page">Next</button>'
+      +'<label for="test-page-size">Tests per page</label><select id="test-page-size" aria-label="Tests per page">'
+      +'<option value="30" selected>30</option><option value="50">50</option><option value="100">100</option></select></div>'
+      +'<div class="table-scroll"><table class="all-tests"><thead><tr>'
+      +'<th aria-sort="none"><button type="button" data-sort="title" data-label="Test" aria-label="Sort by Test">Test</button></th>'
+      +'<th aria-sort="none"><button type="button" data-sort="source" data-label="Source" aria-label="Sort by Source">Source</button></th>'
+      +'<th aria-sort="none"><button type="button" data-sort="status" data-label="Status" aria-label="Sort by Status">Status</button></th>'
+      +'<th aria-sort="none"><button type="button" data-sort="duration" data-label="Execution time" aria-label="Sort by Execution time">Execution time</button></th>'
+      +'<th aria-sort="none"><button type="button" data-sort="change" data-label="Change" aria-label="Sort by Change">Change</button></th>'
+      +'</tr></thead><tbody id="all-tests-body"></tbody></table></div>';
+    testsBox.innerHTML=html;
+    var sortButtons=testsBox.querySelectorAll('.all-tests th button');
+    for(var i=0;i<sortButtons.length;i++){
+      sortButtons[i].addEventListener('click',function(){
+        var column=this.getAttribute('data-sort');
+        sortDirection=column===sortColumn?-sortDirection:1;
+        sortColumn=column;
+        currentTests.sort(function(a,b){return compareTestValues(a,b,sortColumn);});
+        currentPage=0;
+        updateSortHeaders();
+        renderTestPage();
+      });
+    }
+    updateSortHeaders();
+    document.getElementById('test-page-prev').addEventListener('click',function(){currentPage--;renderTestPage();});
+    document.getElementById('test-page-next').addEventListener('click',function(){currentPage++;renderTestPage();});
+    document.getElementById('test-page-size').addEventListener('change',function(){
+      testsPerPage=parseInt(this.value,10);
+      currentPage=0;
+      renderTestPage();
+    });
+    renderTestPage();
+  }
+  function renderRun(run){
+    if(!run){testsBox.innerHTML='';detail.innerHTML='';return;}
+    renderTests(run);
+    var ts=(run.timestamp||'').replace('T',' ').slice(0,16)+' UTC';
+    var html='<div style="display:flex;align-items:center;gap:.75rem;flex-wrap:wrap;padding:.5rem 0 .75rem;border-top:1px solid #e2e8f0">'
+      +'<strong style="font-size:.875rem">Run #'+esc(run.run_id)+'</strong>'
+      +'<span style="font-size:.78rem;color:#64748b">'+esc(ts)+'</span>'
+      +'<a href="'+esc(run.run_url)+'" target="_blank" style="font-size:.78rem">View on GitHub ↗</a>'
+      +'</div>';
+    var sf=run.shell_failed_tests||[];
+    if(!sf.length && run.shell_failed>0){
+      html+='<p class="comparison-note">'+run.shell_failed+' failure(s); individual test details were not saved for this run.</p>';
+    }
+    // Flaky tests
+    var flaky=run.flaky_tests||[];
+    html+='<div class="section-lbl">Flaky tests ('+flaky.length+')</div>';
+    if(!flaky.length && run.flaky_count>0){
+      html+='<p class="comparison-note">'+run.flaky_count+' flaky test(s); individual test details were not saved for this run.</p>';
+    }else if(!flaky.length){html+='<p style="font-size:.8rem;color:#15803d;margin:.2rem 0">None ✓</p>';}
+    else{html+='<ul class="flaky-list">';
+      for(var i=0;i<flaky.length;i++){var t=flaky[i],s=clip(shortName(t.title),70);
+        html+='<li title="'+esc(t.title)+'">'+esc(s)+' <strong>('+t.attempts+' attempts)</strong></li>';}
+      html+='</ul>';}
+    detail.innerHTML=html;
+  }
+  picker.addEventListener('change',function(){renderRun(RUNS[parseInt(this.value,10)]);});
+  renderRun(RUNS[parseInt(picker.value,10)]);
+})();
+</script>
+<div class="card-header"><h2 class="card-title">Last 30 days &mdash; 5 run(s)</h2><span class="rate-pill rate-ok">100.0% pass rate</span></div>
+<div class="section-lbl">JSON test results</div>
+<div class="stats-row">
+<div class="stat-box"><div class="stat-val">0</div><div class="stat-lbl">Avg tests/run</div></div>
+<div class="stat-box"><div class="stat-val">0</div><div class="stat-lbl">Avg passed/run</div></div>
+<div class="stat-box stat-fail"><div class="stat-val">0</div><div class="stat-lbl">Total failures</div></div>
+<div class="stat-box stat-flaky"><div class="stat-val">0</div><div class="stat-lbl">Total flaky</div></div>
+</div>
+<div class="spark-label">Tests per run (all configured sources) — color shows pass/fail</div>
+<div class="sparkline" title="Total tests per run (newest → oldest)"><a href="https://github.com/Accenture/DBTestCompare/actions/runs/45086005148" target="_blank" title="Run #205 — JSON: 0 passed / 0 failed / 0 flaky / 0 skipped — Additional: 20 passed / 10 failed"><div class="bar" style="height:60px;background:#ef4444"></div></a><a href="https://github.com/Accenture/DBTestCompare/actions/runs/44265107619" target="_blank" title="Run #204 — JSON: 0 passed / 0 failed / 0 flaky / 0 skipped — Additional: 20 passed / 10 failed"><div class="bar" style="height:60px;background:#ef4444"></div></a><a href="https://github.com/Accenture/DBTestCompare/actions/runs/44259341212" target="_blank" title="Run #203 — JSON: 0 passed / 0 failed / 0 flaky / 0 skipped — Additional: 20 passed / 10 failed"><div class="bar" style="height:60px;background:#ef4444"></div></a><a href="https://github.com/Accenture/DBTestCompare/actions/runs/44255370826" target="_blank" title="Run #202 — JSON: 0 passed / 0 failed / 0 flaky / 0 skipped — Additional: 19 passed / 11 failed"><div class="bar" style="height:60px;background:#ef4444"></div></a><a href="https://github.com/Accenture/DBTestCompare/actions/runs/44251549271" target="_blank" title="Run #201 — JSON: 0 passed / 0 failed / 0 flaky / 0 skipped — Additional: 0 passed / 0 failed"><div class="bar" style="height:8px;background:#22c55e"></div></a></div>
+<div class="section-lbl">Test trends (last 30 days)</div>
+<select id="agg-picker" style="font-size:.8rem;padding:.35rem .6rem;border:1px solid #e2e8f0;border-radius:.4rem;background:#fff;color:#374151;width:100%;max-width:42rem;cursor:pointer">
+<option value="top">Top failing tests</option>
+<option value="flaky">Flaky tests</option>
+<option value="longest">Longest tests</option>
+<option value="retried">Most retried</option>
+</select>
+<div id="agg-detail" style="margin-top:.5rem"></div>
+<script>var AGG={"top": [["uk.co.objectivity.test.db.DBTestCompare > minus_many_xml_files.PersonAddress_SQL_SERVER_first_FAIL", 4], ["uk.co.objectivity.test.db.DBTestCompare > key_comparator.ContactType.KeyContactType_FAIL", 4], ["uk.co.objectivity.test.db.DBTestCompare > fetch_compare_test.from_file_sql_MySQL_PostgreSQL_FAIL", 4], ["uk.co.objectivity.test.db.DBTestCompare > minus_many_xml_files.PersonAddress_SQL_SERVER_diffTableSize_0_FAIL", 4], ["uk.co.objectivity.test.db.DBTestCompare > sql-from-file.misconfigured_FAIL", 4]], "flaky": [["uk.co.objectivity.test.db.DBTestCompare > fetch_compare_test.Exception_inline_sql_SQL_SERVER_PostgreSQL_FAIL", 4], ["uk.co.objectivity.test.db.DBTestCompare > fetch_compare_test.from_file_sql_MySQL_PostgreSQL_FAIL", 4], ["uk.co.objectivity.test.db.DBTestCompare > key_comparator.ContactType.KeyContactType_FAIL", 4], ["uk.co.objectivity.test.db.DBTestCompare > minus_many_xml_files.ExceptionPersonAddress_SQL_SERVER_first_FAIL", 4], ["uk.co.objectivity.test.db.DBTestCompare > minus_many_xml_files.PersonAddress_SQL_SERVER_diffTableSize_0_FAIL", 4]], "slow": [["uk.co.objectivity.test.db.DBTestCompare > fetch_compare_test.from_file_sql_MySQL_PostgreSQL_FAIL", 30113], ["uk.co.objectivity.test.db.DBTestCompare > key_comparator.Product.Product", 2563], ["uk.co.objectivity.test.db.DBTestCompare > minus_many_xml_files.PersonAddress_SQL_SERVER_diffTableSize_0_FAIL", 2248], ["uk.co.objectivity.test.db.DBTestCompare > minus_many_xml_files.PersonAddress_SQL_SERVER_second", 2246], ["uk.co.objectivity.test.db.DBTestCompare > delta.floating_point.SalesOrderDetail_SQL_SERVER", 2233]], "retried": []};</script>
+<script>
+(function(){
+  var sel=document.getElementById('agg-picker');
+  var box=document.getElementById('agg-detail');
+  function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+  function fmtDur(ms){if(!ms)return '&mdash;';if(ms<1000)return Math.round(ms)+' ms';var s=ms/1000;if(s<60)return s.toFixed(0)+'s';return Math.floor(s/60)+'m '+Math.floor(s%60)+'s';}
+  function shortName(t){var p=t.split('>').map(function(x){return x.trim();}).filter(Boolean);return p.length>=2?p.slice(-2).join(' › '):(p[p.length-1]||t);}
+  function clip(s,n){return s.length>n?s.slice(-n):s;}
+  function highlightTests(v){
+    var key=v==='longest'?'slow':v, selected={};
+    var data=AGG[key]||[];
+    for(var i=0;i<data.length;i++){selected[data[i][0]]=true;}
+    var rows=document.querySelectorAll('#all-tests-body tr');
+    for(var i=0;i<rows.length;i++){
+      rows[i].classList.toggle('test-trend-match',!!selected[rows[i].getAttribute('data-test-title')]);
+    }
+  }
+  function render(v){
+    var html='',d;
+    if(v==='top'){
+      d=AGG.top;
+      if(!d.length){html='<p style="font-size:.8rem;color:#94a3b8;margin:.25rem 0">No failures recorded.</p>';}
+      else{html='<div class="table-scroll"><table><tr><th>Test</th><th style="width:4rem">Fails</th></tr>';
+        for(var i=0;i<d.length;i++){var t=d[i],s=clip(shortName(t[0]),70);
+          html+='<tr><td title="'+esc(t[0])+'">'+esc(s)+'</td><td>'+t[1]+'</td></tr>';}
+        html+='</table></div>';}
+    }else if(v==='flaky'){
+      d=AGG.flaky;
+      if(!d.length){html='<p style="font-size:.8rem;color:#15803d;margin:.25rem 0">No flaky tests ✓</p>';}
+      else{html='<ul class="flaky-list">';
+        for(var i=0;i<d.length;i++){var t=d[i],s=clip(shortName(t[0]),70);
+          html+='<li title="'+esc(t[0])+'">'+esc(s)+' <strong>('+t[1]+')</strong></li>';}
+        html+='</ul>';}
+    }else if(v==='longest'){
+      d=AGG.slow;
+      if(!d.length){html='<p style="font-size:.8rem;color:#94a3b8;margin:.25rem 0">No duration data.</p>';}
+      else{html='<div class="table-scroll"><table><tr><th>Test</th><th style="width:5rem;color:#6b7280">Max time</th></tr>';
+        for(var i=0;i<d.length;i++){var t=d[i],s=clip(shortName(t[0]),65);
+          html+='<tr><td title="'+esc(t[0])+'">'+esc(s)+'</td><td style="color:#6b7280">'+fmtDur(t[1])+'</td></tr>';}
+        html+='</table></div>';}
+    }else if(v==='retried'){
+      d=AGG.retried;
+      if(!d.length){html='<p style="font-size:.8rem;color:#15803d;margin:.25rem 0">No retries recorded ✓</p>';}
+      else{html='<div class="table-scroll"><table><tr><th>Test</th><th style="width:5.5rem">Max retries</th></tr>';
+        for(var i=0;i<d.length;i++){var t=d[i],s=clip(shortName(t[0]),65);
+          html+='<tr><td title="'+esc(t[0])+'">'+esc(s)+'</td><td style="color:#d97706">'+t[1]+'</td></tr>';}
+        html+='</table></div>';}
+    }
+    box.innerHTML=html;
+    highlightTests(v);
+  }
+  sel.addEventListener('change',function(){render(this.value);});
+  render('top');
+})();
+</script>
+</div>
+</div></body></html>
